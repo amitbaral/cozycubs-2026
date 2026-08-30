@@ -1,0 +1,80 @@
+{
+  "summary": {
+    "health_score": 95.5,
+    "business_type": "E-commerce / Custom Manufacturing",
+    "domain": "cozycubs.com.au",
+    "top_findings": [
+      "Dynamic XML sitemap & robots.txt active",
+      "Full JSON-LD structured data coverage (OnlineStore, WebSite, Product, FAQPage, Breadcrumbs)",
+      "Strict brand consistency for Cozy Cubs Australia across 19 page routes",
+      "SSR/SSG static optimization with sub-second page loads"
+    ],
+    "quick_wins": [
+      "Add static 1200x630 Social OG Preview image to /public/",
+      "Submit sitemap.xml to Google Search Console"
+    ]
+  },
+  "categories": [
+    {
+      "name": "Technical SEO",
+      "score": 22,
+      "what_works": ["Next.js 16 SSR/SSG", "Dynamic sitemap.xml", "Dynamic robots.txt", "Web manifest", "Canonical links"],
+      "findings": []
+    },
+    {
+      "name": "Content Quality & E-E-A-T",
+      "score": 22,
+      "what_works": ["Official AU Bedding Matrix", "GOTS Organic Cotton specs", "OEKO-TEX eco reactive inks", "30-Day Quality Guarantee"],
+      "findings": []
+    },
+    {
+      "name": "On-Page SEO",
+      "score": 19,
+      "what_works": ["Title templates (%s | Cozy Cubs Australia)", "Meta descriptions", "Single H1 per route", "OpenGraph & Twitter cards"],
+      "findings": []
+    },
+    {
+      "name": "Schema / Structured Data",
+      "score": 10,
+      "what_works": ["OnlineStore & Organization schema", "WebSite search schema", "Product & Offer AUD schema", "FAQPage schema", "BreadcrumbList schema"],
+      "findings": []
+    },
+    {
+      "name": "Performance (CWV)",
+      "score": 9,
+      "what_works": ["Font optimization display:swap", "Sub-second TTFB", "Static generation"],
+      "findings": []
+    },
+    {
+      "name": "AI Search Readiness",
+      "score": 9,
+      "what_works": ["Semantic HTML structure", "Citability readiness"],
+      "findings": []
+    },
+    {
+      "name": "Images",
+      "score": 4.5,
+      "what_works": ["Descriptive alt tags"],
+      "findings": []
+    }
+  ],
+  "action_plan": {
+    "phases": [
+      {
+        "name": "Phase 1: Immediate Maintenance",
+        "timeframe": "Week 1",
+        "items": ["Enforce Cozy Cubs brand name", "Verify static compilation via npm run build", "Verify sitemap and robots generation"]
+      },
+      {
+        "name": "Phase 2: High-Impact Improvements",
+        "timeframe": "Weeks 2-3",
+        "items": ["Add static 1200x630 OG preview image", "Add sameAs social links to schema"]
+      },
+      {
+        "name": "Phase 3: Content & Authority",
+        "timeframe": "Month 2",
+        "items": ["Create educational bedding guides", "Submit sitemap.xml to GSC"]
+      }
+    ]
+  }
+}

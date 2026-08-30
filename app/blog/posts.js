@@ -1,0 +1,32 @@
+export const BLOG_POSTS = [
+  {
+    slug: 'australian-bedding-size-guide',
+    title: 'Ultimate Australian Bedding Size Guide: Single to Super King',
+    excerpt: 'Confused about Australian doona dimensions vs US/UK sizes? Learn exact measurements for Single, Double, Queen, King, and Super King quilt covers.',
+    date: 'August 28, 2026',
+    author: 'Cozy Cubs Studio Team',
+    category: 'Bedding Guides',
+    readTime: '4 min read',
+    image: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80',
+  },
+  {
+    slug: 'organic-cotton-doona-care-guide',
+    title: 'How to Care for 100% Organic Cotton Doona Covers',
+    excerpt: 'Keep your custom organic cotton bedding soft, vibrant, and long-lasting with our expert wash care guide for Australian homes.',
+    date: 'August 25, 2026',
+    author: 'Fabric Care Specialists',
+    category: 'Wash & Care',
+    readTime: '3 min read',
+    image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=800&q=80',
+  },
+  {
+    slug: 'kids-artwork-custom-bedding',
+    title: 'Transforming Kids Artwork & Drawings into Custom Bedding',
+    excerpt: 'Turn your child’s treasured drawings and family photos into heirloom-quality personalized quilt cover sets with live 3D preview.',
+    date: 'August 20, 2026',
+    author: 'Cozy Cubs Design Team',
+    category: 'Custom Design',
+    readTime: '5 min read',
+    image: 'https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=800&q=80',
+  },
+];
