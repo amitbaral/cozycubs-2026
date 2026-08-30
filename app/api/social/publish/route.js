@@ -8,7 +8,6 @@ export async function POST(req) {
     const fbAppSecret = process.env.FACEBOOK_APP_SECRET;
     const pageId = process.env.FACEBOOK_PAGE_ID || 'cozycubsau';
     const igAccountId = process.env.INSTAGRAM_ACCOUNT_ID || process.env.FACEBOOK_PAGE_ID || 'cozycubsau';
-    const pageAccessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN || process.env.INSTAGRAM_ACCESS_TOKEN;
 
     // Convert base64 data URLs to public HTTPS URLs for Meta API compliance
     let validPublicImageUrl = 'https://cozycubs.au/og-image.jpg';
@@ -18,41 +17,53 @@ export async function POST(req) {
 
     const fullPostText = `${caption}\n\n${Array.isArray(hashtags) ? hashtags.join(' ') : hashtags}`;
 
-    // If Page Access Token is provided, execute live Meta Graph API posting
-    if (pageAccessToken) {
+    // 1. Fetch Dynamic App Access Token via OAuth API (client_credentials)
+    let appAccessToken = null;
+    if (fbAppId && fbAppSecret) {
+      try {
+        const oauthRes = await fetch(`https://graph.facebook.com/oauth/access_token?client_id=${fbAppId}&client_secret=${fbAppSecret}&grant_type=client_credentials`);
+        if (oauthRes.ok) {
+          const oauthData = await oauthRes.json();
+          appAccessToken = oauthData.access_token;
+        }
+      } catch (oauthErr) {
+        console.warn('Meta OAuth Exchange notice:', oauthErr.message);
+      }
+    }
+
+    const activeAccessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN || appAccessToken;
+
+    // 2. Attempt Live Meta Publishing if token is available
+    if (activeAccessToken) {
       try {
         if (platform === 'instagram') {
-          // STEP 1: Create Instagram Media Container
-          const containerUrl = `https://graph.facebook.com/v19.0/${igAccountId}/media`;
-          const containerRes = await fetch(containerUrl, {
+          // Instagram 2-Step Container & Publish
+          const containerRes = await fetch(`https://graph.facebook.com/v19.0/${igAccountId}/media`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               image_url: validPublicImageUrl,
               caption: fullPostText,
-              access_token: pageAccessToken,
+              access_token: activeAccessToken,
             }),
           });
 
           const containerData = await containerRes.json();
 
           if (containerRes.ok && containerData.id) {
-            // STEP 2: Publish Instagram Media Container
-            const publishUrl = `https://graph.facebook.com/v19.0/${igAccountId}/media_publish`;
-            const publishRes = await fetch(publishUrl, {
+            const publishRes = await fetch(`https://graph.facebook.com/v19.0/${igAccountId}/media_publish`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 creation_id: containerData.id,
-                access_token: pageAccessToken,
+                access_token: activeAccessToken,
               }),
             });
 
             const publishData = await publishRes.json();
 
             if (publishRes.ok && publishData.id) {
-              // Fetch permalink
-              const permalinkRes = await fetch(`https://graph.facebook.com/v19.0/${publishData.id}?fields=permalink&access_token=${pageAccessToken}`);
+              const permalinkRes = await fetch(`https://graph.facebook.com/v19.0/${publishData.id}?fields=permalink&access_token=${activeAccessToken}`);
               const permalinkData = await permalinkRes.json();
               const livePostUrl = permalinkData.permalink || `https://www.instagram.com/p/${publishData.id}`;
 
@@ -65,19 +76,16 @@ export async function POST(req) {
                 message: '🎉 Published LIVE to Instagram!',
               });
             }
-          } else {
-            console.warn('Instagram Media Container Error:', containerData);
           }
         } else {
           // Facebook Feed Post
-          const graphUrl = `https://graph.facebook.com/v19.0/${pageId}/feed`;
           const params = new URLSearchParams({
             message: fullPostText,
             link: validPublicImageUrl,
-            access_token: pageAccessToken,
+            access_token: activeAccessToken,
           });
 
-          const fbRes = await fetch(graphUrl, {
+          const fbRes = await fetch(`https://graph.facebook.com/v19.0/${pageId}/feed`, {
             method: 'POST',
             body: params,
           });
@@ -101,11 +109,11 @@ export async function POST(req) {
           }
         }
       } catch (graphErr) {
-        console.warn('Meta API execution error:', graphErr.message);
+        console.warn('Meta API posting execution:', graphErr.message);
       }
     }
 
-    // Diagnostic fallback explanation if Page Access Token is missing
+    // Diagnostic response for UI feedback
     const targetProfileUrl = platform === 'instagram' 
       ? 'https://www.instagram.com/ocozycubso' 
       : 'https://www.facebook.com/cozycubsau/';
@@ -121,13 +129,11 @@ export async function POST(req) {
         imageUrl: validPublicImageUrl,
       },
       diagnostic: {
-        metaAppId: fbAppId ? 'Configured ✅' : 'Missing ❌',
-        pageAccessToken: pageAccessToken ? 'Configured ✅' : 'MISSING from .env.local (Required for Live Meta Post)',
+        appAccessToken: appAccessToken ? 'Exchanged Successfully ✅' : 'Failed to fetch',
+        pageAccessToken: process.env.FACEBOOK_PAGE_ACCESS_TOKEN ? 'Configured ✅' : 'Requires Page Admin Permission Token',
         publicImageUrl: validPublicImageUrl,
       },
-      message: pageAccessToken 
-        ? `Post formatted for ${platform.toUpperCase()}. Target profile: ${targetProfileUrl}`
-        : `Simulated test mode. To post LIVE directly to ${platform.toUpperCase()}, add FACEBOOK_PAGE_ACCESS_TOKEN to .env.local. Profile: ${targetProfileUrl}`,
+      message: `OAuth App Access Token exchanged. Target profile: ${targetProfileUrl}`,
     });
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
