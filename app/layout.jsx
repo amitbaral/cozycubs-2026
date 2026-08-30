@@ -14,7 +14,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  metadataBase: new URL('https://cozycubs.com.au'),
+  metadataBase: new URL('https://cozycubs.au'),
   title: {
     default: 'Cozy Cubs Australia | Custom Bedding & Doona Cover Studio',
     template: '%s | Cozy Cubs Australia',
@@ -29,7 +29,7 @@ export const metadata = {
     'Cozy Cubs Australia',
     'custom bedding studio Sydney'
   ],
-  authors: [{ name: 'Cozy Cubs Australia', url: 'https://cozycubs.com.au' }],
+  authors: [{ name: 'Cozy Cubs Australia', url: 'https://cozycubs.au' }],
   creator: 'Cozy Cubs Australia',
   publisher: 'Cozy Cubs Australia',
   robots: {
@@ -46,7 +46,7 @@ export const metadata = {
   openGraph: {
     title: 'Cozy Cubs Australia | Custom Doona Cover Studio',
     description: 'Design your custom 100% organic cotton bedding set online with our Live 3D Bed Customizer. Standard Australian bed sizes with fast nationwide delivery.',
-    url: 'https://cozycubs.com.au',
+    url: 'https://cozycubs.au',
     siteName: 'Cozy Cubs Australia',
     locale: 'en_AU',
     type: 'website',
@@ -76,8 +76,8 @@ export default function RootLayout({ children }) {
     '@context': 'https://schema.org',
     '@type': 'OnlineStore',
     name: 'Cozy Cubs Australia',
-    url: 'https://cozycubs.com.au',
-    logo: 'https://cozycubs.com.au/favicon.svg',
+    url: 'https://cozycubs.au',
+    logo: 'https://cozycubs.au/favicon.svg',
     description: "Australia's premier custom quilt cover and organic cotton bedding studio.",
     address: {
       '@type': 'PostalAddress',
@@ -100,10 +100,10 @@ export default function RootLayout({ children }) {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Cozy Cubs Australia',
-    url: 'https://cozycubs.com.au',
+    url: 'https://cozycubs.au',
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://cozycubs.com.au/collections?search={search_term_string}',
+      target: 'https://cozycubs.au/collections?search={search_term_string}',
       'query-input': 'required name=search_term_string',
     },
   };

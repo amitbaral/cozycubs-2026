@@ -5,12 +5,12 @@ export const metadata = {
   title: 'Australian Bedding Guides & Design Journal | Cozy Cubs Australia',
   description: 'Read expert Australian bedding guides, size matrices, fabric care tips, and creative ideas for custom quilt covers by Cozy Cubs Australia.',
   alternates: {
-    canonical: 'https://cozycubs.com.au/blog',
+    canonical: 'https://cozycubs.au/blog',
   },
   openGraph: {
     title: 'Australian Bedding Guides & Design Journal | Cozy Cubs Australia',
     description: 'Expert guides on Australian bed sizing, organic cotton fabric care, and custom quilt cover design.',
-    url: 'https://cozycubs.com.au/blog',
+    url: 'https://cozycubs.au/blog',
     siteName: 'Cozy Cubs Australia',
   },
 };
@@ -21,17 +21,17 @@ export default function BlogPage() {
     '@type': 'Blog',
     name: 'Cozy Cubs Bedding & Design Journal',
     description: 'Guides and insights on custom Australian bedding, organic cotton care, and nursery styling.',
-    url: 'https://cozycubs.com.au/blog',
+    url: 'https://cozycubs.au/blog',
     publisher: {
       '@type': 'Organization',
       name: 'Cozy Cubs Australia',
-      logo: 'https://cozycubs.com.au/favicon.svg',
+      logo: 'https://cozycubs.au/favicon.svg',
     },
     blogPost: BLOG_POSTS.map((post) => ({
       '@type': 'BlogPosting',
       headline: post.title,
       description: post.excerpt,
-      url: `https://cozycubs.com.au/blog/${post.slug}`,
+      url: `https://cozycubs.au/blog/${post.slug}`,
       datePublished: '2026-08-28',
       author: {
         '@type': 'Organization',
@@ -48,13 +48,13 @@ export default function BlogPage() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://cozycubs.com.au',
+        item: 'https://cozycubs.au',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Bedding Journal',
-        item: 'https://cozycubs.com.au/blog',
+        item: 'https://cozycubs.au/blog',
       },
     ],
   };

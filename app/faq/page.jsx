@@ -5,12 +5,12 @@ export const metadata = {
   title: 'Frequently Asked Questions & Care Guide | Cozy Cubs Australia',
   description: 'Find answers about Cozy Cubs custom bedding printing, Australian size specifications, wash care, eco-friendly organic cotton, and express delivery.',
   alternates: {
-    canonical: 'https://cozycubs.com.au/faq',
+    canonical: 'https://cozycubs.au/faq',
   },
   openGraph: {
     title: 'FAQ & Care Guide | Cozy Cubs Australia',
     description: 'Got questions about custom quilt covers, sizing, wash care, or shipping in Australia? We have answers.',
-    url: 'https://cozycubs.com.au/faq',
+    url: 'https://cozycubs.au/faq',
     siteName: 'Cozy Cubs Australia',
   },
 };
@@ -37,13 +37,13 @@ export default function FaqPage() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://cozycubs.com.au',
+        item: 'https://cozycubs.au',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'FAQs',
-        item: 'https://cozycubs.com.au/faq',
+        item: 'https://cozycubs.au/faq',
       },
     ],
   };

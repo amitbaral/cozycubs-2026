@@ -4,12 +4,12 @@ export const metadata = {
   title: '30-Day Quality Guarantee & Return Policy | Cozy Cubs Australia',
   description: 'Read Cozy Cubs Australia 30-day quality guarantee and return policy for custom handcrafted doona covers and organic bedding sets.',
   alternates: {
-    canonical: 'https://cozycubs.com.au/returns',
+    canonical: 'https://cozycubs.au/returns',
   },
   openGraph: {
     title: '30-Day Quality Guarantee & Return Policy | Cozy Cubs Australia',
     description: '100% Quality & Happiness Guarantee for custom Australian quilt covers.',
-    url: 'https://cozycubs.com.au/returns',
+    url: 'https://cozycubs.au/returns',
     siteName: 'Cozy Cubs Australia',
   },
 };
@@ -23,13 +23,13 @@ export default function ReturnsPage() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://cozycubs.com.au',
+        item: 'https://cozycubs.au',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Return Policy',
-        item: 'https://cozycubs.com.au/returns',
+        item: 'https://cozycubs.au/returns',
       },
     ],
   };

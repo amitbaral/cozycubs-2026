@@ -60,7 +60,7 @@ export default function SocialStudioClient() {
 
   // Generated Content state
   const [caption, setCaption] = useState(
-    `Transform your bedroom with the ${SAMPLE_PATTERNS[0].name} by Cozy Cubs Australia! 🌿✨\n\nHandcrafted with 100% GOTS-certified organic cotton percale and printed with non-toxic eco reactive dyes, this custom bedding set brings warm luxury to any Aussie home.\n\n🎨 Custom-made with live 3D preview\n🇦🇺 Designed for standard AU sizes\n🚚 2-4 day express Sydney manufacturing\n\nTag a friend who needs a bedroom glow-up! 👇\n\nOrder online today at cozycubs.com.au with 10% off using code COZY10 ✨`
+    `Transform your bedroom with the ${SAMPLE_PATTERNS[0].name} by Cozy Cubs Australia! 🌿✨\n\nHandcrafted with 100% GOTS-certified organic cotton percale and printed with non-toxic eco reactive dyes, this custom bedding set brings warm luxury to any Aussie home.\n\n🎨 Custom-made with live 3D preview\n🇦🇺 Designed for standard AU sizes\n🚚 2-4 day express Sydney manufacturing\n\nTag a friend who needs a bedroom glow-up! 👇\n\nOrder online today at cozycubs.au with 10% off using code COZY10 ✨`
   );
   const [hashtags, setHashtags] = useState([
     '#CozyCubs',
@@ -78,7 +78,7 @@ export default function SocialStudioClient() {
     { slide: 2, headline: 'Designed for Aussie Homes', subhead: 'Custom colors, photos & typography' },
     { slide: 3, headline: '100% Organic Percale Cotton', subhead: '300TC GOTS Certified • Cool & Breathable' },
     { slide: 4, headline: '4.9 ★★★★★ Verified Review', subhead: '"Softest doona cover ever! Shipped in 3 days."' },
-    { slide: 5, headline: 'Get 10% Off Your First Order', subhead: 'Use Code COZY10 at cozycubs.com.au' },
+    { slide: 5, headline: 'Get 10% Off Your First Order', subhead: 'Use Code COZY10 at cozycubs.au' },
   ]);
 
   const activeImage = customImage || selectedProduct.image;
@@ -145,6 +145,7 @@ export default function SocialStudioClient() {
         setPublishStatus({
           type: 'success',
           message: data.message || `Post published successfully to ${activePlatform.toUpperCase()}!`,
+          postUrl: data.postUrl,
         });
       }
     } catch (err) {
@@ -574,15 +575,37 @@ export default function SocialStudioClient() {
 
                 {publishStatus && (
                   <div style={{
-                    padding: '12px',
-                    borderRadius: '10px',
-                    marginBottom: '14px',
+                    padding: '14px',
+                    borderRadius: '12px',
+                    marginBottom: '16px',
                     background: publishStatus.type === 'success' ? '#DCFCE7' : '#FEE2E2',
                     color: publishStatus.type === 'success' ? '#15803D' : '#B91C1C',
-                    fontSize: '0.85rem',
+                    fontSize: '0.88rem',
                     fontWeight: 700
                   }}>
-                    {publishStatus.message}
+                    <div>{publishStatus.message}</div>
+                    {publishStatus.postUrl && (
+                      <a
+                        href={publishStatus.postUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          marginTop: '10px',
+                          padding: '8px 14px',
+                          borderRadius: '8px',
+                          background: '#15803D',
+                          color: '#FFFFFF',
+                          textDecoration: 'none',
+                          fontSize: '0.84rem',
+                          fontWeight: 800
+                        }}
+                      >
+                        🔗 View Post on {activePlatform.toUpperCase()} ↗
+                      </a>
+                    )}
                   </div>
                 )}
 

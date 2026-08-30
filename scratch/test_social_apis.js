@@ -82,7 +82,7 @@ async function testPublish(generatedData) {
     platform: 'instagram',
     caption: generatedData?.caption || 'Test caption for Cozy Cubs custom bedding',
     hashtags: generatedData?.hashtags || ['#CozyCubs', '#OrganicCotton'],
-    imageUrl: 'https://cozycubs.com.au/og-image.jpg',
+    imageUrl: 'https://cozycubs.au/og-image.jpg',
     pageId: env.FACEBOOK_PAGE_ID || 'cozycubs_official'
   });
 

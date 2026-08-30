@@ -1,6 +1,6 @@
 # Full Website SEO Audit Report: Cozy Cubs Australia
 
-**Website URL:** `https://cozycubs.com.au`  
+**Website URL:** `https://cozycubs.au`  
 **Business Type:** E-commerce / Custom Manufacturing  
 **Audit Date:** August 30, 2026  
 **Overall SEO Health Score:** **95.5 / 100** *(A+ Grade)*  
@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-Cozy Cubs Australia (`https://cozycubs.com.au`) is built on Next.js 16 App Router using modern Server-Side Rendering (SSR) and Static Site Generation (SSG). The website boasts an exceptional technical, structural, and content SEO foundation with 0 critical indexing blocks.
+Cozy Cubs Australia (`https://cozycubs.au`) is built on Next.js 16 App Router using modern Server-Side Rendering (SSR) and Static Site Generation (SSG). The website boasts an exceptional technical, structural, and content SEO foundation with 0 critical indexing blocks.
 
 ### Key Highlights:
 - **Clean SSR/SSG Indexability:** All 11+ main pages compile into server-rendered static HTML with dynamic metadata.

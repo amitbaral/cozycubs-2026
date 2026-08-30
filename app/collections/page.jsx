@@ -4,12 +4,12 @@ export const metadata = {
   title: 'Custom Bedding Collections & Patterns | Cozy Cubs Australia',
   description: 'Explore 100+ curated Australian quilt cover patterns, kids designs, botanical prints, and nursery sets by Cozy Cubs. Handcrafted with 100% GOTS organic cotton.',
   alternates: {
-    canonical: 'https://cozycubs.com.au/collections',
+    canonical: 'https://cozycubs.au/collections',
   },
   openGraph: {
-    title: 'Custom Bedding Collections | Cozy Cubs Australia',
-    description: 'Explore curated custom quilt cover patterns and nursery sets. Handcrafted in 100% organic cotton.',
-    url: 'https://cozycubs.com.au/collections',
+    title: 'Explore Custom Quilt Cover Collections | Cozy Cubs Australia',
+    description: 'Browse custom print-on-demand quilt covers and organic cotton bedding sets.',
+    url: 'https://cozycubs.au/collections',
     siteName: 'Cozy Cubs Australia',
   },
 };
@@ -23,13 +23,13 @@ export default function CollectionsPage() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://cozycubs.com.au',
+        item: 'https://cozycubs.au',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Collections',
-        item: 'https://cozycubs.com.au/collections',
+        item: 'https://cozycubs.au/collections',
       },
     ],
   };
@@ -39,7 +39,7 @@ export default function CollectionsPage() {
     '@type': 'ItemPage',
     name: 'Trending Custom Bedding Collections',
     description: '100+ curated Australian quilt cover patterns & custom photo bedding sets by Cozy Cubs.',
-    url: 'https://cozycubs.com.au/collections',
+    url: 'https://cozycubs.au/collections',
   };
 
   return (

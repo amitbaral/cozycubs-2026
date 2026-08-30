@@ -4,12 +4,12 @@ export const metadata = {
   title: 'Transforming Kids Artwork & Drawings into Custom Bedding | Cozy Cubs Australia',
   description: 'Turn your child’s drawings, paintings, or family photos into custom printed organic cotton doona covers with Cozy Cubs Australia.',
   alternates: {
-    canonical: 'https://cozycubs.com.au/blog/kids-artwork-custom-bedding',
+    canonical: 'https://cozycubs.au/blog/kids-artwork-custom-bedding',
   },
   openGraph: {
     title: 'Transforming Kids Artwork into Custom Bedding | Cozy Cubs Australia',
     description: 'Learn how to turn your child’s drawings into heirloom quality custom quilt covers.',
-    url: 'https://cozycubs.com.au/blog/kids-artwork-custom-bedding',
+    url: 'https://cozycubs.au/blog/kids-artwork-custom-bedding',
     siteName: 'Cozy Cubs Australia',
   },
 };
@@ -20,7 +20,7 @@ export default function ArtworkArticlePage() {
     '@type': 'Article',
     headline: 'Transforming Kids Artwork & Drawings into Custom Bedding',
     description: 'How to capture, upload, and print your child’s drawings into heirloom organic cotton quilt covers.',
-    url: 'https://cozycubs.com.au/blog/kids-artwork-custom-bedding',
+    url: 'https://cozycubs.au/blog/kids-artwork-custom-bedding',
     datePublished: '2026-08-20',
     dateModified: '2026-08-20',
     author: {
@@ -32,7 +32,7 @@ export default function ArtworkArticlePage() {
       name: 'Cozy Cubs Australia',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://cozycubs.com.au/favicon.svg',
+        url: 'https://cozycubs.au/favicon.svg',
       },
     },
   };
@@ -45,19 +45,19 @@ export default function ArtworkArticlePage() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://cozycubs.com.au',
+        item: 'https://cozycubs.au',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Journal',
-        item: 'https://cozycubs.com.au/blog',
+        item: 'https://cozycubs.au/blog',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: 'Kids Artwork Custom Bedding Guide',
-        item: 'https://cozycubs.com.au/blog/kids-artwork-custom-bedding',
+        item: 'https://cozycubs.au/blog/kids-artwork-custom-bedding',
       },
     ],
   };

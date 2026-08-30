@@ -5,6 +5,6 @@ export default function robots() {
       allow: '/',
       disallow: ['/api/'],
     },
-    sitemap: 'https://cozycubs.com.au/sitemap.xml',
+    sitemap: 'https://cozycubs.au/sitemap.xml',
   };
 }

@@ -1,7 +1,7 @@
 import { SAMPLE_PATTERNS } from '../src/data/sampleData';
 
 export default async function sitemap() {
-  const baseUrl = 'https://cozycubs.com.au';
+  const baseUrl = 'https://cozycubs.au';
 
   // Static routes
   const staticRoutes = [
