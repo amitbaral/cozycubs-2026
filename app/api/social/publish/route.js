@@ -6,7 +6,7 @@ export async function POST(req) {
 
     const fbAppId = process.env.FACEBOOK_APP_ID;
     const fbAppSecret = process.env.FACEBOOK_APP_SECRET;
-    const pageId = process.env.FACEBOOK_PAGE_ID || 'cozycubs';
+    const pageId = process.env.FACEBOOK_PAGE_ID || 'cozycubsau';
     const pageAccessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN || process.env.FACEBOOK_APP_SECRET;
 
     const fullPostText = `${caption}\n\n${Array.isArray(hashtags) ? hashtags.join(' ') : hashtags}`;
@@ -55,8 +55,8 @@ export async function POST(req) {
 
     // Default target profile URL for user inspection
     const targetUrl = platform === 'instagram' 
-      ? 'https://www.instagram.com/cozycubsau' 
-      : 'https://www.facebook.com/cozycubs';
+      ? 'https://www.instagram.com/ocozycubso' 
+      : 'https://www.facebook.com/cozycubsau/';
 
     return NextResponse.json({
       success: true,

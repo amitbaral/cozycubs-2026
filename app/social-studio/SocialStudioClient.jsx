@@ -431,7 +431,7 @@ export default function SocialStudioClient() {
                       </div>
                     </div>
                     <div>
-                      <div style={{ fontWeight: 800, fontSize: '0.88rem', color: '#0F172A' }}>{activePlatform === 'instagram' ? 'cozycubsau' : 'cozycubs'}</div>
+                      <div style={{ fontWeight: 800, fontSize: '0.88rem', color: '#0F172A' }}>{activePlatform === 'instagram' ? 'ocozycubso' : 'cozycubsau'}</div>
                       <div style={{ fontSize: '0.74rem', color: '#64748B' }}>Sydney, Australia • Sponsored</div>
                     </div>
                   </div>
@@ -561,7 +561,7 @@ export default function SocialStudioClient() {
                   </div>
 
                   <div style={{ fontSize: '0.85rem', color: '#334155', lineHeight: 1.5, maxHeight: '80px', overflowY: 'auto' }}>
-                    <strong>{activePlatform === 'instagram' ? 'cozycubsau' : 'cozycubs'}</strong> {caption.slice(0, 180)}...
+                    <strong>{activePlatform === 'instagram' ? 'ocozycubso' : 'cozycubsau'}</strong> {caption.slice(0, 180)}...
                   </div>
                 </div>
 
