@@ -9,6 +9,20 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/policies/privacy-policy',
+        destination: '/privacy',
+        permanent: true,
+      },
+      {
+        source: '/policies/terms-of-service',
+        destination: '/terms',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
