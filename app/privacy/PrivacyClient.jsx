@@ -57,6 +57,11 @@ export default function PrivacyClient() {
             <p style={{ color: '#475569', marginBottom: '20px' }}>
               Your uploaded family photos and children's drawings are used exclusively for fulfilling your specific custom order. We never publish or sell customer photos without explicit written consent.
             </p>
+
+            <h2 style={{ fontSize: '1.25rem', color: '#0F172A', marginBottom: '10px' }}>4. Privacy Enquiries</h2>
+            <p style={{ color: '#475569', marginBottom: '20px' }}>
+              For any privacy enquiries, data deletion requests, or questions regarding your personal information, please email our Privacy Officer at <strong>info@cozycubs.au</strong>.
+            </p>
           </div>
         </div>
       </main>

@@ -112,7 +112,7 @@ export default function DataDeletionClient() {
             </div>
 
             <div style={{ fontSize: '0.88rem', color: '#64748B', borderTop: '1px solid #F1F5F9', paddingTop: '20px' }}>
-              For additional assistance, contact our Privacy Officer directly at <a href="mailto:amit@lastdoorsolutions.com.au" style={{ color: '#D97706', fontWeight: 700 }}>amit@lastdoorsolutions.com.au</a>.
+              For additional assistance, contact our Privacy Officer directly at <a href="mailto:info@cozycubs.au" style={{ color: '#D97706', fontWeight: 700 }}>info@cozycubs.au</a>.
             </div>
 
           </div>

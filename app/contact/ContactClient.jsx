@@ -68,7 +68,7 @@ export default function ContactClient() {
                 </div>
                 <div>
                   <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Email Support</div>
-                  <div style={{ fontWeight: 800, fontSize: '1.05rem', color: '#0F172A' }}>hello@cozycubs.au</div>
+                  <div style={{ fontWeight: 800, fontSize: '1.05rem', color: '#0F172A' }}>info@cozycubs.au</div>
                 </div>
               </div>
 
