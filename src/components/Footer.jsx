@@ -60,6 +60,7 @@ export default function Footer({ scrollToCustomizer, onOpenSizeGuide }) {
               <li><a href="/faq" style={{ color: '#CBD5E1', textDecoration: 'none' }}>❓ FAQs & Care Guide</a></li>
               <li><a href="/blog" style={{ color: '#CBD5E1', textDecoration: 'none' }}>📚 Bedding & Design Journal</a></li>
               <li><a href="/compare" style={{ color: '#CBD5E1', textDecoration: 'none' }}>⚡ Cozy Cubs vs Retailers</a></li>
+              <li><a href="/social-studio" style={{ color: '#CBD5E1', textDecoration: 'none' }}>✨ AI Social Media Studio</a></li>
             </ul>
           </div>
 

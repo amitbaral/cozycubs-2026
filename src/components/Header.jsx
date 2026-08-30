@@ -104,6 +104,10 @@ export default function Header({ cartCount, cartTotal, onOpenCart, onOpenSizeGui
             Journal
           </a>
 
+          <a href="/social-studio" style={{ color: '#D97706', fontWeight: 700, textDecoration: 'none', fontSize: '0.92rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+            ✨ Social Studio
+          </a>
+
           <a href="/contact" style={{ color: '#1E293B', fontWeight: 600, textDecoration: 'none', fontSize: '0.92rem' }}>
             Contact
           </a>
