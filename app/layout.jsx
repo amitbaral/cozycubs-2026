@@ -89,8 +89,8 @@ export default function RootLayout({ children }) {
     currenciesAccepted: 'AUD',
     paymentAccepted: 'Credit Card, Square, Afterpay, Zip, Apple Pay',
     sameAs: [
-      'https://instagram.com/cozycubsau',
-      'https://facebook.com/cozycubsau',
+      'https://www.instagram.com/cozycubsau',
+      'https://www.facebook.com/cozycubs',
       'https://pinterest.com/cozycubsau',
       'https://tiktok.com/@cozycubsau',
     ],

@@ -114,6 +114,16 @@ export default function Footer({ scrollToCustomizer, onOpenSizeGuide }) {
                 Join
               </button>
             </div>
+
+            <div style={{ marginTop: '16px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <a href="https://www.instagram.com/cozycubsau" target="_blank" rel="noopener noreferrer" style={{ color: '#CBD5E1', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                📸 @cozycubsau
+              </a>
+              <span style={{ color: '#475569' }}>•</span>
+              <a href="https://www.facebook.com/cozycubs" target="_blank" rel="noopener noreferrer" style={{ color: '#CBD5E1', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                📘 /cozycubs
+              </a>
+            </div>
           </div>
         </div>
 
