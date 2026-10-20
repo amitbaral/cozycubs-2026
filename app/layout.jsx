@@ -1,15 +1,17 @@
 import './globals.css';
-import { Outfit, Inter } from 'next/font/google';
+import { Baloo_Bhaina_2, Plus_Jakarta_Sans } from 'next/font/google';
 
-const outfit = Outfit({
+const headingFont = Baloo_Bhaina_2({
   subsets: ['latin'],
-  variable: '--font-outfit',
+  weight: ['500', '600', '700', '800'],
+  variable: '--font-heading',
   display: 'swap',
 });
 
-const inter = Inter({
+const bodyFont = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  variable: '--font-inter',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-body',
   display: 'swap',
 });
 
@@ -109,7 +111,7 @@ export default function RootLayout({ children }) {
   };
 
   return (
-    <html lang="en" className={`${outfit.variable} ${inter.variable}`}>
+    <html lang="en" className={`${headingFont.variable} ${bodyFont.variable}`}>
       <head>
         <script
           type="application/ld+json"

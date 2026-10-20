@@ -1,148 +1,175 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { X, ShieldCheck, Lock, CreditCard, CheckCircle2, ArrowRight, Sparkles, Building2, Truck, RefreshCw, AlertCircle } from 'lucide-react';
+import { X, CreditCard, CheckCircle2, ArrowRight, Truck, RefreshCw, AlertCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { fetchSquareConfig, processSquareCheckout } from '../services/squareService';
+import { calculateTotals } from '../lib/pricing';
 
-export default function SquarePaymentModal({ isOpen, onClose, cartItems, finalTotal, onClearCart }) {
-  const [step, setStep] = useState('checkout'); // 'checkout' | 'processing' | 'success' | 'error'
+const SQUARE_SDK_URLS = {
+  production: 'https://web.squarecdn.com/v1/square.js',
+  sandbox: 'https://sandbox.web.squarecdn.com/v1/square.js'
+};
+const CARD_CONTAINER_ID = 'sq-card-container';
+const EMPTY_CUSTOMER = { name: '', email: '', address: '', city: '', state: '', postcode: '' };
+
+function loadSquareSdk(environment) {
+  if (window.Square) return Promise.resolve(window.Square);
+
+  return new Promise((resolve, reject) => {
+    const scriptId = 'square-web-payments-sdk';
+    let script = document.getElementById(scriptId);
+    if (!script) {
+      script = document.createElement('script');
+      script.id = scriptId;
+      script.src = SQUARE_SDK_URLS[environment] || SQUARE_SDK_URLS.sandbox;
+      script.async = true;
+      document.head.appendChild(script);
+    }
+    script.addEventListener('load', () => resolve(window.Square), { once: true });
+    script.addEventListener('error', () => {
+      script.remove();
+      reject(new Error('Could not load the secure payment form. Please refresh and try again.'));
+    }, { once: true });
+  });
+}
+
+export default function SquarePaymentModal({ isOpen, onClose, cartItems = [], promoCode = '', onClearCart, onPaymentSuccess }) {
+  const [step, setStep] = useState('checkout'); // 'checkout' | 'processing' | 'success'
   const [squareConfig, setSquareConfig] = useState(null);
-  const [isLoadingConfig, setIsLoadingConfig] = useState(true);
-  const [isSdkLoaded, setIsSdkLoaded] = useState(false);
+  const [loadError, setLoadError] = useState('');
+  const [cardReady, setCardReady] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
-  // Customer Form Details
-  const [customer, setCustomer] = useState({
-    name: 'Sarah Jenkins',
-    email: 'sarah.j@example.com.au',
-    phone: '0412 345 678',
-    address: '142 Pitt Street',
-    city: 'Sydney',
-    state: 'NSW',
-    postcode: '2000'
-  });
-
-  // Card Payment Form (for Sandbox / Direct Web Payment simulation)
-  const [cardDetails, setCardDetails] = useState({
-    cardNumber: '4111 •••• •••• 1111',
-    expiry: '12 / 28',
-    cvv: '123',
-    postalCode: '2000'
-  });
-
+  const [customer, setCustomer] = useState(EMPTY_CUSTOMER);
   const [receipt, setReceipt] = useState(null);
-  const squarePaymentsRef = useRef(null);
-  const cardComponentRef = useRef(null);
+  const cardRef = useRef(null);
+  const idempotencyKeyRef = useRef(null);
+  // Kept after a retryable failure so the retry is an identical request Square can dedupe.
+  const pendingTokenRef = useRef(null);
 
-  // Fetch Square backend config on open
+  const totals = calculateTotals(cartItems, promoCode);
+
   useEffect(() => {
     if (!isOpen) return;
 
     let isMounted = true;
-    setIsLoadingConfig(true);
+    setStep('checkout');
+    setErrorMessage('');
+    setLoadError('');
+    setReceipt(null);
+    idempotencyKeyRef.current = crypto.randomUUID();
+    pendingTokenRef.current = null;
 
-    fetchSquareConfig().then((cfg) => {
-      if (isMounted) {
-        setSquareConfig(cfg);
-        setIsLoadingConfig(false);
-      }
-    });
+    fetchSquareConfig()
+      .then((cfg) => { if (isMounted) setSquareConfig(cfg); })
+      .catch((err) => { if (isMounted) setLoadError(err.message); });
 
     return () => {
       isMounted = false;
     };
   }, [isOpen]);
 
-  // Dynamically load Square Web Payments SDK script
+  // Attach Square's hosted card field whenever the checkout form is on screen.
   useEffect(() => {
-    if (!isOpen || !squareConfig) return;
+    if (!isOpen || !squareConfig || step !== 'checkout') return;
 
-    const scriptId = 'square-web-payments-sdk';
-    if (document.getElementById(scriptId)) {
-      setIsSdkLoaded(true);
-      return;
-    }
+    let cancelled = false;
+    let card;
+    setCardReady(false);
 
-    const script = document.createElement('script');
-    script.id = scriptId;
-    script.src = squareConfig.environment === 'production'
-      ? 'https://web.squarecdn.com/v1/square.js'
-      : 'https://sandbox.web.squarecdn.com/v1/square.js';
-    script.async = true;
+    loadSquareSdk(squareConfig.environment)
+      .then(async (Square) => {
+        if (cancelled) return;
+        const payments = Square.payments(squareConfig.appId, squareConfig.locationId);
+        card = await payments.card();
+        if (cancelled) return card.destroy();
+        await card.attach(`#${CARD_CONTAINER_ID}`);
+        if (cancelled) return card.destroy();
+        cardRef.current = card;
+        setCardReady(true);
+      })
+      .catch((err) => {
+        if (!cancelled) setLoadError(err.message || 'Could not load the secure payment form.');
+      });
 
-    script.onload = () => {
-      console.log('✅ Square Web Payments SDK Script Loaded successfully.');
-      setIsSdkLoaded(true);
+    return () => {
+      cancelled = true;
+      cardRef.current = null;
+      card?.destroy();
     };
-
-    script.onerror = () => {
-      console.warn('⚠️ Could not load remote Square Web Payments SDK script. Falling back to internal Sandbox Payments engine.');
-      setIsSdkLoaded(false);
-    };
-
-    document.head.appendChild(script);
-  }, [isOpen, squareConfig]);
+  }, [isOpen, squareConfig, step]);
 
   if (!isOpen) return null;
 
-  const handleFillDemoCard = () => {
-    setCardDetails({
-      cardNumber: '4111 1111 1111 1111',
-      expiry: '12 / 28',
-      cvv: '123',
-      postalCode: customer.postcode || '2000'
-    });
-  };
-
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
-    setStep('processing');
+    if (isSubmitting) return;
+    if (!cardRef.current) {
+      setErrorMessage('The payment form is still loading. Please wait a moment.');
+      return;
+    }
+
+    setIsSubmitting(true);
     setErrorMessage('');
 
+    let tokenResult = pendingTokenRef.current;
     try {
-      let paymentToken = 'cnon:card-nonce-ok';
-
-      // If official Square Web Payments SDK is loaded and attached, tokenize card
-      if (window.Square && squarePaymentsRef.current && cardComponentRef.current) {
-        try {
-          const result = await cardComponentRef.current.tokenize();
-          if (result.status === 'OK') {
-            paymentToken = result.token;
-          } else {
-            throw new Error(result.errors?.[0]?.message || 'Card tokenization failed');
+      if (!tokenResult) {
+        const [givenName, ...otherNames] = customer.name.trim().split(/\s+/);
+        tokenResult = await cardRef.current.tokenize({
+          amount: totals.total.toFixed(2),
+          currencyCode: 'AUD',
+          intent: 'CHARGE',
+          customerInitiated: true,
+          sellerKeyedIn: false,
+          billingContact: {
+            givenName,
+            familyName: otherNames.join(' ') || undefined,
+            email: customer.email,
+            addressLines: [customer.address],
+            city: customer.city,
+            state: customer.state,
+            postalCode: customer.postcode,
+            countryCode: 'AU'
           }
-        } catch (sdkErr) {
-          console.warn('SDK Tokenization fallback:', sdkErr);
+        });
+        if (tokenResult.status !== 'OK') {
+          setErrorMessage(tokenResult.errors?.[0]?.message || 'Please check your card details and try again.');
+          return;
         }
       }
 
-      // Send to Express Backend endpoint
+      setStep('processing');
       const result = await processSquareCheckout({
-        token: paymentToken,
-        items: cartItems,
-        customerInfo: customer,
-        finalTotalAUD: finalTotal
+        sourceId: tokenResult.token,
+        verificationToken: tokenResult.verificationToken,
+        idempotencyKey: idempotencyKeyRef.current,
+        items: cartItems.map(({ patternName, size, fabric, backingColor, customText, font }) => ({
+          patternName, size, fabric, backingColor, customText, font
+        })),
+        customer,
+        promoCode
       });
 
-      if (result.success) {
-        setReceipt(result);
-        setStep('success');
-        onClearCart();
-
-        // Trigger celebratory confetti
-        confetti({
-          particleCount: 120,
-          spread: 80,
-          origin: { y: 0.6 }
-        });
-      } else {
-        throw new Error(result.error || 'Payment failed');
-      }
+      pendingTokenRef.current = null;
+      setReceipt(result);
+      setStep('success');
+      setCustomer(EMPTY_CUSTOMER);
+      onClearCart?.();
+      onPaymentSuccess?.(result);
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
     } catch (err) {
-      console.error('Payment execution error:', err);
-      setErrorMessage(err.message || 'Payment processing failed. Please check card details.');
+      if (err.retryable && tokenResult?.status === 'OK') {
+        pendingTokenRef.current = tokenResult;
+      } else {
+        pendingTokenRef.current = null;
+        idempotencyKeyRef.current = crypto.randomUUID();
+      }
+      setErrorMessage(err.message || 'Payment failed. Please try again.');
       setStep('checkout');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -151,7 +178,7 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems, finalTo
       position: 'fixed',
       inset: 0,
       zIndex: 200,
-      background: 'rgba(15, 23, 42, 0.75)',
+      background: 'rgba(0, 33, 105, 0.75)',
       backdropFilter: 'blur(8px)',
       display: 'flex',
       alignItems: 'center',
@@ -174,7 +201,7 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems, finalTo
         {/* Header */}
         <div style={{
           padding: '20px 24px',
-          background: '#0F172A',
+          background: '#002169',
           color: '#FFFFFF',
           display: 'flex',
           alignItems: 'center',
@@ -197,19 +224,21 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems, finalTo
             <div>
               <div style={{ fontSize: '1.05rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
                 Square Checkout
-                <span style={{
-                  fontSize: '0.7rem',
-                  padding: '2px 8px',
-                  borderRadius: '999px',
-                  background: squareConfig?.isLiveConfigured ? '#16A34A' : '#D97706',
-                  color: '#FFFFFF',
-                  fontWeight: 700
-                }}>
-                  {squareConfig?.isLiveConfigured ? 'LIVE API' : 'SANDBOX DEMO'}
-                </span>
+                {squareConfig && squareConfig.environment !== 'production' && (
+                  <span style={{
+                    fontSize: '0.7rem',
+                    padding: '2px 8px',
+                    borderRadius: '999px',
+                    background: '#894B8D',
+                    color: '#FFFFFF',
+                    fontWeight: 700
+                  }}>
+                    TEST MODE
+                  </span>
+                )}
               </div>
-              <div style={{ fontSize: '0.78rem', color: '#94A3B8' }}>
-                Encrypted 256-Bit SSL Payment Engine
+              <div style={{ fontSize: '0.78rem', color: '#98A0B5' }}>
+                Secure payment processed by Square
               </div>
             </div>
           </div>
@@ -238,9 +267,9 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems, finalTo
           {step === 'processing' && (
             <div style={{ textAlign: 'center', padding: '60px 20px' }}>
               <RefreshCw size={44} color="#006AFF" className="spin-animation" style={{ margin: '0 auto 20px' }} />
-              <h3 style={{ fontSize: '1.3rem', color: '#0F172A', fontWeight: 800 }}>Processing Square Payment...</h3>
-              <p style={{ color: '#64748B', fontSize: '0.92rem', marginTop: '8px' }}>
-                Connecting to Square API in Sydney. Please hold tight.
+              <h3 style={{ fontSize: '1.3rem', color: '#002169', fontWeight: 800 }}>Processing Payment...</h3>
+              <p style={{ color: '#6B7590', fontSize: '0.92rem', marginTop: '8px' }}>
+                Please don't close this window.
               </p>
             </div>
           )}
@@ -261,38 +290,49 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems, finalTo
                 <CheckCircle2 size={38} />
               </div>
 
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A' }}>Order Confirmed!</h2>
-              <p style={{ color: '#475569', fontSize: '0.9rem', marginBottom: '20px' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#002169' }}>Order Confirmed!</h2>
+              <p style={{ color: '#445374', fontSize: '0.9rem', marginBottom: '20px' }}>
                 Thank you for your purchase! Your doona cover set has been queued for custom printing at our Sydney hub.
               </p>
 
               {/* Receipt Summary Card */}
               <div style={{
-                background: '#F8FAFC',
-                border: '1px solid #E2E8F0',
+                background: '#F7F4F7',
+                border: '1px solid #E6E1EA',
                 borderRadius: '16px',
                 padding: '20px',
                 textAlign: 'left',
                 marginBottom: '20px',
                 fontSize: '0.88rem'
               }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', paddingBottom: '10px', borderBottom: '1px solid #E2E8F0' }}>
-                  <span style={{ color: '#64748B' }}>Square Payment ID:</span>
-                  <span style={{ fontWeight: 700, fontFamily: 'monospace', color: '#0F172A' }}>{receipt.paymentId}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', paddingBottom: '10px', borderBottom: '1px solid #E6E1EA' }}>
+                  <span style={{ color: '#6B7590' }}>Square Payment ID:</span>
+                  <span style={{ fontWeight: 700, fontFamily: 'monospace', color: '#002169' }}>{receipt.paymentId}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', paddingBottom: '10px', borderBottom: '1px solid #E2E8F0' }}>
-                  <span style={{ color: '#64748B' }}>Square Order ID:</span>
-                  <span style={{ fontWeight: 700, fontFamily: 'monospace', color: '#0F172A' }}>{receipt.orderId}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', paddingBottom: '10px', borderBottom: '1px solid #E6E1EA' }}>
+                  <span style={{ color: '#6B7590' }}>Square Order ID:</span>
+                  <span style={{ fontWeight: 700, fontFamily: 'monospace', color: '#002169' }}>{receipt.orderId}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', paddingBottom: '10px', borderBottom: '1px solid #E2E8F0' }}>
-                  <span style={{ color: '#64748B' }}>Amount Paid:</span>
-                  <span style={{ fontWeight: 800, color: '#16A34A', fontSize: '1.05rem' }}>${receipt.amount || finalTotal} AUD</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', paddingBottom: '10px', borderBottom: '1px solid #E6E1EA' }}>
+                  <span style={{ color: '#6B7590' }}>Amount Paid:</span>
+                  <span style={{ fontWeight: 800, color: '#16A34A', fontSize: '1.05rem' }}>${receipt.amount.toFixed(2)} {receipt.currency}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: '#64748B' }}>Status:</span>
-                  <span style={{ fontWeight: 700, color: '#006AFF' }}>{receipt.status || 'COMPLETED'}</span>
+                  <span style={{ color: '#6B7590' }}>Status:</span>
+                  <span style={{ fontWeight: 700, color: '#006AFF' }}>{receipt.status}</span>
                 </div>
               </div>
+
+              {receipt.receiptUrl && (
+                <a
+                  href={receipt.receiptUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: 'block', marginBottom: '14px', color: '#006AFF', fontWeight: 700, fontSize: '0.88rem' }}
+                >
+                  View your Square receipt
+                </a>
+              )}
 
               <button
                 onClick={onClose}
@@ -306,7 +346,7 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems, finalTo
 
           {step === 'checkout' && (
             <form onSubmit={handlePaymentSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {errorMessage && (
+              {(errorMessage || loadError) && (
                 <div style={{
                   padding: '12px 16px',
                   background: '#FEF2F2',
@@ -319,14 +359,14 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems, finalTo
                   gap: '10px'
                 }}>
                   <AlertCircle size={18} />
-                  <span>{errorMessage}</span>
+                  <span>{errorMessage || loadError}</span>
                 </div>
               )}
 
               {/* Order Quick Summary */}
               <div style={{
-                background: '#FFFBEB',
-                border: '1px solid #FDE68A',
+                background: '#F1E6F1',
+                border: '1px solid #DDB8DE',
                 borderRadius: '14px',
                 padding: '14px 18px',
                 display: 'flex',
@@ -334,25 +374,25 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems, finalTo
                 justifyContent: 'space-between'
               }}>
                 <div>
-                  <div style={{ fontSize: '0.82rem', color: '#B45309', fontWeight: 700 }}>Total Due (AUD)</div>
-                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#92400E' }}>${finalTotal} AUD</div>
+                  <div style={{ fontSize: '0.82rem', color: '#6F3A73', fontWeight: 700 }}>Total Due (AUD)</div>
+                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#6F3A73' }}>${totals.total} AUD</div>
                 </div>
-                <div style={{ textAlign: 'right', fontSize: '0.8rem', color: '#B45309' }}>
+                <div style={{ textAlign: 'right', fontSize: '0.8rem', color: '#6F3A73' }}>
                   📦 {cartItems.length} Custom {cartItems.length === 1 ? 'Item' : 'Items'}<br />
-                  🚚 Free Express Delivery AU
+                  🚚 {totals.shippingCost === 0 ? 'Free Express Delivery AU' : `Express Delivery $${totals.shippingCost}`}
                 </div>
               </div>
 
               {/* Customer Shipping Details */}
               <div>
-                <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#002169', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Truck size={16} color="#006AFF" />
                   1. Australian Shipping Address
                 </h4>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>Full Name</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#445374' }}>Full Name</label>
                     <input
                       type="text"
                       required
@@ -362,7 +402,7 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems, finalTo
                     />
                   </div>
                   <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>Email</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#445374' }}>Email</label>
                     <input
                       type="email"
                       required
@@ -372,7 +412,7 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems, finalTo
                     />
                   </div>
                   <div style={{ gridColumn: 'span 2' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>Street Address</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#445374' }}>Street Address</label>
                     <input
                       type="text"
                       required
@@ -382,7 +422,7 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems, finalTo
                     />
                   </div>
                   <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>City / Suburb</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#445374' }}>City / Suburb</label>
                     <input
                       type="text"
                       required
@@ -393,7 +433,7 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems, finalTo
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
                     <div>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>State</label>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#445374' }}>State</label>
                       <input
                         type="text"
                         required
@@ -403,7 +443,7 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems, finalTo
                       />
                     </div>
                     <div>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>Postcode</label>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#445374' }}>Postcode</label>
                       <input
                         type="text"
                         required
@@ -418,86 +458,24 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems, finalTo
 
               {/* Square Payment Form Section */}
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                  <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <CreditCard size={16} color="#006AFF" />
-                    2. Payment Details (Square API)
-                  </h4>
-                  <button
-                    type="button"
-                    onClick={handleFillDemoCard}
-                    style={{
-                      background: '#EFF6FF',
-                      border: '1px solid #BFDBFE',
-                      color: '#1D4ED8',
-                      fontSize: '0.72rem',
-                      fontWeight: 700,
-                      padding: '4px 10px',
-                      borderRadius: '6px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Auto-Fill Square Test Card
-                  </button>
-                </div>
+                <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#002169', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <CreditCard size={16} color="#006AFF" />
+                  2. Payment Details
+                </h4>
 
-                <div style={{
-                  padding: '16px',
-                  border: '1.5px solid #006AFF',
-                  borderRadius: '16px',
-                  background: '#F8FAFC',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px'
-                }}>
-                  <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>Card Number</label>
-                    <div style={{ position: 'relative' }}>
-                      <input
-                        type="text"
-                        value={cardDetails.cardNumber}
-                        onChange={(e) => setCardDetails({ ...cardDetails, cardNumber: e.target.value })}
-                        style={{ ...inputStyle, background: '#FFFFFF', paddingRight: '40px' }}
-                      />
-                      <Lock size={16} color="#94A3B8" style={{ position: 'absolute', right: '12px', top: '12px' }} />
-                    </div>
+                {/* Square injects its PCI-compliant card iframe here */}
+                <div id={CARD_CONTAINER_ID} style={{ minHeight: '90px' }} />
+                {!cardReady && !loadError && (
+                  <div style={{ fontSize: '0.8rem', color: '#6B7590', textAlign: 'center' }}>
+                    Loading secure card form...
                   </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
-                    <div>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>Expiry Date</label>
-                      <input
-                        type="text"
-                        value={cardDetails.expiry}
-                        onChange={(e) => setCardDetails({ ...cardDetails, expiry: e.target.value })}
-                        style={{ ...inputStyle, background: '#FFFFFF' }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>CVV</label>
-                      <input
-                        type="text"
-                        value={cardDetails.cvv}
-                        onChange={(e) => setCardDetails({ ...cardDetails, cvv: e.target.value })}
-                        style={{ ...inputStyle, background: '#FFFFFF' }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>Postcode</label>
-                      <input
-                        type="text"
-                        value={cardDetails.postalCode}
-                        onChange={(e) => setCardDetails({ ...cardDetails, postalCode: e.target.value })}
-                        style={{ ...inputStyle, background: '#FFFFFF' }}
-                      />
-                    </div>
-                  </div>
-                </div>
+                )}
               </div>
 
               {/* Submit Button */}
               <button
                 type="submit"
+                disabled={!cardReady || isSubmitting || totals.total <= 0}
                 style={{
                   width: '100%',
                   padding: '16px',
@@ -508,17 +486,18 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems, finalTo
                   fontSize: '1.05rem',
                   border: 'none',
                   boxShadow: '0 8px 20px rgba(0, 106, 255, 0.3)',
-                  cursor: 'pointer',
+                  cursor: !cardReady || isSubmitting ? 'not-allowed' : 'pointer',
+                  opacity: !cardReady || isSubmitting ? 0.6 : 1,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '8px'
                 }}
               >
-                Pay ${finalTotal} AUD with Square <ArrowRight size={18} />
+                {isSubmitting ? 'Verifying card...' : <>Pay ${totals.total} AUD with Square <ArrowRight size={18} /></>}
               </button>
 
-              <div style={{ textAlign: 'center', fontSize: '0.75rem', color: '#64748B', display: 'flex', justifyContent: 'center', gap: '14px' }}>
+              <div style={{ textAlign: 'center', fontSize: '0.75rem', color: '#6B7590', display: 'flex', justifyContent: 'center', gap: '14px' }}>
                 <span>🔒 Square End-to-End Encryption</span>
                 <span>•</span>
                 <span>🇦🇺 AUD Currency Guaranteed</span>
@@ -535,7 +514,7 @@ const inputStyle = {
   width: '100%',
   padding: '10px 12px',
   borderRadius: '8px',
-  border: '1px solid #CBD5E1',
+  border: '1px solid #E6E1EA',
   fontSize: '0.88rem',
   outline: 'none',
   marginTop: '4px'

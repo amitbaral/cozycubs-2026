@@ -19,7 +19,7 @@ export default function CareClient() {
   const cartTotal = cartItems.reduce((sum, item) => sum + item.price, 0);
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#FBF9F5' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#F7F4F7' }}>
       <AnnouncementBar />
       <Header
         cartCount={cartCount}
@@ -32,7 +32,7 @@ export default function CareClient() {
       <main style={{ flex: 1, padding: '48px 24px' }}>
         <div style={{ maxWidth: '850px', margin: '0 auto' }}>
           
-          <a href="/blog" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#D97706', fontWeight: 700, textDecoration: 'none', marginBottom: '24px' }}>
+          <a href="/blog" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#894B8D', fontWeight: 700, textDecoration: 'none', marginBottom: '24px' }}>
             <ArrowLeft size={16} /> Back to Bedding Journal
           </a>
 
@@ -40,20 +40,20 @@ export default function CareClient() {
             <span className="badge-au" style={{ background: '#DCFCE7', color: '#15803D', marginBottom: '12px' }}>
               Wash & Care Guide
             </span>
-            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 2.8rem)', fontWeight: 800, color: '#0F172A', marginBottom: '16px', lineHeight: 1.25 }}>
+            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 2.8rem)', fontWeight: 800, color: '#002169', marginBottom: '16px', lineHeight: 1.25 }}>
               How to Care for 100% Organic Cotton Doona Covers
             </h1>
-            <div style={{ fontSize: '0.88rem', color: '#64748B' }}>
+            <div style={{ fontSize: '0.88rem', color: '#6B7590' }}>
               Published August 25, 2026 • By Fabric Care Specialists • 3 min read
             </div>
           </div>
 
-          <div className="glass-card" style={{ padding: '36px', borderRadius: '24px', background: '#FFFFFF', lineHeight: 1.8, color: '#334155', fontSize: '1.02rem' }}>
-            <p style={{ fontSize: '1.1rem', color: '#1E293B', fontWeight: 600, marginBottom: '24px' }}>
+          <div className="glass-card" style={{ padding: '36px', borderRadius: '24px', background: '#FFFFFF', lineHeight: 1.8, color: '#445374', fontSize: '1.02rem' }}>
+            <p style={{ fontSize: '1.1rem', color: '#002169', fontWeight: 600, marginBottom: '24px' }}>
               GOTS-certified 100% organic cotton percale is renowned for its breathable softness and longevity. With appropriate wash care, your Cozy Cubs custom printed quilt cover set will stay vibrant and ultra-soft for years.
             </p>
 
-            <h2 style={{ fontSize: '1.4rem', color: '#0F172A', fontWeight: 800, marginTop: '32px', marginBottom: '16px' }}>
+            <h2 style={{ fontSize: '1.4rem', color: '#002169', fontWeight: 800, marginTop: '32px', marginBottom: '16px' }}>
               Essential Washing Instructions
             </h2>
 
@@ -80,9 +80,9 @@ export default function CareClient() {
               </div>
             </div>
 
-            <div style={{ background: 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)', color: '#FFFFFF', padding: '32px', borderRadius: '18px', textAlign: 'center', marginTop: '40px' }}>
+            <div style={{ background: 'linear-gradient(135deg, #002169 0%, #002169 100%)', color: '#FFFFFF', padding: '32px', borderRadius: '18px', textAlign: 'center', marginTop: '40px' }}>
               <h3 style={{ fontSize: '1.35rem', fontWeight: 800, marginBottom: '10px' }}>Custom Printed for Aussie Bedrooms</h3>
-              <p style={{ color: '#94A3B8', fontSize: '0.95rem', marginBottom: '20px' }}>
+              <p style={{ color: '#98A0B5', fontSize: '0.95rem', marginBottom: '20px' }}>
                 Handcrafted with 300TC organic percale cotton and non-toxic water-based inks.
               </p>
               <a href="/collections" className="btn-accent" style={{ display: 'inline-flex', padding: '12px 24px', textDecoration: 'none' }}>
@@ -103,7 +103,8 @@ export default function CareClient() {
       <CartDrawer
         isOpen={cartOpen}
         onClose={() => setCartOpen(false)}
-        items={cartItems}
+        cartItems={cartItems}
+        onClearCart={() => setCartItems([])}
         onRemoveItem={(id) => setCartItems(prev => prev.filter(item => item.id !== id))}
         onCheckout={() => {
           setCartOpen(false);

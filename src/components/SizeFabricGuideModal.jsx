@@ -12,7 +12,7 @@ export default function SizeFabricGuideModal({ isOpen, onClose }) {
       position: 'fixed',
       inset: 0,
       zIndex: 100,
-      background: 'rgba(15, 23, 42, 0.75)',
+      background: 'rgba(0, 33, 105, 0.75)',
       backdropFilter: 'blur(8px)',
       display: 'flex',
       alignItems: 'center',
@@ -36,7 +36,7 @@ export default function SizeFabricGuideModal({ isOpen, onClose }) {
             position: 'absolute',
             top: '20px',
             right: '20px',
-            background: '#F1F5F9',
+            background: '#F7F4F7',
             border: 'none',
             borderRadius: '50%',
             width: '36px',
@@ -47,7 +47,7 @@ export default function SizeFabricGuideModal({ isOpen, onClose }) {
             cursor: 'pointer'
           }}
         >
-          <X size={20} color="#475569" />
+          <X size={20} color="#445374" />
         </button>
 
         {/* Modal Header */}
@@ -55,21 +55,21 @@ export default function SizeFabricGuideModal({ isOpen, onClose }) {
           <div className="badge-au" style={{ marginBottom: '8px' }}>
             🇦🇺 OFFICIAL AUSTRALIAN BEDDING SPECS
           </div>
-          <h3 style={{ fontSize: '1.6rem', color: '#0F172A' }}>
+          <h3 style={{ fontSize: '1.6rem', color: '#002169' }}>
             Australian Bed Size & Fabric Guide
           </h3>
         </div>
 
         {/* Tab Switcher */}
-        <div style={{ display: 'flex', gap: '12px', borderBottom: '1px solid #E2E8F0', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', gap: '12px', borderBottom: '1px solid #E6E1EA', marginBottom: '20px' }}>
           <button
             onClick={() => setActiveTab('sizes')}
             style={{
               padding: '10px 16px',
               fontWeight: 700,
               fontSize: '0.95rem',
-              color: activeTab === 'sizes' ? '#D97706' : '#64748B',
-              borderBottom: activeTab === 'sizes' ? '2px solid #D97706' : '2px solid transparent'
+              color: activeTab === 'sizes' ? '#894B8D' : '#6B7590',
+              borderBottom: activeTab === 'sizes' ? '2px solid #894B8D' : '2px solid transparent'
             }}
           >
             📏 Bed Sizes (AU Dimensions)
@@ -81,8 +81,8 @@ export default function SizeFabricGuideModal({ isOpen, onClose }) {
               padding: '10px 16px',
               fontWeight: 700,
               fontSize: '0.95rem',
-              color: activeTab === 'fabrics' ? '#D97706' : '#64748B',
-              borderBottom: activeTab === 'fabrics' ? '2px solid #D97706' : '2px solid transparent'
+              color: activeTab === 'fabrics' ? '#894B8D' : '#6B7590',
+              borderBottom: activeTab === 'fabrics' ? '2px solid #894B8D' : '2px solid transparent'
             }}
           >
             🧵 Fabric Options Comparison
@@ -93,12 +93,12 @@ export default function SizeFabricGuideModal({ isOpen, onClose }) {
         {activeTab === 'sizes' && (
           <div>
             <div style={{
-              background: '#FFFBEB',
-              border: '1px solid #FDE68A',
+              background: '#F1E6F1',
+              border: '1px solid #DDB8DE',
               padding: '12px 16px',
               borderRadius: '12px',
               fontSize: '0.85rem',
-              color: '#B45309',
+              color: '#6F3A73',
               marginBottom: '16px',
               fontWeight: 600
             }}>
@@ -115,24 +115,24 @@ export default function SizeFabricGuideModal({ isOpen, onClose }) {
                     justifyContent: 'space-between',
                     padding: '14px 18px',
                     borderRadius: '12px',
-                    border: '1px solid #E2E8F0',
-                    background: '#F8FAFC'
+                    border: '1px solid #E6E1EA',
+                    background: '#F7F4F7'
                   }}
                 >
                   <div>
-                    <div style={{ fontWeight: 800, fontSize: '1.05rem', color: '#0F172A' }}>
+                    <div style={{ fontWeight: 800, fontSize: '1.05rem', color: '#002169' }}>
                       {size.name} Set
                     </div>
-                    <div style={{ fontSize: '0.82rem', color: '#64748B' }}>
+                    <div style={{ fontSize: '0.82rem', color: '#6B7590' }}>
                       {size.desc}
                     </div>
                   </div>
 
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontWeight: 800, fontSize: '1rem', color: '#D97706' }}>
+                    <div style={{ fontWeight: 800, fontSize: '1rem', color: '#894B8D' }}>
                       {size.dimensions}
                     </div>
-                    <div style={{ fontSize: '0.78rem', color: '#475569', fontWeight: 600 }}>
+                    <div style={{ fontSize: '0.78rem', color: '#445374', fontWeight: 600 }}>
                       Includes {size.pillowcases} Pillowcase{size.pillowcases > 1 ? 's' : ''}
                     </div>
                   </div>
@@ -151,13 +151,13 @@ export default function SizeFabricGuideModal({ isOpen, onClose }) {
                 style={{
                   padding: '18px',
                   borderRadius: '14px',
-                  border: '1px solid #E2E8F0',
+                  border: '1px solid #E6E1EA',
                   background: '#FFFFFF',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <div style={{ fontWeight: 800, fontSize: '1.1rem', color: '#0F172A' }}>
+                  <div style={{ fontWeight: 800, fontSize: '1.1rem', color: '#002169' }}>
                     {fabric.name}
                   </div>
                   <span className="badge-au">
@@ -165,13 +165,13 @@ export default function SizeFabricGuideModal({ isOpen, onClose }) {
                   </span>
                 </div>
 
-                <p style={{ fontSize: '0.88rem', color: '#475569', marginBottom: '12px' }}>
+                <p style={{ fontSize: '0.88rem', color: '#445374', marginBottom: '12px' }}>
                   {fabric.desc}
                 </p>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   {fabric.features.map((feat, idx) => (
-                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', fontWeight: 600, color: '#1E293B' }}>
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', fontWeight: 600, color: '#002169' }}>
                       <Check size={14} color="#16A34A" /> {feat}
                     </div>
                   ))}

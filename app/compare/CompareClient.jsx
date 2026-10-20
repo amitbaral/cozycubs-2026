@@ -78,7 +78,7 @@ export default function CompareClient() {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#FBF9F5' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#F7F4F7' }}>
       <AnnouncementBar />
       <Header
         cartCount={cartCount}
@@ -93,28 +93,28 @@ export default function CompareClient() {
           
           {/* Header Hero Banner */}
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-            <span className="badge-au" style={{ background: '#FEF3C7', color: '#B45309', borderColor: '#D97706', marginBottom: '14px' }}>
+            <span className="badge-au" style={{ background: '#F1E6F1', color: '#6F3A73', borderColor: '#894B8D', marginBottom: '14px' }}>
               ⚡ AUSTRALIAN BEDDING BRAND COMPARISON (2026)
             </span>
-            <h1 style={{ fontSize: 'clamp(2.2rem, 4vw, 3.2rem)', fontWeight: 800, color: '#0F172A', marginBottom: '16px', letterSpacing: '-0.02em' }}>
+            <h1 style={{ fontSize: 'clamp(2.2rem, 4vw, 3.2rem)', fontWeight: 800, color: '#002169', marginBottom: '16px', letterSpacing: '-0.02em' }}>
               Cozy Cubs vs Pillowtalk vs KAS Australia vs Adairs
             </h1>
-            <p style={{ fontSize: '1.1rem', color: '#64748B', maxWidth: '720px', margin: '0 auto', lineHeight: 1.6 }}>
+            <p style={{ fontSize: '1.1rem', color: '#6B7590', maxWidth: '720px', margin: '0 auto', lineHeight: 1.6 }}>
               Discover why thousands of Aussie families are choosing custom GOTS organic cotton doona covers with live 3D preview over traditional mass-produced retail bedding.
             </p>
           </div>
 
           {/* Interactive Feature Matrix Table */}
-          <div className="glass-card" style={{ padding: '32px', borderRadius: '24px', background: '#FFFFFF', marginBottom: '56px', overflowX: 'auto', boxShadow: '0 10px 40px rgba(15,23,42,0.06)' }}>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0F172A', marginBottom: '20px', textAlign: 'center' }}>
+          <div className="glass-card" style={{ padding: '32px', borderRadius: '24px', background: '#FFFFFF', marginBottom: '56px', overflowX: 'auto', boxShadow: '0 10px 40px rgba(0, 33, 105,0.06)' }}>
+            <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#002169', marginBottom: '20px', textAlign: 'center' }}>
               Feature & Quality Comparison Matrix
             </h2>
 
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '780px' }}>
               <thead>
-                <tr style={{ background: '#0F172A', color: '#FFFFFF' }}>
+                <tr style={{ background: '#002169', color: '#FFFFFF' }}>
                   <th style={{ padding: '16px 20px', fontWeight: 800, fontSize: '0.95rem', borderRadius: '12px 0 0 0' }}>Feature / Specification</th>
-                  <th style={{ padding: '16px 20px', fontWeight: 800, fontSize: '0.95rem', background: '#D97706', color: '#FFFFFF', textAlign: 'center' }}>Cozy Cubs 🦁</th>
+                  <th style={{ padding: '16px 20px', fontWeight: 800, fontSize: '0.95rem', background: '#894B8D', color: '#FFFFFF', textAlign: 'center' }}>Cozy Cubs 🦁</th>
                   <th style={{ padding: '16px 20px', fontWeight: 700, fontSize: '0.9rem', textAlign: 'center' }}>Pillowtalk</th>
                   <th style={{ padding: '16px 20px', fontWeight: 700, fontSize: '0.9rem', textAlign: 'center' }}>KAS Australia</th>
                   <th style={{ padding: '16px 20px', fontWeight: 700, fontSize: '0.9rem', textAlign: 'center', borderRadius: '0 12px 0 0' }}>Adairs</th>
@@ -122,20 +122,20 @@ export default function CompareClient() {
               </thead>
               <tbody>
                 {COMPARISON_DATA.map((row, idx) => (
-                  <tr key={idx} style={{ borderBottom: '1px solid #F1F5F9', background: idx % 2 === 0 ? '#FFFFFF' : '#FAFAF9' }}>
-                    <td style={{ padding: '16px 20px', fontWeight: 700, color: '#0F172A', fontSize: '0.93rem' }}>
+                  <tr key={idx} style={{ borderBottom: '1px solid #F7F4F7', background: idx % 2 === 0 ? '#FFFFFF' : '#F7F4F7' }}>
+                    <td style={{ padding: '16px 20px', fontWeight: 700, color: '#002169', fontSize: '0.93rem' }}>
                       {row.feature}
                     </td>
-                    <td style={{ padding: '16px 20px', fontWeight: 800, color: '#D97706', background: 'rgba(254, 243, 199, 0.4)', textAlign: 'center', fontSize: '0.92rem' }}>
+                    <td style={{ padding: '16px 20px', fontWeight: 800, color: '#894B8D', background: 'rgba(241, 230, 241, 0.4)', textAlign: 'center', fontSize: '0.92rem' }}>
                       {row.cozyCubs}
                     </td>
-                    <td style={{ padding: '16px 20px', color: '#475569', textAlign: 'center', fontSize: '0.88rem' }}>
+                    <td style={{ padding: '16px 20px', color: '#445374', textAlign: 'center', fontSize: '0.88rem' }}>
                       {row.pillowtalk}
                     </td>
-                    <td style={{ padding: '16px 20px', color: '#475569', textAlign: 'center', fontSize: '0.88rem' }}>
+                    <td style={{ padding: '16px 20px', color: '#445374', textAlign: 'center', fontSize: '0.88rem' }}>
                       {row.kas}
                     </td>
-                    <td style={{ padding: '16px 20px', color: '#475569', textAlign: 'center', fontSize: '0.88rem' }}>
+                    <td style={{ padding: '16px 20px', color: '#445374', textAlign: 'center', fontSize: '0.88rem' }}>
                       {row.adairs}
                     </td>
                   </tr>
@@ -148,13 +148,13 @@ export default function CompareClient() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '28px', marginBottom: '56px' }}>
             
             <div className="glass-card" style={{ padding: '32px', borderRadius: '20px', background: '#FFFFFF' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: '#FEF3C7', color: '#D97706', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: '#F1E6F1', color: '#894B8D', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
                 <Sparkles size={24} />
               </div>
-              <h3 style={{ fontSize: '1.25rem', color: '#0F172A', fontWeight: 800, marginBottom: '10px' }}>
+              <h3 style={{ fontSize: '1.25rem', color: '#002169', fontWeight: 800, marginBottom: '10px' }}>
                 1. Customization vs Mass Production
               </h3>
-              <p style={{ color: '#64748B', fontSize: '0.94rem', lineHeight: 1.6 }}>
+              <p style={{ color: '#6B7590', fontSize: '0.94rem', lineHeight: 1.6 }}>
                 Retailers like Adairs, Pillowtalk, and KAS sell fixed off-the-shelf patterns imported in mass containers. Cozy Cubs allows you to design your own doona cover with personalized names, children's drawings, or family photos.
               </p>
             </div>
@@ -163,10 +163,10 @@ export default function CompareClient() {
               <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: '#DCFCE7', color: '#16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
                 <ShieldCheck size={24} />
               </div>
-              <h3 style={{ fontSize: '1.25rem', color: '#0F172A', fontWeight: 800, marginBottom: '10px' }}>
+              <h3 style={{ fontSize: '1.25rem', color: '#002169', fontWeight: 800, marginBottom: '10px' }}>
                 2. 100% GOTS Organic Cotton Standard
               </h3>
-              <p style={{ color: '#64748B', fontSize: '0.94rem', lineHeight: 1.6 }}>
+              <p style={{ color: '#6B7590', fontSize: '0.94rem', lineHeight: 1.6 }}>
                 While traditional retailers charge high markups ($200+) for organic cotton lines, Cozy Cubs uses 300TC GOTS-certified organic cotton as our standard baseline fabric, paired with non-toxic reactive inks.
               </p>
             </div>
@@ -175,10 +175,10 @@ export default function CompareClient() {
               <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: '#DBEAFE', color: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
                 <Heart size={24} />
               </div>
-              <h3 style={{ fontSize: '1.25rem', color: '#0F172A', fontWeight: 800, marginBottom: '10px' }}>
+              <h3 style={{ fontSize: '1.25rem', color: '#002169', fontWeight: 800, marginBottom: '10px' }}>
                 3. Fast Australian Express Delivery
               </h3>
-              <p style={{ color: '#64748B', fontSize: '0.94rem', lineHeight: 1.6 }}>
+              <p style={{ color: '#6B7590', fontSize: '0.94rem', lineHeight: 1.6 }}>
                 Every Cozy Cubs set is printed and stitched locally in Sydney within 2-4 business days, guaranteeing faster turnaround times than long international supply chains.
               </p>
             </div>
@@ -187,7 +187,7 @@ export default function CompareClient() {
 
           {/* Bottom Conversion CTA */}
           <div style={{
-            background: 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)',
+            background: 'linear-gradient(135deg, #002169 0%, #002169 100%)',
             color: '#FFFFFF',
             borderRadius: '24px',
             padding: '48px 32px',
@@ -196,7 +196,7 @@ export default function CompareClient() {
             <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '12px' }}>
               Experience the Cozy Cubs Difference
             </h2>
-            <p style={{ color: '#94A3B8', maxWidth: '600px', margin: '0 auto 28px', fontSize: '1.02rem' }}>
+            <p style={{ color: '#98A0B5', maxWidth: '600px', margin: '0 auto 28px', fontSize: '1.02rem' }}>
               Try our live 3D bed customizer right now and design a 100% organic cotton quilt cover made uniquely for your home.
             </p>
             <a
@@ -219,7 +219,8 @@ export default function CompareClient() {
       <CartDrawer
         isOpen={cartOpen}
         onClose={() => setCartOpen(false)}
-        items={cartItems}
+        cartItems={cartItems}
+        onClearCart={() => setCartItems([])}
         onRemoveItem={(id) => setCartItems(prev => prev.filter(item => item.id !== id))}
         onCheckout={() => {
           setCartOpen(false);

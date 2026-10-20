@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   Sparkles, Upload, Type, Palette, Layers, ShoppingBag, 
-  RefreshCw, ZoomIn, ZoomOut
+  RefreshCw, ZoomIn, ZoomOut, PawPrint
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { AU_BED_SIZES, FABRIC_OPTIONS, BACKING_COLORS, FONTS_LIST } from '../data/sampleData';
@@ -31,7 +31,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
   const [customImage, setCustomImage] = useState(null);
   const [customText, setCustomText] = useState('Your Custom Name');
   const [selectedFont, setSelectedFont] = useState(FONTS_LIST[0]);
-  const [textColor, setTextColor] = useState('#0F172A');
+  const [textColor, setTextColor] = useState('#002169');
   const [textPosition, setTextPosition] = useState('bottom'); // 'top', 'center', 'bottom'
   const [selectedBacking, setSelectedBacking] = useState(BACKING_COLORS[0]);
   const [selectedSize, setSelectedSize] = useState(AU_BED_SIZES[2]); // Default Queen
@@ -121,19 +121,14 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
   };
 
   return (
-    <section ref={customizerRef} id="customizer" style={{ scrollMarginTop: '80px', padding: '16px 0' }}>
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 20px' }}>
-        
-        {/* Section Header */}
-        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-          <div className="badge-au" style={{ marginBottom: '10px' }}>
-            <Sparkles size={14} color="#D97706" /> REAL-TIME INTERACTIVE CUSTOMIZER
-          </div>
-          <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', color: '#0F172A' }}>
-            Design Your Dream Doona Cover Live
-          </h2>
-          <p style={{ color: '#64748B', maxWidth: '600px', margin: '8px auto 0', fontSize: '1rem' }}>
-            Select patterns or upload your photo, add custom names, pick your reverse backing color, and preview rendered live on a real bed mockup.
+    <section ref={customizerRef} id="customizer" style={{ scrollMarginTop: '110px' }}>
+      <div className="container">
+
+        <div className="section-head section-head--center" style={{ marginBottom: '24px' }}>
+          <span className="section-label">Live Bed Designer <PawPrint size={16} /></span>
+          <h2 className="section-title">Design Your Doona Cover</h2>
+          <p className="section-text">
+            Pick a pattern or upload your photo, add a name, choose your backing colour, and see it on a bed as you go.
           </p>
         </div>
 
@@ -158,7 +153,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                 height: '78%',
                 borderRadius: '16px',
                 overflow: 'hidden',
-                boxShadow: '0 18px 40px rgba(15, 23, 42, 0.25)',
+                boxShadow: '0 18px 40px rgba(0, 33, 105, 0.25)',
                 border: '2px solid rgba(255,255,255,0.4)',
                 transform: `scale(${zoomLevel})`,
                 transition: 'transform 0.3s ease'
@@ -203,7 +198,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                     fontWeight: 700,
                     letterSpacing: '0.08em',
                     textTransform: 'uppercase',
-                    color: selectedBacking.id === 'charcoal' || selectedBacking.id === 'navy' ? '#FFFFFF' : '#475569'
+                    color: selectedBacking.id === 'charcoal' || selectedBacking.id === 'navy' ? '#FFFFFF' : '#445374'
                   }}>
                     Folded Backing: {selectedBacking.name}
                   </span>
@@ -252,7 +247,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                       borderRadius: '12px',
                       maxWidth: '90%',
                       wordBreak: 'break-word',
-                      boxShadow: '0 4px 16px rgba(15,23,42,0.12)',
+                      boxShadow: '0 4px 16px rgba(0, 33, 105,0.12)',
                       transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)'
                     }}>
                       {customText}
@@ -307,7 +302,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                background: 'rgba(15, 23, 42, 0.85)',
+                background: 'rgba(0, 33, 105, 0.85)',
                 backdropFilter: 'blur(10px)',
                 padding: '8px 14px',
                 borderRadius: '10px',
@@ -319,7 +314,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                     width: '8px',
                     height: '8px',
                     borderRadius: '50%',
-                    background: dpiStatus === 'high' ? '#10B981' : '#F59E0B'
+                    background: dpiStatus === 'high' ? '#10B981' : '#FFC23C'
                   }} />
                   <span style={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
                     {customImage ? (dpiStatus === 'high' ? 'HD Crisp 300 DPI' : 'Standard Quality') : 'HD Vector Pattern'}
@@ -354,7 +349,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
               gap: '12px',
               marginTop: '14px',
               fontSize: '0.8rem',
-              color: '#475569',
+              color: '#445374',
               fontWeight: 600,
               flexWrap: 'wrap'
             }}>
@@ -374,7 +369,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
             <div>
               <div style={{
                 display: 'flex',
-                borderBottom: '1px solid #E2E8F0',
+                borderBottom: '1px solid #E6E1EA',
                 marginBottom: '20px',
                 overflowX: 'auto',
                 whiteSpace: 'nowrap',
@@ -417,14 +412,14 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
               {/* TAB 1 CONTENT: PATTERN OR PHOTO UPLOAD */}
               {activeTab === 'design' && (
                 <div className="animate-fade-in">
-                  <h4 suppressHydrationWarning style={{ fontSize: '0.98rem', color: '#0F172A', marginBottom: '4px' }}>
+                  <h4 suppressHydrationWarning style={{ fontSize: '0.98rem', color: '#002169', marginBottom: '4px' }}>
                     {mounted && (activePattern.name?.toLowerCase().includes('artwork') || activePattern.name?.toLowerCase().includes('drawing'))
                       ? '🎨 Kids Artwork Doona Studio'
                       : mounted && activePattern.name?.toLowerCase().includes('photo')
                       ? '📷 Personal Family Photo Studio'
                       : 'Upload Your Photo or Pick a Pattern'}
                   </h4>
-                  <p suppressHydrationWarning style={{ fontSize: '0.8rem', color: '#64748B', marginBottom: '12px' }}>
+                  <p suppressHydrationWarning style={{ fontSize: '0.8rem', color: '#6B7590', marginBottom: '12px' }}>
                     {mounted && (activePattern.name?.toLowerCase().includes('artwork') || activePattern.name?.toLowerCase().includes('drawing'))
                       ? "Upload a photo or scan of your child's drawing/artwork to render live on the bed mockup!"
                       : mounted && activePattern.name?.toLowerCase().includes('photo')
@@ -436,11 +431,11 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                   <div 
                     onClick={() => fileInputRef.current?.click()}
                     style={{
-                      border: '2px dashed #D97706',
+                      border: '2px dashed #894B8D',
                       borderRadius: '12px',
                       padding: '18px',
                       textAlign: 'center',
-                      background: '#FFFBEB',
+                      background: '#F1E6F1',
                       cursor: 'pointer',
                       marginBottom: '16px',
                       transition: 'border-color 0.2s ease'
@@ -453,8 +448,8 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                       accept="image/*"
                       style={{ display: 'none' }}
                     />
-                    <Upload size={26} color="#D97706" style={{ margin: '0 auto 6px' }} />
-                    <div suppressHydrationWarning style={{ fontWeight: 700, fontSize: '0.9rem', color: '#1E293B' }}>
+                    <Upload size={26} color="#894B8D" style={{ margin: '0 auto 6px' }} />
+                    <div suppressHydrationWarning style={{ fontWeight: 700, fontSize: '0.9rem', color: '#002169' }}>
                       {customImage
                         ? 'Change Uploaded Image'
                         : mounted && (activePattern.name?.toLowerCase().includes('artwork') || activePattern.name?.toLowerCase().includes('drawing'))
@@ -463,7 +458,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                         ? 'Click to Upload Personal / Family Photo'
                         : 'Click to Upload Photo / Artwork'}
                     </div>
-                    <div style={{ fontSize: '0.76rem', color: '#64748B', marginTop: '4px' }}>
+                    <div style={{ fontSize: '0.76rem', color: '#6B7590', marginTop: '4px' }}>
                       Supports JPG, PNG, WEBP (High resolution recommended)
                     </div>
                   </div>
@@ -486,7 +481,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                   )}
 
                   {/* Live Square API Catalog Patterns Grid */}
-                  <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#475569', marginBottom: '10px' }}>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#445374', marginBottom: '10px' }}>
                     Or Select Live Square Product Designs ({livePatterns.length}):
                   </div>
 
@@ -508,7 +503,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                         style={{
                           borderRadius: '10px',
                           overflow: 'hidden',
-                          border: activePattern.id === pattern.id && !customImage ? '2.5px solid #D97706' : '1px solid #E2E8F0',
+                          border: activePattern.id === pattern.id && !customImage ? '2.5px solid #894B8D' : '1px solid #E6E1EA',
                           cursor: 'pointer',
                           position: 'relative',
                           aspectRatio: '1 / 1'
@@ -524,7 +519,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                           bottom: 0,
                           left: 0,
                           right: 0,
-                          background: 'rgba(15,23,42,0.85)',
+                          background: 'rgba(0, 33, 105,0.85)',
                           color: '#FFFFFF',
                           fontSize: '0.65rem',
                           fontWeight: 600,
@@ -546,13 +541,13 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
               {/* TAB 2 CONTENT: CUSTOM TYPOGRAPHY STUDIO */}
               {activeTab === 'text' && (
                 <div className="animate-fade-in">
-                  <h4 style={{ fontSize: '0.98rem', color: '#0F172A', marginBottom: '12px' }}>
+                  <h4 style={{ fontSize: '0.98rem', color: '#002169', marginBottom: '12px' }}>
                     Add Personalised Name or Quote
                   </h4>
 
                   {/* Text Input */}
                   <div style={{ marginBottom: '14px' }}>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '6px' }}>
+                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#445374', marginBottom: '6px' }}>
                       Enter Name, Initials or Words:
                     </label>
                     <input
@@ -564,7 +559,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                         width: '100%',
                         padding: '9px 12px',
                         borderRadius: '8px',
-                        border: '1.5px solid #CBD5E1',
+                        border: '1.5px solid #E6E1EA',
                         fontSize: '0.95rem',
                         fontWeight: 600,
                         outline: 'none'
@@ -575,10 +570,10 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                   {/* Font Picker */}
                   <div style={{ marginBottom: '16px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#445374' }}>
                         Select Typography Style ({FONTS_LIST.length} Cool Fonts):
                       </label>
-                      <span style={{ fontSize: '0.72rem', color: '#D97706', fontWeight: 700 }}>
+                      <span style={{ fontSize: '0.72rem', color: '#894B8D', fontWeight: 700 }}>
                         Active: {selectedFont.name}
                       </span>
                     </div>
@@ -598,8 +593,8 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                           style={{
                             padding: '8px 10px',
                             borderRadius: '10px',
-                            border: selectedFont.id === font.id ? '2.5px solid #D97706' : '1px solid #E2E8F0',
-                            background: selectedFont.id === font.id ? '#FEF3C7' : '#FFFFFF',
+                            border: selectedFont.id === font.id ? '2.5px solid #894B8D' : '1px solid #E6E1EA',
+                            background: selectedFont.id === font.id ? '#F1E6F1' : '#FFFFFF',
                             textAlign: 'left',
                             display: 'flex',
                             flexDirection: 'column',
@@ -612,7 +607,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                             fontFamily: font.family,
                             fontSize: '1rem',
                             fontWeight: 700,
-                            color: selectedFont.id === font.id ? '#B45309' : '#0F172A',
+                            color: selectedFont.id === font.id ? '#6F3A73' : '#002169',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
                             textOverflow: 'ellipsis'
@@ -622,7 +617,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                           <span style={{
                             fontSize: '0.66rem',
                             fontWeight: 600,
-                            color: selectedFont.id === font.id ? '#D97706' : '#64748B',
+                            color: selectedFont.id === font.id ? '#894B8D' : '#6B7590',
                             marginTop: '2px'
                           }}>
                             {font.style}
@@ -635,7 +630,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                   {/* Text Position & Color */}
                   <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
                     <div style={{ flex: 1 }}>
-                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '6px' }}>
+                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#445374', marginBottom: '6px' }}>
                         Text Position:
                       </label>
                       <select
@@ -645,11 +640,11 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                           width: '100%',
                           padding: '9px 12px',
                           borderRadius: '8px',
-                          border: '1.5px solid #CBD5E1',
+                          border: '1.5px solid #E6E1EA',
                           fontWeight: 700,
                           fontSize: '0.85rem',
                           background: '#FFFFFF',
-                          color: '#0F172A',
+                          color: '#002169',
                           cursor: 'pointer'
                         }}
                       >
@@ -661,7 +656,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '6px' }}>
+                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#445374', marginBottom: '6px' }}>
                         Font Color:
                       </label>
                       <input
@@ -685,10 +680,10 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
               {/* TAB 3 CONTENT: REVERSE BACKING COLOR */}
               {activeTab === 'backing' && (
                 <div className="animate-fade-in">
-                  <h4 style={{ fontSize: '0.98rem', color: '#0F172A', marginBottom: '6px' }}>
+                  <h4 style={{ fontSize: '0.98rem', color: '#002169', marginBottom: '6px' }}>
                     Choose Reverse Backing Color
                   </h4>
-                  <p style={{ fontSize: '0.8rem', color: '#64748B', marginBottom: '14px' }}>
+                  <p style={{ fontSize: '0.8rem', color: '#6B7590', marginBottom: '14px' }}>
                     All DoonaCraft covers are 100% reversible. Pick a solid accent color for the back and top fold.
                   </p>
 
@@ -700,7 +695,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                         style={{
                           padding: '9px 12px',
                           borderRadius: '8px',
-                          border: selectedBacking.id === color.id ? '2.5px solid #D97706' : '1px solid #E2E8F0',
+                          border: selectedBacking.id === color.id ? '2.5px solid #894B8D' : '1px solid #E6E1EA',
                           background: '#FFFFFF',
                           cursor: 'pointer',
                           display: 'flex',
@@ -713,11 +708,11 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                           height: '24px',
                           borderRadius: '50%',
                           backgroundColor: color.hex,
-                          border: '1px solid #CBD5E1',
+                          border: '1px solid #E6E1EA',
                           display: 'inline-block',
                           flexShrink: 0
                         }} />
-                        <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#1E293B', whiteSpace: 'nowrap' }}>
+                        <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#002169', whiteSpace: 'nowrap' }}>
                           {color.name}
                         </span>
                       </div>
@@ -734,8 +729,8 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                   {/* AU Size Selector */}
                   <div style={{ marginBottom: '18px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                      <h4 style={{ fontSize: '0.88rem', color: '#0F172A' }}>Select Australian Bed Size:</h4>
-                      <button onClick={onOpenSizeGuide} style={{ fontSize: '0.76rem', color: '#D97706', fontWeight: 700 }}>
+                      <h4 style={{ fontSize: '0.88rem', color: '#002169' }}>Select Australian Bed Size:</h4>
+                      <button onClick={onOpenSizeGuide} style={{ fontSize: '0.76rem', color: '#894B8D', fontWeight: 700 }}>
                         📏 AU Size Guide
                       </button>
                     </div>
@@ -748,8 +743,8 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                           style={{
                             padding: '9px 12px',
                             borderRadius: '8px',
-                            border: selectedSize.id === size.id ? '2.5px solid #D97706' : '1px solid #E2E8F0',
-                            background: selectedSize.id === size.id ? '#FFFBEB' : '#FFFFFF',
+                            border: selectedSize.id === size.id ? '2.5px solid #894B8D' : '1px solid #E6E1EA',
+                            background: selectedSize.id === size.id ? '#F1E6F1' : '#FFFFFF',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
@@ -757,14 +752,14 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                           }}
                         >
                           <div>
-                            <span style={{ fontWeight: 800, fontSize: '0.88rem', color: '#0F172A' }}>
+                            <span style={{ fontWeight: 800, fontSize: '0.88rem', color: '#002169' }}>
                               {size.name}
                             </span>
-                            <span style={{ fontSize: '0.76rem', color: '#64748B', marginLeft: '6px' }}>
+                            <span style={{ fontSize: '0.76rem', color: '#6B7590', marginLeft: '6px' }}>
                               ({size.dimensions})
                             </span>
                           </div>
-                          <span style={{ fontWeight: 800, color: '#0F172A', fontSize: '0.88rem' }}>
+                          <span style={{ fontWeight: 800, color: '#002169', fontSize: '0.88rem' }}>
                             ${size.price} AUD
                           </span>
                         </div>
@@ -774,7 +769,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
 
                   {/* Fabric Option Selector */}
                   <div>
-                    <h4 style={{ fontSize: '0.88rem', color: '#0F172A', marginBottom: '8px' }}>Select Premium Fabric:</h4>
+                    <h4 style={{ fontSize: '0.88rem', color: '#002169', marginBottom: '8px' }}>Select Premium Fabric:</h4>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       {FABRIC_OPTIONS.map((fabric) => (
                         <div
@@ -783,8 +778,8 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                           style={{
                             padding: '9px 12px',
                             borderRadius: '8px',
-                            border: selectedFabric.id === fabric.id ? '2.5px solid #D97706' : '1px solid #E2E8F0',
-                            background: selectedFabric.id === fabric.id ? '#FFFBEB' : '#FFFFFF',
+                            border: selectedFabric.id === fabric.id ? '2.5px solid #894B8D' : '1px solid #E6E1EA',
+                            background: selectedFabric.id === fabric.id ? '#F1E6F1' : '#FFFFFF',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
@@ -792,14 +787,14 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                           }}
                         >
                           <div>
-                            <div style={{ fontWeight: 800, fontSize: '0.86rem', color: '#0F172A' }}>
+                            <div style={{ fontWeight: 800, fontSize: '0.86rem', color: '#002169' }}>
                               {fabric.name}
                             </div>
-                            <div style={{ fontSize: '0.72rem', color: '#64748B' }}>
+                            <div style={{ fontSize: '0.72rem', color: '#6B7590' }}>
                               {fabric.badge}
                             </div>
                           </div>
-                          <span style={{ fontWeight: 800, color: '#D97706', fontSize: '0.82rem' }}>
+                          <span style={{ fontWeight: 800, color: '#894B8D', fontSize: '0.82rem' }}>
                             {fabric.priceAdd === 0 ? 'Included' : `+$${fabric.priceAdd} AUD`}
                           </span>
                         </div>
@@ -817,7 +812,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
             <div style={{
               marginTop: '20px',
               paddingTop: '14px',
-              borderTop: '1px solid #E2E8F0'
+              borderTop: '1px solid #E6E1EA'
             }}>
               <div style={{
                 display: 'flex',
@@ -826,10 +821,10 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                 marginBottom: '12px'
               }}>
                 <div>
-                  <div style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>
+                  <div style={{ fontSize: '0.75rem', color: '#6B7590', fontWeight: 600 }}>
                     Selected: {selectedSize.name} Set ({selectedFabric.name})
                   </div>
-                  <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0F172A' }}>
+                  <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#002169' }}>
                     Total: ${totalPrice} AUD
                   </div>
                 </div>

@@ -5,8 +5,8 @@ export default function manifest() {
     description: 'Design custom organic cotton doona covers and bedding sets online in Australia.',
     start_url: '/',
     display: 'standalone',
-    background_color: '#FBF9F5',
-    theme_color: '#1E293B',
+    background_color: '#F7F4F7',
+    theme_color: '#002169',
     icons: [
       {
         src: '/favicon.svg',

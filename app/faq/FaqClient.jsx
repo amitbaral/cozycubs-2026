@@ -19,7 +19,7 @@ export default function FaqClient() {
   const cartTotal = cartItems.reduce((sum, item) => sum + item.price, 0);
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#FBF9F5' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#F7F4F7' }}>
       <AnnouncementBar />
       <Header
         cartCount={cartCount}
@@ -41,7 +41,8 @@ export default function FaqClient() {
       <CartDrawer
         isOpen={cartOpen}
         onClose={() => setCartOpen(false)}
-        items={cartItems}
+        cartItems={cartItems}
+        onClearCart={() => setCartItems([])}
         onRemoveItem={(id) => setCartItems(prev => prev.filter(item => item.id !== id))}
         onCheckout={() => {
           setCartOpen(false);

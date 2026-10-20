@@ -24,7 +24,7 @@ export default function CustomizeClient() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#FBF9F5' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#F7F4F7' }}>
       <AnnouncementBar />
       <Header
         cartCount={cartCount}
@@ -37,13 +37,13 @@ export default function CustomizeClient() {
       <main style={{ flex: 1, padding: '40px 16px' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-            <span className="badge-au" style={{ background: '#FEF3C7', color: '#B45309', borderColor: '#D97706', marginBottom: '10px' }}>
+            <span className="badge-au" style={{ background: '#F1E6F1', color: '#6F3A73', borderColor: '#894B8D', marginBottom: '10px' }}>
               🎨 LIVE 3D BED MOCKUP & DESIGNER STUDIO
             </span>
-            <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', fontWeight: 800, color: '#0F172A' }}>
+            <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', fontWeight: 800, color: '#002169' }}>
               Design Your Custom Doona Cover & Bedding Set
             </h1>
-            <p style={{ color: '#64748B', maxWidth: '640px', margin: '8px auto 0' }}>
+            <p style={{ color: '#6B7590', maxWidth: '640px', margin: '8px auto 0' }}>
               Upload your child's drawings, family photos, or choose from our Cozy Cubs catalog. Pick custom typography, backing colors, Australian bed sizes, and organic cotton fabrics.
             </p>
           </div>
@@ -63,7 +63,8 @@ export default function CustomizeClient() {
       <CartDrawer
         isOpen={cartOpen}
         onClose={() => setCartOpen(false)}
-        items={cartItems}
+        cartItems={cartItems}
+        onClearCart={() => setCartItems([])}
         onRemoveItem={(id) => setCartItems(prev => prev.filter(item => item.id !== id))}
         onCheckout={() => {
           setCartOpen(false);

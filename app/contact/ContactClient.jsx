@@ -33,7 +33,7 @@ export default function ContactClient() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#FBF9F5' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#F7F4F7' }}>
       <AnnouncementBar />
       <Header
         cartCount={cartCount}
@@ -47,13 +47,13 @@ export default function ContactClient() {
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           
           <div style={{ textAlign: 'center', marginBottom: '44px' }}>
-            <span className="badge-au" style={{ background: '#FEF3C7', color: '#B45309', borderColor: '#D97706', marginBottom: '12px' }}>
+            <span className="badge-au" style={{ background: '#F1E6F1', color: '#6F3A73', borderColor: '#894B8D', marginBottom: '12px' }}>
               💌 WE'RE HERE TO HELP
             </span>
-            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 800, color: '#0F172A', marginBottom: '12px' }}>
+            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 800, color: '#002169', marginBottom: '12px' }}>
               Contact Cozy Cubs Support
             </h1>
-            <p style={{ color: '#64748B', maxWidth: '580px', margin: '0 auto', fontSize: '1.05rem' }}>
+            <p style={{ color: '#6B7590', maxWidth: '580px', margin: '0 auto', fontSize: '1.05rem' }}>
               Have questions about photo resolutions, custom sizes, or existing orders? Our customer support team responds within 24 hours.
             </p>
           </div>
@@ -63,12 +63,12 @@ export default function ContactClient() {
             {/* Contact Info Cards */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <div className="glass-card" style={{ padding: '24px', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: '#FEF3C7', color: '#D97706', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: '#F1E6F1', color: '#894B8D', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Mail size={22} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Email Support</div>
-                  <div style={{ fontWeight: 800, fontSize: '1.05rem', color: '#0F172A' }}>info@cozycubs.au</div>
+                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#6B7590', textTransform: 'uppercase' }}>Email Support</div>
+                  <div style={{ fontWeight: 800, fontSize: '1.05rem', color: '#002169' }}>info@cozycubs.au</div>
                 </div>
               </div>
 
@@ -77,8 +77,8 @@ export default function ContactClient() {
                   <Phone size={22} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Phone Support (Mon-Fri)</div>
-                  <div style={{ fontWeight: 800, fontSize: '1.05rem', color: '#0F172A' }}>1300 COZY CUBS (1300 269 928)</div>
+                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#6B7590', textTransform: 'uppercase' }}>Phone Support (Mon-Fri)</div>
+                  <div style={{ fontWeight: 800, fontSize: '1.05rem', color: '#002169' }}>1300 COZY CUBS (1300 269 928)</div>
                 </div>
               </div>
 
@@ -87,8 +87,8 @@ export default function ContactClient() {
                   <MapPin size={22} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Australian Customer Support</div>
-                  <div style={{ fontWeight: 800, fontSize: '0.98rem', color: '#0F172A' }}>Sydney & Melbourne Design Offices</div>
+                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#6B7590', textTransform: 'uppercase' }}>Australian Customer Support</div>
+                  <div style={{ fontWeight: 800, fontSize: '0.98rem', color: '#002169' }}>Sydney & Melbourne Design Offices</div>
                 </div>
               </div>
             </div>
@@ -100,48 +100,48 @@ export default function ContactClient() {
                   <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: '#DCFCE7', color: '#16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
                     <Send size={26} />
                   </div>
-                  <h3 style={{ fontSize: '1.3rem', color: '#0F172A', marginBottom: '8px' }}>Message Received!</h3>
-                  <p style={{ color: '#64748B', fontSize: '0.92rem' }}>
+                  <h3 style={{ fontSize: '1.3rem', color: '#002169', marginBottom: '8px' }}>Message Received!</h3>
+                  <p style={{ color: '#6B7590', fontSize: '0.92rem' }}>
                     Thank you for reaching out to Cozy Cubs Australia. A customer specialist will respond to your inquiry via email shortly.
                   </p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  <h3 style={{ fontSize: '1.25rem', color: '#0F172A', marginBottom: '8px' }}>Send Us a Message</h3>
+                  <h3 style={{ fontSize: '1.25rem', color: '#002169', marginBottom: '8px' }}>Send Us a Message</h3>
                   
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#475569', marginBottom: '6px' }}>Your Name *</label>
+                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#445374', marginBottom: '6px' }}>Your Name *</label>
                     <input
                       type="text"
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="e.g. Sarah Jenkins"
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1.5px solid #CBD5E1', outline: 'none' }}
+                      style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1.5px solid #E6E1EA', outline: 'none' }}
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#475569', marginBottom: '6px' }}>Email Address *</label>
+                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#445374', marginBottom: '6px' }}>Email Address *</label>
                     <input
                       type="email"
                       required
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="e.g. sarah@example.com"
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1.5px solid #CBD5E1', outline: 'none' }}
+                      style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1.5px solid #E6E1EA', outline: 'none' }}
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#475569', marginBottom: '6px' }}>Message *</label>
+                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#445374', marginBottom: '6px' }}>Message *</label>
                     <textarea
                       required
                       rows={4}
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       placeholder="How can we help you today?"
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1.5px solid #CBD5E1', outline: 'none', resize: 'vertical' }}
+                      style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1.5px solid #E6E1EA', outline: 'none', resize: 'vertical' }}
                     />
                   </div>
 
@@ -165,7 +165,8 @@ export default function ContactClient() {
       <CartDrawer
         isOpen={cartOpen}
         onClose={() => setCartOpen(false)}
-        items={cartItems}
+        cartItems={cartItems}
+        onClearCart={() => setCartItems([])}
         onRemoveItem={(id) => setCartItems(prev => prev.filter(item => item.id !== id))}
         onCheckout={() => {
           setCartOpen(false);

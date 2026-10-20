@@ -8,6 +8,7 @@ import BedCustomizer from './components/BedCustomizer';
 import Catalog from './components/Catalog';
 import UgcReviews from './components/UgcReviews';
 import FaqSection from './components/FaqSection';
+import { AboutSplit, HowItWorks, Marquee, QualityBand } from './components/HomeSections';
 import CartDrawer from './components/CartDrawer';
 import SizeFabricGuideModal from './components/SizeFabricGuideModal';
 import Footer from './components/Footer';
@@ -48,11 +49,9 @@ export default function App() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#FBF9F5' }}>
-      {/* 1. Top Announcement Bar */}
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <AnnouncementBar />
 
-      {/* 2. Glassmorphism Navigation Header */}
       <Header
         cartCount={cartCount}
         cartTotal={cartTotal}
@@ -61,36 +60,37 @@ export default function App() {
         scrollToCustomizer={scrollToCustomizer}
       />
 
-      {/* 3. Main Hero Section */}
       <Hero
         scrollToCustomizer={scrollToCustomizer}
         onOpenSizeGuide={() => setIsSizeGuideOpen(true)}
       />
 
-      {/* 4. Live Interactive Bed Customizer Engine */}
-      <BedCustomizer
-        customizerRef={customizerRef}
-        selectedPatternProp={selectedPattern}
-        onAddToCart={handleAddToCart}
-        onOpenSizeGuide={() => setIsSizeGuideOpen(true)}
-      />
+      <AboutSplit scrollToCustomizer={scrollToCustomizer} />
 
-      {/* 5. Trending Niche Collections Catalog */}
+      <HowItWorks scrollToCustomizer={scrollToCustomizer} />
+
+      <Marquee />
+
+      <section className="section" style={{ paddingBottom: '40px' }}>
+        <BedCustomizer
+          customizerRef={customizerRef}
+          selectedPatternProp={selectedPattern}
+          onAddToCart={handleAddToCart}
+          onOpenSizeGuide={() => setIsSizeGuideOpen(true)}
+        />
+      </section>
+
       <Catalog
         onCustomizePattern={handleCustomizePattern}
       />
 
-      {/* 6. Verified Customer Photo Reviews */}
+      <QualityBand />
+
       <UgcReviews />
 
-      {/* 7. SEO FAQ Accordion */}
       <FaqSection />
 
-      {/* 8. Australian Footer */}
-      <Footer
-        scrollToCustomizer={scrollToCustomizer}
-        onOpenSizeGuide={() => setIsSizeGuideOpen(true)}
-      />
+      <Footer />
 
       {/* Sliding Cart Drawer */}
       <CartDrawer

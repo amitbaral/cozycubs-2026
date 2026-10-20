@@ -167,7 +167,7 @@ export default function SocialStudioClient() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#FBF9F5' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#F7F4F7' }}>
       <AnnouncementBar />
       <Header
         cartCount={cartItems.length}
@@ -182,13 +182,13 @@ export default function SocialStudioClient() {
           
           {/* Header Banner */}
           <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-            <span className="badge-au" style={{ background: '#FEF3C7', color: '#B45309', borderColor: '#D97706', marginBottom: '12px' }}>
+            <span className="badge-au" style={{ background: '#F1E6F1', color: '#6F3A73', borderColor: '#894B8D', marginBottom: '12px' }}>
               ✨ AI SOCIAL MEDIA CONTENT & CAROUSEL STUDIO
             </span>
-            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 800, color: '#0F172A', marginBottom: '12px' }}>
+            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 800, color: '#002169', marginBottom: '12px' }}>
               Create & Publish Social Carousels in Seconds
             </h1>
-            <p style={{ fontSize: '1.05rem', color: '#64748B', maxWidth: '680px', margin: '0 auto' }}>
+            <p style={{ fontSize: '1.05rem', color: '#6B7590', maxWidth: '680px', margin: '0 auto' }}>
               Select a Cozy Cubs product, generate AI captions with targeted hashtags, build 5-slide carousels, and push directly to social channels.
             </p>
           </div>
@@ -201,12 +201,12 @@ export default function SocialStudioClient() {
               
               {/* Product Selector Card */}
               <div className="glass-card" style={{ padding: '24px', borderRadius: '20px', background: '#FFFFFF' }}>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <ImageIcon size={18} color="#D97706" /> 1. Select Product or Upload Image
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#002169', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <ImageIcon size={18} color="#894B8D" /> 1. Select Product or Upload Image
                 </h3>
 
                 <div style={{ marginBottom: '16px' }}>
-                  <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569', marginBottom: '8px', display: 'block' }}>
+                  <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#445374', marginBottom: '8px', display: 'block' }}>
                     Choose Cozy Cubs Catalog Product:
                   </label>
                   <select
@@ -222,12 +222,12 @@ export default function SocialStudioClient() {
                       width: '100%',
                       padding: '12px 14px',
                       borderRadius: '12px',
-                      border: '1px solid #CBD5E1',
+                      border: '1px solid #E6E1EA',
                       fontSize: '0.95rem',
                       fontWeight: 600,
-                      color: '#0F172A',
+                      color: '#002169',
                       outline: 'none',
-                      background: '#F8FAFC'
+                      background: '#F7F4F7'
                     }}
                   >
                     {SAMPLE_PATTERNS.map(p => (
@@ -236,8 +236,8 @@ export default function SocialStudioClient() {
                   </select>
                 </div>
 
-                <div style={{ textAlignment: 'center', borderTop: '1px dashed #E2E8F0', paddingTop: '16px' }}>
-                  <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569', marginBottom: '8px', display: 'block' }}>
+                <div style={{ textAlignment: 'center', borderTop: '1px dashed #E6E1EA', paddingTop: '16px' }}>
+                  <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#445374', marginBottom: '8px', display: 'block' }}>
                     Or Upload Custom Product Photo:
                   </label>
                   <label style={{
@@ -247,12 +247,12 @@ export default function SocialStudioClient() {
                     gap: '8px',
                     padding: '12px',
                     borderRadius: '12px',
-                    border: '1px solid #CBD5E1',
+                    border: '1px solid #E6E1EA',
                     background: '#FFFFFF',
                     cursor: 'pointer',
                     fontSize: '0.9rem',
                     fontWeight: 700,
-                    color: '#D97706'
+                    color: '#894B8D'
                   }}>
                     <Upload size={16} /> Choose Image File
                     <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
@@ -262,12 +262,12 @@ export default function SocialStudioClient() {
 
               {/* AI Controls Card */}
               <div className="glass-card" style={{ padding: '24px', borderRadius: '20px', background: '#FFFFFF' }}>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Sparkles size={18} color="#D97706" /> 2. AI Copy & Tone Settings
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#002169', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Sparkles size={18} color="#894B8D" /> 2. AI Copy & Tone Settings
                 </h3>
 
                 <div style={{ marginBottom: '16px' }}>
-                  <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569', marginBottom: '8px', display: 'block' }}>
+                  <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#445374', marginBottom: '8px', display: 'block' }}>
                     Select Brand Copy Tone:
                   </label>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
@@ -278,9 +278,9 @@ export default function SocialStudioClient() {
                         style={{
                           padding: '10px 12px',
                           borderRadius: '10px',
-                          border: tone === t ? '2px solid #D97706' : '1px solid #E2E8F0',
-                          background: tone === t ? '#FEF3C7' : '#F8FAFC',
-                          color: tone === t ? '#B45309' : '#475569',
+                          border: tone === t ? '2px solid #894B8D' : '1px solid #E6E1EA',
+                          background: tone === t ? '#F1E6F1' : '#F7F4F7',
+                          color: tone === t ? '#6F3A73' : '#445374',
                           fontWeight: tone === t ? 800 : 600,
                           fontSize: '0.85rem',
                           cursor: 'pointer',
@@ -315,7 +315,7 @@ export default function SocialStudioClient() {
               {/* Editable Caption & Hashtags Card */}
               <div className="glass-card" style={{ padding: '24px', borderRadius: '20px', background: '#FFFFFF' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#002169', margin: 0 }}>
                     3. AI Caption & Hashtags
                   </h3>
                   <button
@@ -324,8 +324,8 @@ export default function SocialStudioClient() {
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '4px',
-                      background: copied ? '#DCFCE7' : '#FEF3C7',
-                      color: copied ? '#15803D' : '#B45309',
+                      background: copied ? '#DCFCE7' : '#F1E6F1',
+                      color: copied ? '#15803D' : '#6F3A73',
                       border: 'none',
                       padding: '6px 12px',
                       borderRadius: '8px',
@@ -347,10 +347,10 @@ export default function SocialStudioClient() {
                     width: '100%',
                     padding: '12px',
                     borderRadius: '12px',
-                    border: '1px solid #CBD5E1',
+                    border: '1px solid #E6E1EA',
                     fontSize: '0.88rem',
                     lineHeight: 1.5,
-                    color: '#1E293B',
+                    color: '#002169',
                     outline: 'none',
                     resize: 'vertical',
                     fontFamily: 'inherit',
@@ -358,12 +358,12 @@ export default function SocialStudioClient() {
                   }}
                 />
 
-                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#64748B', marginBottom: '6px' }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#6B7590', marginBottom: '6px' }}>
                   Generated Hashtags:
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                   {hashtags.map((tag, idx) => (
-                    <span key={idx} style={{ background: '#F1F5F9', color: '#2563EB', padding: '4px 8px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 700 }}>
+                    <span key={idx} style={{ background: '#F7F4F7', color: '#2563EB', padding: '4px 8px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 700 }}>
                       {tag}
                     </span>
                   ))}
@@ -376,7 +376,7 @@ export default function SocialStudioClient() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               
               {/* Platform Switcher Tabs */}
-              <div style={{ display: 'flex', background: '#E2E8F0', padding: '4px', borderRadius: '14px', gap: '4px' }}>
+              <div style={{ display: 'flex', background: '#E6E1EA', padding: '4px', borderRadius: '14px', gap: '4px' }}>
                 <button
                   onClick={() => setActivePlatform('instagram')}
                   style={{
@@ -385,7 +385,7 @@ export default function SocialStudioClient() {
                     borderRadius: '10px',
                     border: 'none',
                     background: activePlatform === 'instagram' ? '#FFFFFF' : 'transparent',
-                    color: activePlatform === 'instagram' ? '#E1306C' : '#64748B',
+                    color: activePlatform === 'instagram' ? '#E1306C' : '#6B7590',
                     fontWeight: 800,
                     fontSize: '0.9rem',
                     display: 'flex',
@@ -405,7 +405,7 @@ export default function SocialStudioClient() {
                     borderRadius: '10px',
                     border: 'none',
                     background: activePlatform === 'facebook' ? '#FFFFFF' : 'transparent',
-                    color: activePlatform === 'facebook' ? '#1877F2' : '#64748B',
+                    color: activePlatform === 'facebook' ? '#1877F2' : '#6B7590',
                     fontWeight: 800,
                     fontSize: '0.9rem',
                     display: 'flex',
@@ -423,23 +423,23 @@ export default function SocialStudioClient() {
               <div className="glass-card" style={{ padding: '0', borderRadius: '24px', background: '#FFFFFF', overflow: 'hidden', boxShadow: '0 12px 40px rgba(0,0,0,0.08)' }}>
                 
                 {/* Mockup Header */}
-                <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #F1F5F9' }}>
+                <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #F7F4F7' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(45deg, #F09433, #E6683C, #DC2743, #CC2366, #BC1888)', padding: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <div style={{ width: '100%', height: '100%', borderRadius: '50%', background: '#0F172A', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800 }}>
+                      <div style={{ width: '100%', height: '100%', borderRadius: '50%', background: '#002169', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800 }}>
                         CC
                       </div>
                     </div>
                     <div>
-                      <div style={{ fontWeight: 800, fontSize: '0.88rem', color: '#0F172A' }}>{activePlatform === 'instagram' ? 'ocozycubso' : 'cozycubsau'}</div>
-                      <div style={{ fontSize: '0.74rem', color: '#64748B' }}>Sydney, Australia • Sponsored</div>
+                      <div style={{ fontWeight: 800, fontSize: '0.88rem', color: '#002169' }}>{activePlatform === 'instagram' ? 'ocozycubso' : 'cozycubsau'}</div>
+                      <div style={{ fontSize: '0.74rem', color: '#6B7590' }}>Sydney, Australia • Sponsored</div>
                     </div>
                   </div>
-                  <span style={{ fontSize: '1.2rem', color: '#64748B' }}>•••</span>
+                  <span style={{ fontSize: '1.2rem', color: '#6B7590' }}>•••</span>
                 </div>
 
                 {/* CAROUSEL SLIDE VISUAL CANVAS */}
-                <div style={{ position: 'relative', width: '100%', aspectRatio: '1/1', background: '#0F172A', overflow: 'hidden' }}>
+                <div style={{ position: 'relative', width: '100%', aspectRatio: '1/1', background: '#002169', overflow: 'hidden' }}>
                   
                   {/* Background Product Image */}
                   <img
@@ -452,7 +452,7 @@ export default function SocialStudioClient() {
                   <div style={{
                     position: 'absolute',
                     inset: 0,
-                    background: 'linear-gradient(to top, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.2) 60%, rgba(15,23,42,0.4) 100%)',
+                    background: 'linear-gradient(to top, rgba(0, 33, 105,0.95) 0%, rgba(0, 33, 105,0.2) 60%, rgba(0, 33, 105,0.4) 100%)',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
@@ -461,7 +461,7 @@ export default function SocialStudioClient() {
                     
                     {/* Top Branding Badge */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="badge-au" style={{ background: '#FEF3C7', color: '#B45309', border: 'none', fontWeight: 800, fontSize: '0.75rem' }}>
+                      <span className="badge-au" style={{ background: '#F1E6F1', color: '#6F3A73', border: 'none', fontWeight: 800, fontSize: '0.75rem' }}>
                         🦁 COZY CUBS AUSTRALIA
                       </span>
                       <span style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', color: '#FFFFFF', padding: '4px 10px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700 }}>
@@ -474,7 +474,7 @@ export default function SocialStudioClient() {
                       <h2 style={{ fontSize: 'clamp(1.3rem, 3vw, 1.8rem)', fontWeight: 800, marginBottom: '8px', lineHeight: 1.25, color: '#FFFFFF' }}>
                         {carousel[currentSlide]?.headline || selectedProduct.name}
                       </h2>
-                      <p style={{ fontSize: '0.92rem', color: '#E2E8F0', lineHeight: 1.5, margin: 0 }}>
+                      <p style={{ fontSize: '0.92rem', color: '#E6E1EA', lineHeight: 1.5, margin: 0 }}>
                         {carousel[currentSlide]?.subhead || '100% GOTS Certified Organic Cotton • Live 3D Preview'}
                       </p>
                     </div>
@@ -489,7 +489,7 @@ export default function SocialStudioClient() {
                             width: currentSlide === idx ? '20px' : '8px',
                             height: '8px',
                             borderRadius: '4px',
-                            background: currentSlide === idx ? '#D97706' : 'rgba(255,255,255,0.5)',
+                            background: currentSlide === idx ? '#894B8D' : 'rgba(255,255,255,0.5)',
                             cursor: 'pointer',
                             transition: 'all 0.3s ease'
                           }}
@@ -516,7 +516,7 @@ export default function SocialStudioClient() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       cursor: 'pointer',
-                      color: '#0F172A'
+                      color: '#002169'
                     }}
                   >
                     <ChevronLeft size={20} />
@@ -537,7 +537,7 @@ export default function SocialStudioClient() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       cursor: 'pointer',
-                      color: '#0F172A'
+                      color: '#002169'
                     }}
                   >
                     <ChevronRight size={20} />
@@ -550,17 +550,17 @@ export default function SocialStudioClient() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                     <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
                       <Heart size={22} color="#EF4444" fill="#EF4444" />
-                      <MessageCircle size={22} color="#475569" />
-                      <Send size={22} color="#475569" />
+                      <MessageCircle size={22} color="#445374" />
+                      <Send size={22} color="#445374" />
                     </div>
-                    <Bookmark size={22} color="#475569" />
+                    <Bookmark size={22} color="#445374" />
                   </div>
 
-                  <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0F172A', marginBottom: '6px' }}>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#002169', marginBottom: '6px' }}>
                     Liked by sydney_mums and 1,482 others
                   </div>
 
-                  <div style={{ fontSize: '0.85rem', color: '#334155', lineHeight: 1.5, maxHeight: '80px', overflowY: 'auto' }}>
+                  <div style={{ fontSize: '0.85rem', color: '#445374', lineHeight: 1.5, maxHeight: '80px', overflowY: 'auto' }}>
                     <strong>{activePlatform === 'instagram' ? 'ocozycubso' : 'cozycubsau'}</strong> {caption.slice(0, 180)}...
                   </div>
                 </div>
@@ -569,7 +569,7 @@ export default function SocialStudioClient() {
 
               {/* Action & Publishing Controls */}
               <div className="glass-card" style={{ padding: '24px', borderRadius: '20px', background: '#FFFFFF' }}>
-                <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#0F172A', marginBottom: '12px' }}>
+                <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#002169', marginBottom: '12px' }}>
                   Publish & Export Options
                 </h4>
 
@@ -616,9 +616,9 @@ export default function SocialStudioClient() {
                       flex: 1,
                       padding: '12px',
                       borderRadius: '12px',
-                      border: '1px solid #CBD5E1',
-                      background: '#F8FAFC',
-                      color: '#0F172A',
+                      border: '1px solid #E6E1EA',
+                      background: '#F7F4F7',
+                      color: '#002169',
                       fontWeight: 700,
                       fontSize: '0.9rem',
                       display: 'flex',
@@ -666,7 +666,8 @@ export default function SocialStudioClient() {
       <CartDrawer
         isOpen={cartOpen}
         onClose={() => setCartOpen(false)}
-        items={cartItems}
+        cartItems={cartItems}
+        onClearCart={() => setCartItems([])}
         onRemoveItem={(id) => setCartItems(prev => prev.filter(i => i.id !== id))}
         onCheckout={() => {
           setCartOpen(false);

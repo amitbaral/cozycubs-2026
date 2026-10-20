@@ -25,7 +25,7 @@ export default function DataDeletionClient() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#FBF9F5' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#F7F4F7' }}>
       <AnnouncementBar />
       <Header
         cartCount={cartItems.length}
@@ -42,17 +42,17 @@ export default function DataDeletionClient() {
             <span className="badge-au" style={{ background: '#DCFCE7', color: '#15803D', marginBottom: '12px' }}>
               🛡️ META & USER DATA PRIVACY COMPLIANCE
             </span>
-            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 2.8rem)', fontWeight: 800, color: '#0F172A', marginBottom: '12px' }}>
+            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 2.8rem)', fontWeight: 800, color: '#002169', marginBottom: '12px' }}>
               User Data Deletion Instructions
             </h1>
-            <p style={{ fontSize: '1rem', color: '#64748B' }}>
+            <p style={{ fontSize: '1rem', color: '#6B7590' }}>
               Cozy Cubs Australia is committed to protecting your privacy and providing transparent data deletion controls in compliance with Meta Platform Terms.
             </p>
           </div>
 
-          <div className="glass-card" style={{ padding: '36px', borderRadius: '24px', background: '#FFFFFF', lineHeight: 1.8, color: '#334155', fontSize: '1rem' }}>
+          <div className="glass-card" style={{ padding: '36px', borderRadius: '24px', background: '#FFFFFF', lineHeight: 1.8, color: '#445374', fontSize: '1rem' }}>
             
-            <h2 style={{ fontSize: '1.3rem', color: '#0F172A', fontWeight: 800, marginBottom: '14px' }}>
+            <h2 style={{ fontSize: '1.3rem', color: '#002169', fontWeight: 800, marginBottom: '14px' }}>
               How to Delete Your Data from Cozy Cubs
             </h2>
 
@@ -60,8 +60,8 @@ export default function DataDeletionClient() {
               If you have logged in to Cozy Cubs using Facebook or linked your Meta account with our AI Social Studio, you can request full deletion of your user data, tokens, and social profiles at any time.
             </p>
 
-            <div style={{ background: '#F8FAFC', padding: '24px', borderRadius: '16px', border: '1px solid #E2E8F0', marginBottom: '28px' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A', marginBottom: '10px' }}>
+            <div style={{ background: '#F7F4F7', padding: '24px', borderRadius: '16px', border: '1px solid #E6E1EA', marginBottom: '28px' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#002169', marginBottom: '10px' }}>
                 Option 1: Remove App via Facebook Settings
               </h3>
               <ol style={{ paddingLeft: '20px', margin: 0 }}>
@@ -72,8 +72,8 @@ export default function DataDeletionClient() {
               </ol>
             </div>
 
-            <div style={{ background: '#FEF3C7', padding: '24px', borderRadius: '16px', border: '1px solid #FDE68A', marginBottom: '28px' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#B45309', marginBottom: '10px' }}>
+            <div style={{ background: '#F1E6F1', padding: '24px', borderRadius: '16px', border: '1px solid #DDB8DE', marginBottom: '28px' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#6F3A73', marginBottom: '10px' }}>
                 Option 2: Direct Data Deletion Request Form
               </h3>
               
@@ -95,7 +95,7 @@ export default function DataDeletionClient() {
                       minWidth: '240px',
                       padding: '12px 14px',
                       borderRadius: '10px',
-                      border: '1px solid #CBD5E1',
+                      border: '1px solid #E6E1EA',
                       fontSize: '0.9rem',
                       outline: 'none'
                     }}
@@ -111,8 +111,8 @@ export default function DataDeletionClient() {
               )}
             </div>
 
-            <div style={{ fontSize: '0.88rem', color: '#64748B', borderTop: '1px solid #F1F5F9', paddingTop: '20px' }}>
-              For additional assistance, contact our Privacy Officer directly at <a href="mailto:info@cozycubs.au" style={{ color: '#D97706', fontWeight: 700 }}>info@cozycubs.au</a>.
+            <div style={{ fontSize: '0.88rem', color: '#6B7590', borderTop: '1px solid #F7F4F7', paddingTop: '20px' }}>
+              For additional assistance, contact our Privacy Officer directly at <a href="mailto:info@cozycubs.au" style={{ color: '#894B8D', fontWeight: 700 }}>info@cozycubs.au</a>.
             </div>
 
           </div>
@@ -128,7 +128,8 @@ export default function DataDeletionClient() {
       <CartDrawer
         isOpen={cartOpen}
         onClose={() => setCartOpen(false)}
-        items={cartItems}
+        cartItems={cartItems}
+        onClearCart={() => setCartItems([])}
         onRemoveItem={(id) => setCartItems(prev => prev.filter(i => i.id !== id))}
         onCheckout={() => {
           setCartOpen(false);
