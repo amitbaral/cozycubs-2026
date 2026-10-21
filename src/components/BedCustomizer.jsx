@@ -90,8 +90,10 @@ function Step({ number, title, value, isOpen, onToggle, children }) {
     <div className={`step${isOpen ? ' is-open' : ''}`}>
       <button className="step__head" onClick={onToggle} aria-expanded={isOpen}>
         <span className="step__num">{number}</span>
-        <span className="step__title">{title}</span>
-        <span className="step__value">{value}</span>
+        <span className="step__text">
+          <span className="step__title">{title}</span>
+          <span className="step__value">{value}</span>
+        </span>
         <ChevronDown size={18} style={{ flexShrink: 0, color: 'var(--plum)', transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
       </button>
       {isOpen && <div className="step__body animate-fade-in">{children}</div>}
@@ -371,7 +373,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
               <div
                 ref={flatCanvasRef}
                 className={`flat-view__canvas is-draggable${isPanning ? ' is-dragging' : ''}`}
-                style={{ aspectRatio: `${doonaW} / ${doonaL}` }}
+                style={{ aspectRatio: `${doonaW} / ${doonaL}`, width: `min(100%, calc(60vh * ${doonaW / doonaL}))` }}
                 onPointerDown={handlePointerDown}
                 onPointerMove={handlePointerMove}
                 onPointerUp={handlePointerUp}
@@ -388,8 +390,8 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
               </div>
             </div>
 
-            <p style={{ fontSize: '0.82rem', marginTop: '12px', display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center', textAlign: 'center' }}>
-              <Move size={14} /> Drag the image to reposition it. Includes {selectedSize.pillowcases} matching pillowcase{selectedSize.pillowcases > 1 ? 's' : ''}.
+            <p style={{ fontSize: '0.82rem', marginTop: '12px', textAlign: 'center' }}>
+              <Move size={14} style={{ display: 'inline', verticalAlign: '-2px', marginRight: '6px' }} />Drag the image to reposition it. Includes {selectedSize.pillowcases} matching pillowcase{selectedSize.pillowcases > 1 ? 's' : ''}.
             </p>
           </div>
 
@@ -490,7 +492,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                 <Search size={17} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--plum)' }} />
               </div>
 
-              <div ref={patternGridRef} style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', maxHeight: '236px', overflowY: 'auto', paddingRight: '4px' }}>
+              <div ref={patternGridRef} className="pattern-grid">
                 {filteredPatterns.map((pattern) => (
                   <button
                     key={pattern.id}

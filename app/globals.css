@@ -726,7 +726,7 @@ img {
 /* Bed Designer */
 .designer {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 28px;
   background: #FFFFFF;
   border-radius: var(--radius-lg);
@@ -735,8 +735,9 @@ img {
   padding: 16px;
   margin-top: 24px;
 }
+.designer > * { min-width: 0; }
 @media (min-width: 1024px) {
-  .designer { grid-template-columns: 1.25fr 1fr; padding: 28px; align-items: start; }
+  .designer { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); padding: 28px; align-items: start; }
   .designer__preview { position: sticky; top: 110px; }
 }
 
@@ -833,6 +834,7 @@ img {
   padding-top: 3px;
 }
 .step.is-open .step__num { background: var(--plum); color: #FFFFFF; }
+.step__text { flex: 1; min-width: 0; display: flex; align-items: center; gap: 14px; }
 .step__title { font-family: var(--heading); font-size: 1.25rem; font-weight: 700; color: var(--navy); line-height: 1.1; padding-top: 3px; }
 .step__value { margin-left: auto; font-size: 0.85rem; font-weight: 600; color: var(--plum); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 45%; }
 .step__body { padding: 0 18px 20px; }
@@ -912,6 +914,28 @@ img {
 }
 .pattern-tile img { width: 100%; height: 100%; object-fit: cover; }
 .pattern-tile.is-active { border-color: var(--plum); box-shadow: 0 0 0 2px var(--plum-soft); }
+
+.pattern-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  max-height: 236px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+@media (max-width: 600px) {
+  .designer { padding: 12px; gap: 20px; border-radius: var(--radius-md); }
+  .flat-view { padding: 30px 14px 18px 34px; }
+  .flat-view__guide span { font-size: 0.62rem; padding: 1px 6px; }
+  .step__head { padding: 14px; gap: 10px; }
+  .step__text { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .step__title { font-size: 1.1rem; }
+  .step__value { margin-left: 0; font-size: 0.78rem; max-width: 100%; text-align: left; }
+  .step__body { padding: 0 14px 16px; }
+  .pattern-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); max-height: 300px; }
+  .designer__summary { padding: 14px; }
+}
 
 .designer__summary {
   margin-top: 16px;

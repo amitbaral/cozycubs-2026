@@ -49,14 +49,14 @@ function NewsletterForm() {
     return (
       <div className="footer__news" role="status">
         <h3>You&apos;re in!</h3>
-        <p>Check your inbox for your 10% off code.</p>
+        <p>Thanks for joining. Check your inbox for a welcome email.</p>
       </div>
     );
   }
 
   return (
     <form className="footer__news" onSubmit={handleSubmit}>
-      <h3>Get 10% off your first set</h3>
+      <h3>Get new designs &amp; special offers</h3>
       <input
         type="email"
         required

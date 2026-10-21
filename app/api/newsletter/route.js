@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { SquareError } from 'square';
 import { clean, clientIp, EMAIL_PATTERN, isRateLimited, jsonError, readJson } from '../../../src/lib/forms';
-import { ensureCustomerGroup, findOrCreateCustomer, getSquareClient } from '../../../src/lib/square';
+import { ensureCustomerGroup, findDiscountByCode, findOrCreateCustomer, getSquareClient } from '../../../src/lib/square';
 import { BUSINESS_EMAIL, sendEmail, simpleEmail } from '../../../src/lib/email';
+import { getDiscountLabel } from '../../../src/lib/pricing';
 
 const GROUP_NAME = 'Newsletter';
-const WELCOME_CODE = 'AUSSIE10';
 
 export async function POST(request) {
   const body = await readJson(request);
@@ -31,15 +31,26 @@ export async function POST(request) {
     return jsonError('We couldn\u2019t sign you up right now. Please try again shortly.', 502);
   }
 
+  // Only offer a welcome code if it currently exists as a discount in Square.
+  let welcome = null;
+  if (process.env.NEWSLETTER_DISCOUNT_CODE) {
+    welcome = await findDiscountByCode(square, process.env.NEWSLETTER_DISCOUNT_CODE).catch((err) => {
+      console.error('Newsletter discount lookup failed:', err instanceof SquareError ? JSON.stringify(err.errors) : err);
+      return null;
+    });
+  }
+
   await sendEmail({
     to: email,
-    subject: 'Welcome to Cozy Cubs – here\u2019s 10% off',
+    subject: welcome ? `Welcome to Cozy Cubs – here’s ${getDiscountLabel(welcome)}` : 'Welcome to Cozy Cubs',
     replyTo: BUSINESS_EMAIL,
     html: simpleEmail('Welcome to Cozy Cubs', [
-      'Thanks for joining! As promised, here\u2019s 10% off your first custom set.',
-      `Use code <strong style="font-size:18px;color:#894B8D">${WELCOME_CODE}</strong> at checkout.`,
-      'Don\u2019t want our emails? Just reply with \u201cunsubscribe\u201d and we\u2019ll remove you.'
-    ])
+      welcome
+        ? `Thanks for joining! Here’s ${getDiscountLabel(welcome)} your first custom set.`
+        : 'Thanks for joining! We’ll let you know about new designs and special offers.',
+      welcome && `Use code <strong style="font-size:18px;color:#894B8D">${welcome.code}</strong> at checkout.`,
+      'Don’t want our emails? Just reply with “unsubscribe” and we’ll remove you.'
+    ].filter(Boolean))
   });
 
   return NextResponse.json({ success: true });

@@ -73,7 +73,7 @@ function totalsRows(totals) {
     `<tr><td style="padding:4px 0;${strong ? 'font-weight:bold;color:#002169' : ''}">${label}</td><td style="padding:4px 0;text-align:right;${strong ? 'font-weight:bold;color:#002169' : ''}">${value}</td></tr>`;
   return [
     row('Subtotal', money(totals.subtotal)),
-    totals.discountAmount > 0 && row(`Discount (${totals.discountPercent}%)`, `-${money(totals.discountAmount)}`),
+    totals.discountAmount > 0 && row(`Discount ${escapeHtml(totals.discountCode)} (${escapeHtml(totals.discountLabel)})`, `-${money(totals.discountAmount)}`),
     row('Tracked shipping', totals.shippingCost === 0 ? 'Free' : money(totals.shippingCost)),
     row('Total paid (AUD)', money(totals.total), true)
   ].filter(Boolean).join('');

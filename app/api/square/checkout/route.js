@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { SquareError } from 'square';
-import { calculateTotals, normalizePromoCode } from '../../../../src/lib/pricing';
+import { calculateTotals, getDiscountLabel, normalizePromoCode } from '../../../../src/lib/pricing';
 import { parseVariation } from '../../../../src/lib/variations';
 import { AU_BED_SIZES, FABRIC_OPTIONS } from '../../../../src/data/sampleData';
-import { getSquareClient, getLocationId, findOrCreateCustomer } from '../../../../src/lib/square';
+import { getSquareClient, getLocationId, findOrCreateCustomer, findDiscountByCode } from '../../../../src/lib/square';
 import { sendEmail, orderCustomerEmail, orderBusinessEmail, BUSINESS_EMAIL } from '../../../../src/lib/email';
 import { clean, jsonError, readJson, EMAIL_PATTERN } from '../../../../src/lib/forms';
 
@@ -104,8 +104,20 @@ export async function POST(request) {
   }
   if (!EMAIL_PATTERN.test(buyer.email)) return jsonError('Please enter a valid email address.');
 
-  const promo = normalizePromoCode(promoCode);
-  const totals = calculateTotals(orderItems, promo);
+  const promo = normalizePromoCode(clean(promoCode, 60));
+  let discount = null;
+  if (promo) {
+    try {
+      discount = await findDiscountByCode(square, promo);
+    } catch (err) {
+      console.error('Discount lookup failed:', err instanceof SquareError ? JSON.stringify(err.errors) : err);
+      return jsonError('We couldn\u2019t check your promo code right now. You have not been charged. Please try again.', 502);
+    }
+    if (!discount) {
+      return jsonError(`The promo code ${promo} is no longer valid. Please remove it from your cart. You have not been charged.`);
+    }
+  }
+  const totals = calculateTotals(orderItems, discount);
   if (totals.total <= 0) return jsonError('Order total must be greater than zero.');
 
   const squareAddress = {
@@ -149,7 +161,7 @@ export async function POST(request) {
         })),
         discounts: totals.discountAmount > 0 ? [{
           uid: 'promo',
-          name: `Promo ${promo}`,
+          name: `${discount?.name} (${getDiscountLabel(discount)})`,
           type: 'FIXED_AMOUNT',
           amountMoney: { amount: toCents(totals.discountAmount), currency: 'AUD' },
           scope: 'ORDER'

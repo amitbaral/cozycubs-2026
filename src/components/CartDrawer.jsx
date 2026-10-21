@@ -3,31 +3,56 @@
 import React, { useState } from 'react';
 import { X, Trash2, ShoppingBag, Truck, ShieldCheck, ArrowRight, Sparkles, Check } from 'lucide-react';
 import SquarePaymentModal from './SquarePaymentModal';
-import { calculateTotals, getPromoPercent, normalizePromoCode, FREE_SHIPPING_THRESHOLD } from '../lib/pricing';
+import { calculateTotals, formatMoney, getDiscountLabel, FREE_SHIPPING_THRESHOLD } from '../lib/pricing';
 
 export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, onClearCart }) {
   const [promoCode, setPromoCode] = useState('');
-  const [appliedPromo, setAppliedPromo] = useState('');
+  const [appliedDiscount, setAppliedDiscount] = useState(null);
   const [promoMessage, setPromoMessage] = useState('');
+  const [promoOk, setPromoOk] = useState(false);
+  const [isCheckingPromo, setIsCheckingPromo] = useState(false);
   const [isSquareModalOpen, setIsSquareModalOpen] = useState(false);
 
   if (!isOpen) return null;
 
-  const { subtotal, discountPercent, discountAmount, shippingCost, total: finalTotal } = calculateTotals(cartItems, appliedPromo);
+  const { subtotal, discountAmount, discountLabel, shippingCost, total: finalTotal } = calculateTotals(cartItems, appliedDiscount);
 
   const freeShippingThreshold = FREE_SHIPPING_THRESHOLD;
   const progressPercent = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
   const remainingForFreeShipping = freeShippingThreshold - subtotal;
 
-  const handleApplyPromo = () => {
-    const percent = getPromoPercent(promoCode);
-    if (percent > 0) {
-      setAppliedPromo(normalizePromoCode(promoCode));
-      setPromoMessage(`🎉 ${percent}% Discount Applied!`);
-    } else {
-      setAppliedPromo('');
-      setPromoMessage('❌ Invalid Code. Try "AUSSIE10" for 10% off.');
+  const handleApplyPromo = async () => {
+    const code = promoCode.trim();
+    if (!code || isCheckingPromo) return;
+    setIsCheckingPromo(true);
+    try {
+      const res = await fetch('/api/discount', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      const data = await res.json();
+      if (data.success && data.discount) {
+        setAppliedDiscount(data.discount);
+        setPromoOk(true);
+        setPromoMessage(`🎉 ${data.discount.code} applied – ${getDiscountLabel(data.discount)}`);
+      } else {
+        setAppliedDiscount(null);
+        setPromoOk(false);
+        setPromoMessage(`❌ ${data.error || 'That code isn’t valid.'}`);
+      }
+    } catch {
+      setPromoOk(false);
+      setPromoMessage('❌ We couldn’t check that code. Please try again.');
+    } finally {
+      setIsCheckingPromo(false);
     }
+  };
+
+  const handleRemovePromo = () => {
+    setAppliedDiscount(null);
+    setPromoCode('');
+    setPromoMessage('');
   };
 
   const handleOpenSquareCheckout = () => {
@@ -90,8 +115,8 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, o
             <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#6F3A73', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Truck size={16} /> 
               {subtotal >= freeShippingThreshold 
-                ? '🎉 You unlocked FREE tracked shipping across Australia!'
-                : `Add $${remainingForFreeShipping} AUD more for FREE tracked shipping`}
+                ? '🎉 You unlocked FREE shipping across Australia!'
+                : `Add ${formatMoney(remainingForFreeShipping)} AUD more for FREE tracked shipping`}
             </div>
 
             <div style={{ width: '100%', height: '7px', background: '#DDB8DE', borderRadius: '999px', overflow: 'hidden' }}>
@@ -181,7 +206,9 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, o
                   type="text"
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value)}
-                  placeholder="Promo code (Try AUSSIE10)"
+                  onKeyDown={(e) => { if (e.key === 'Enter') handleApplyPromo(); }}
+                  placeholder="Promo code"
+                  aria-label="Promo code"
                   style={{
                     flex: 1,
                     padding: '8px 12px',
@@ -191,7 +218,8 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, o
                   }}
                 />
                 <button
-                  onClick={handleApplyPromo}
+                  onClick={appliedDiscount ? handleRemovePromo : handleApplyPromo}
+                  disabled={isCheckingPromo}
                   style={{
                     padding: '8px 14px',
                     background: '#002169',
@@ -202,11 +230,11 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, o
                     cursor: 'pointer'
                   }}
                 >
-                  Apply
+                  {isCheckingPromo ? 'Checking...' : appliedDiscount ? 'Remove' : 'Apply'}
                 </button>
               </div>
               {promoMessage && (
-                <div style={{ fontSize: '0.78rem', fontWeight: 700, marginBottom: '10px', color: discountPercent > 0 ? '#16A34A' : '#EF4444' }}>
+                <div role="status" style={{ fontSize: '0.78rem', fontWeight: 700, marginBottom: '10px', color: promoOk ? '#16A34A' : '#EF4444' }}>
                   {promoMessage}
                 </div>
               )}
@@ -215,21 +243,21 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, o
               <div style={{ fontSize: '0.88rem', color: '#445374', display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '16px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span>Subtotal:</span>
-                  <span style={{ fontWeight: 700 }}>${subtotal} AUD</span>
+                  <span style={{ fontWeight: 700 }}>{formatMoney(subtotal)} AUD</span>
                 </div>
-                {discountPercent > 0 && (
+                {discountAmount > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: '#16A34A' }}>
-                    <span>Discount ({discountPercent}%):</span>
-                    <span style={{ fontWeight: 700 }}>-${discountAmount} AUD</span>
+                    <span>Discount ({discountLabel}):</span>
+                    <span style={{ fontWeight: 700 }}>-{formatMoney(discountAmount)} AUD</span>
                   </div>
                 )}
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span>Tracked Shipping:</span>
-                  <span style={{ fontWeight: 700 }}>{shippingCost === 0 ? 'FREE' : `$${shippingCost} AUD`}</span>
+                  <span style={{ fontWeight: 700 }}>{shippingCost === 0 ? 'FREE' : `${formatMoney(shippingCost)} AUD`}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 800, color: '#002169', paddingTop: '8px', borderTop: '1px solid #F7F4F7' }}>
                   <span>Total:</span>
-                  <span>${finalTotal} AUD</span>
+                  <span>{formatMoney(finalTotal)} AUD</span>
                 </div>
               </div>
 
@@ -270,10 +298,10 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, o
           if (cartItems.length === 0) onClose();
         }}
         cartItems={cartItems}
-        promoCode={appliedPromo}
+        discount={appliedDiscount}
         onClearCart={() => {
           onClearCart();
-          setAppliedPromo('');
+          setAppliedDiscount(null);
           setPromoCode('');
           setPromoMessage('');
         }}

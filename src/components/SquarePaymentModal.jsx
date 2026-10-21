@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { X, CreditCard, CheckCircle2, ArrowRight, Truck, RefreshCw, AlertCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { fetchSquareConfig, processSquareCheckout } from '../services/squareService';
-import { calculateTotals } from '../lib/pricing';
+import { calculateTotals, formatMoney } from '../lib/pricing';
 
 const SQUARE_SDK_URLS = {
   production: 'https://web.squarecdn.com/v1/square.js',
@@ -35,7 +35,7 @@ function loadSquareSdk(environment) {
   });
 }
 
-export default function SquarePaymentModal({ isOpen, onClose, cartItems = [], promoCode = '', onClearCart, onPaymentSuccess }) {
+export default function SquarePaymentModal({ isOpen, onClose, cartItems = [], discount = null, onClearCart, onPaymentSuccess }) {
   const [step, setStep] = useState('checkout'); // 'checkout' | 'processing' | 'success'
   const [squareConfig, setSquareConfig] = useState(null);
   const [loadError, setLoadError] = useState('');
@@ -49,7 +49,7 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems = [], pr
   // Kept after a retryable failure so the retry is an identical request Square can dedupe.
   const pendingTokenRef = useRef(null);
 
-  const totals = calculateTotals(cartItems, promoCode);
+  const totals = calculateTotals(cartItems, discount);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -150,7 +150,7 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems = [], pr
           variationId, patternName, size, fabric, backingColor, customText, font, textPlacement, artworkUrl
         })),
         customer,
-        promoCode
+        promoCode: totals.discountCode
       });
 
       pendingTokenRef.current = null;
@@ -377,11 +377,12 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems = [], pr
               }}>
                 <div>
                   <div style={{ fontSize: '0.82rem', color: '#6F3A73', fontWeight: 700 }}>Total Due (AUD)</div>
-                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#6F3A73' }}>${totals.total} AUD</div>
+                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#6F3A73' }}>{formatMoney(totals.total)} AUD</div>
                 </div>
                 <div style={{ textAlign: 'right', fontSize: '0.8rem', color: '#6F3A73' }}>
                   📦 {cartItems.length} Custom {cartItems.length === 1 ? 'Item' : 'Items'}<br />
-                  🚚 {totals.shippingCost === 0 ? 'Free tracked shipping' : `Tracked shipping $${totals.shippingCost}`}
+                  {totals.discountAmount > 0 && <>🏷️ {totals.discountCode}: -{formatMoney(totals.discountAmount)}<br /></>}
+                  🚚 {totals.shippingCost === 0 ? 'Free tracked shipping' : `Tracked shipping ${formatMoney(totals.shippingCost)}`}
                 </div>
               </div>
 
@@ -515,7 +516,7 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems = [], pr
                   gap: '8px'
                 }}
               >
-                {isSubmitting ? 'Verifying card...' : <>Pay ${totals.total} AUD with Square <ArrowRight size={18} /></>}
+                {isSubmitting ? 'Verifying card...' : <>Pay {formatMoney(totals.total)} AUD with Square <ArrowRight size={18} /></>}
               </button>
 
               <div style={{ textAlign: 'center', fontSize: '0.75rem', color: '#6B7590', display: 'flex', justifyContent: 'center', gap: '14px' }}>
