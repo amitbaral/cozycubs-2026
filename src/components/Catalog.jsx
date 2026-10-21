@@ -1,42 +1,23 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { RefreshCw, Search, ArrowRight } from 'lucide-react';
 import { BearCub } from './Brand';
+import { useSquareProducts, useInfiniteScroll } from '../lib/useSquareProducts';
+
+const PAGE_STEP = 12;
 
 export default function Catalog({ onCustomizePattern }) {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [visibleCount, setVisibleCount] = useState(12);
+  const [visibleCount, setVisibleCount] = useState(PAGE_STEP);
+  const sentinelRef = useRef(null);
 
-  useEffect(() => {
-    let isMounted = true;
-    setLoading(true);
-
-    fetch('/api/square/products')
-      .then((res) => res.json())
-      .then((data) => {
-        if (!isMounted) return;
-        if (data.success && Array.isArray(data.products)) {
-          setProducts(data.products);
-        } else {
-          setError(data.error || 'Could not load products from Square API');
-        }
-      })
-      .catch((err) => {
-        if (isMounted) setError(err.message);
-      })
-      .finally(() => {
-        if (isMounted) setLoading(false);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  // Filters only make sense across the whole catalog, so they pull in every page.
+  const isFiltering = activeCategory !== 'All' || searchQuery.trim().length > 0;
+  const { products, loading: fetching, error: fetchError, hasMore, loadMore } = useSquareProducts({ loadAll: isFiltering });
+  const loading = fetching && products.length === 0;
+  const error = products.length === 0 ? fetchError : null;
 
   const categories = [
     'All',
@@ -83,12 +64,23 @@ export default function Catalog({ onCustomizePattern }) {
   };
 
   const filteredProducts = products.filter((p) => {
+    const query = searchQuery.trim().toLowerCase();
     const categoryMatch = activeCategory === 'All' || getProductCategory(p) === activeCategory;
-    const searchMatch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase()) || (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase()));
+    const searchMatch = !query || (p.name || '').toLowerCase().includes(query) || (p.description && p.description.toLowerCase().includes(query));
     return categoryMatch && searchMatch;
   });
 
   const displayedProducts = filteredProducts.slice(0, visibleCount);
+  const canShowMore = displayedProducts.length < filteredProducts.length || hasMore;
+
+  const showMore = useCallback(() => {
+    if (visibleCount >= filteredProducts.length) {
+      if (!hasMore || fetching) return;
+      loadMore();
+    }
+    setVisibleCount((prev) => prev + PAGE_STEP);
+  }, [visibleCount, filteredProducts.length, hasMore, fetching, loadMore]);
+  useInfiniteScroll(sentinelRef, showMore, { enabled: !loading && !error && canShowMore });
 
   return (
     <section id="collections" className="section section--lilac" style={{ scrollMarginTop: '110px' }}>
@@ -104,7 +96,7 @@ export default function Catalog({ onCustomizePattern }) {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => { setSearchQuery(e.target.value); setVisibleCount(PAGE_STEP); }}
               placeholder="Search designs..."
               aria-label="Search designs"
               style={{
@@ -126,7 +118,7 @@ export default function Catalog({ onCustomizePattern }) {
           {categories.map((cat) => (
             <button
               key={cat}
-              onClick={() => { setActiveCategory(cat); setVisibleCount(12); }}
+              onClick={() => { setActiveCategory(cat); setVisibleCount(PAGE_STEP); }}
               className={`filter-pill${activeCategory === cat ? ' is-active' : ''}`}
             >
               {cat}
@@ -187,7 +179,7 @@ export default function Catalog({ onCustomizePattern }) {
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto', paddingTop: '14px' }}>
                         <div>
                           <span style={{ fontSize: '0.8rem', display: 'block', lineHeight: 1 }}>From</span>
-                          <span className="product-card__price">${product.minPriceAUD}</span>
+                          <span className="product-card__price">{product.minPriceAUD != null ? `$${product.minPriceAUD}` : '—'}</span>
                         </div>
                         <button onClick={customize} className="btn-outline" style={{ padding: '12px 20px 10px', fontSize: '1rem' }}>
                           Customise <ArrowRight size={16} />
@@ -199,11 +191,13 @@ export default function Catalog({ onCustomizePattern }) {
               })}
             </div>
 
-            {displayedProducts.length < filteredProducts.length && (
-              <div style={{ textAlign: 'center', marginTop: '48px' }}>
-                <button onClick={() => setVisibleCount((prev) => prev + 12)} className="btn-accent">
-                  Load More Designs <ArrowRight size={20} />
-                </button>
+            {filteredProducts.length === 0 && !fetching && (
+              <p style={{ textAlign: 'center', padding: '30px 0' }}>No designs match your search.</p>
+            )}
+
+            {canShowMore && (
+              <div ref={sentinelRef} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginTop: '40px', minHeight: '40px', fontWeight: 600, color: 'var(--navy)' }}>
+                {fetching && <><RefreshCw size={20} className="spin-animation" style={{ color: 'var(--plum)' }} /> {isFiltering ? 'Searching all designs...' : 'Loading more designs...'}</>}
               </div>
             )}
           </>

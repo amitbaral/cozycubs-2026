@@ -2,7 +2,7 @@ import GuideClient from './GuideClient';
 
 export const metadata = {
   title: 'Ultimate Australian Bedding Size Guide: Single to Super King | Cozy Cubs',
-  description: 'Complete Australian bedding size matrix: Single (140x210cm), Double (180x210cm), Queen (210x210cm), King (245x210cm), Super King (270x240cm). Learn dimensions & sizing tips.',
+  description: 'Australian doona cover sizes: Single (140x210cm), Double (180x210cm), Queen (210x210cm), King (240x220cm), Super King (260x230cm), plus Cot and King Single. Dimensions & sizing tips.',
   alternates: {
     canonical: 'https://cozycubs.au/blog/australian-bedding-size-guide',
   },

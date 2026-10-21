@@ -25,11 +25,6 @@ export default function DoonaKingdomClient() {
       doonaKingdom: '❌ Flat 2D Photo Preview Only',
     },
     {
-      feature: 'Fabric Quality Baseline',
-      cozyCubs: '✅ 100% GOTS Organic Cotton (300TC)',
-      doonaKingdom: '❌ Synthetic Microfibre / Polyester Blends',
-    },
-    {
       feature: 'Print Ink Safety & Longevity',
       cozyCubs: '✅ OEKO-TEX Eco Non-Toxic Reactive Inks',
       doonaKingdom: '⚠️ Standard Sublimation Dyeing',
@@ -53,11 +48,6 @@ export default function DoonaKingdomClient() {
       feature: 'Quality & Happiness Guarantee',
       cozyCubs: '🛡️ 100% Free Reprint Guarantee',
       doonaKingdom: '⚠️ Complex Overseas Return Process',
-    },
-    {
-      feature: 'Starting Price (Single Set)',
-      cozyCubs: '💰 $129 AUD (Includes Pillowcases)',
-      doonaKingdom: '💸 $140+ AUD (Plus High Shipping)',
     },
   ];
 
@@ -132,10 +122,10 @@ export default function DoonaKingdomClient() {
                 <ShieldCheck size={24} />
               </div>
               <h3 style={{ fontSize: '1.25rem', color: '#002169', fontWeight: 800, marginBottom: '10px' }}>
-                100% Organic Cotton vs Synthetic Microfibre
+                Your Choice of Polyester or 100% Cotton
               </h3>
               <p style={{ color: '#6B7590', fontSize: '0.94rem', lineHeight: 1.6 }}>
-                While Doona Kingdom uses synthetic polyester microfibre blends, Cozy Cubs crafts every quilt cover with 300TC GOTS-certified organic cotton percale. Crisp, cool, and breathable for Australian summers.
+                Every Cozy Cubs design comes in Premium Polyester or 100% Cotton, in all seven Australian sizes from Cot to Super King. Prices are shown for each size and fabric before you order.
               </p>
             </div>
 

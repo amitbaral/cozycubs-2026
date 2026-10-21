@@ -7,16 +7,15 @@ import CartDrawer from '../../../src/components/CartDrawer';
 import SizeFabricGuideModal from '../../../src/components/SizeFabricGuideModal';
 import SquarePaymentModal from '../../../src/components/SquarePaymentModal';
 import AnnouncementBar from '../../../src/components/AnnouncementBar';
-import { AU_BED_SIZES, FABRIC_OPTIONS } from '../../../src/data/sampleData';
-import { getItemPrice } from '../../../src/lib/pricing';
-import { Sparkles, Star, RefreshCw } from 'lucide-react';
+import { getVariationOptions } from '../../../src/lib/variations';
+import { Sparkles, RefreshCw } from 'lucide-react';
 
 export default function ProductClient({ id }) {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedSize, setSelectedSize] = useState(AU_BED_SIZES[2]);
-  const [selectedFabric, setSelectedFabric] = useState(FABRIC_OPTIONS[1]);
+  const [sizeId, setSizeId] = useState('queen');
+  const [fabricId, setFabricId] = useState('cotton');
   const [cartItems, setCartItems] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
@@ -51,22 +50,27 @@ export default function ProductClient({ id }) {
     };
   }, [id]);
 
-  const priceAUD = getItemPrice({ size: selectedSize.name, fabric: selectedFabric.name });
+  const options = getVariationOptions(product?.variations);
+  const selectedSize = options.sizes.find((s) => s.id === sizeId) || options.sizes[0];
+  const selectedFabric = options.fabrics.find((f) => f.id === fabricId) || options.fabrics[0];
+  const variation = selectedSize && selectedFabric ? options.find(selectedSize.id, selectedFabric.id) : null;
+  const priceAUD = variation?.priceAUD ?? null;
 
   const handleLaunchDesigner = () => {
     window.location.href = `/#customizer?product=${id}`;
   };
 
   const handleAddToCart = () => {
-    if (!product) return;
+    if (!product || !variation) return;
     const item = {
       id: `cart-${Date.now()}`,
       patternName: product.name,
       patternImage: product.previewUrl,
+      variationId: variation.id,
       size: selectedSize.name,
       dimensions: selectedSize.dimensions,
       fabric: selectedFabric.name,
-      price: priceAUD,
+      price: variation.priceAUD,
       pillowcases: selectedSize.pillowcases
     };
     setCartItems((prev) => [...prev, item]);
@@ -130,9 +134,6 @@ export default function ProductClient({ id }) {
                   <span className="badge-au" style={{ background: '#F1E6F1', color: '#6F3A73' }}>
                     ⚡ Cozy Cubs Exclusive #{product.id.slice(0, 8)}
                   </span>
-                  <span className="badge-au" style={{ background: '#DCFCE7', color: '#15803D' }}>
-                    🌿 100% Organic Percale Cotton
-                  </span>
                   <span className="badge-au" style={{ background: '#DBEAFE', color: '#1E40AF' }}>
                     🇦🇺 Standard AU Sizing
                   </span>
@@ -141,21 +142,12 @@ export default function ProductClient({ id }) {
 
               {/* Right Column: Buying & Customization Panel */}
               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} fill="#FFC23C" color="#FFC23C" />
-                  ))}
-                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#6B7590', marginLeft: '6px' }}>
-                    4.9 (42 Verified Aussie Reviews)
-                  </span>
-                </div>
-
                 <h1 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.5rem)', color: '#002169', fontWeight: 800, marginBottom: '12px', lineHeight: 1.2 }}>
                   {product.name}
                 </h1>
 
                 <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#894B8D', marginBottom: '20px' }}>
-                  ${priceAUD} AUD
+                  {priceAUD != null ? `$${priceAUD} AUD` : 'Price unavailable'}
                 </div>
 
                 <p style={{ color: '#445374', fontSize: '0.96rem', lineHeight: 1.6, marginBottom: '24px' }}>
@@ -168,24 +160,62 @@ export default function ProductClient({ id }) {
                     Select AU Bed Size:
                   </label>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '8px' }}>
-                    {AU_BED_SIZES.map((size) => (
-                      <button
-                        key={size.id}
-                        onClick={() => setSelectedSize(size)}
-                        style={{
-                          padding: '10px',
-                          borderRadius: '10px',
-                          border: selectedSize.id === size.id ? '2px solid #894B8D' : '1px solid #E6E1EA',
-                          background: selectedSize.id === size.id ? '#F1E6F1' : '#FFFFFF',
-                          color: selectedSize.id === size.id ? '#6F3A73' : '#002169',
-                          fontWeight: 700,
-                          fontSize: '0.85rem',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        {size.name}
-                      </button>
-                    ))}
+                    {options.sizes.map((size) => {
+                      const isActive = selectedSize?.id === size.id;
+                      const price = selectedFabric ? options.find(size.id, selectedFabric.id)?.priceAUD : null;
+                      return (
+                        <button
+                          key={size.id}
+                          onClick={() => setSizeId(size.id)}
+                          style={{
+                            padding: '10px',
+                            borderRadius: '10px',
+                            border: isActive ? '2px solid #894B8D' : '1px solid #E6E1EA',
+                            background: isActive ? '#F1E6F1' : '#FFFFFF',
+                            color: isActive ? '#6F3A73' : '#002169',
+                            fontWeight: 700,
+                            fontSize: '0.85rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          {size.name}
+                          <span style={{ display: 'block', fontSize: '0.75rem', fontWeight: 500 }}>
+                            {size.dimensions}{price != null ? ` · $${price}` : ''}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Fabric Selector */}
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#002169', marginBottom: '8px' }}>
+                    Select Fabric:
+                  </label>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '8px' }}>
+                    {options.fabrics.map((fabric) => {
+                      const isActive = selectedFabric?.id === fabric.id;
+                      const price = selectedSize ? options.find(selectedSize.id, fabric.id)?.priceAUD : null;
+                      return (
+                        <button
+                          key={fabric.id}
+                          onClick={() => setFabricId(fabric.id)}
+                          style={{
+                            padding: '10px',
+                            borderRadius: '10px',
+                            border: isActive ? '2px solid #894B8D' : '1px solid #E6E1EA',
+                            background: isActive ? '#F1E6F1' : '#FFFFFF',
+                            color: isActive ? '#6F3A73' : '#002169',
+                            fontWeight: 700,
+                            fontSize: '0.85rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          {fabric.name}{price != null ? ` · $${price}` : ''}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -196,15 +226,16 @@ export default function ProductClient({ id }) {
                     className="btn-accent"
                     style={{ fontSize: '1.05rem', padding: '14px', justifyContent: 'center' }}
                   >
-                    Customize in 3D Bed Studio <Sparkles size={18} />
+                    Personalise in the designer <Sparkles size={18} />
                   </button>
 
                   <button
                     onClick={handleAddToCart}
+                    disabled={!variation}
                     className="btn-primary"
                     style={{ fontSize: '1.05rem', padding: '14px', justifyContent: 'center' }}
                   >
-                    Add Standard Set To Cart (${priceAUD} AUD)
+                    {variation ? `Add to cart ($${priceAUD} AUD)` : 'Not available'}
                   </button>
                 </div>
               </div>

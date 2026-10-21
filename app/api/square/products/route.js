@@ -1,94 +1,46 @@
 import { NextResponse } from 'next/server';
 
-export const revalidate = 1800; // Cache route for 30 minutes
+const PAGE_SIZE = 100;
+const CACHE_HEADERS = { 'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=86400' };
 
-export async function GET(request) {
-  const token = process.env.SQUARE_ACCESS_TOKEN;
-  const environment = process.env.SQUARE_ENVIRONMENT || 'production';
-  const baseUrl = environment === 'production' 
-    ? 'https://connect.squareup.com/v2' 
+function squareBaseUrl() {
+  return (process.env.SQUARE_ENVIRONMENT || 'production') === 'production'
+    ? 'https://connect.squareup.com/v2'
     : 'https://connect.squareupsandbox.com/v2';
+}
 
-  if (!token) {
-    return NextResponse.json(
-      { success: false, error: 'Square Access Token is not configured in .env' },
-      { status: 400 }
-    );
+// One page of items plus the images they reference, in a single Square call.
+async function searchItems(token, cursor) {
+  const res = await fetch(`${squareBaseUrl()}/catalog/search`, {
+    method: 'POST',
+    headers: {
+      'Square-Version': '2025-01-23',
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      object_types: ['ITEM'],
+      include_related_objects: true,
+      limit: PAGE_SIZE,
+      ...(cursor ? { cursor } : {})
+    }),
+    cache: 'no-store'
+  });
+  const data = await res.json();
+  if (data.errors) throw Object.assign(new Error('Square catalog search failed'), { squareErrors: data.errors });
+  return data;
+}
+
+function formatProducts(objects = [], related = []) {
+  const imageMap = {};
+  for (const rel of related) {
+    if (rel.type === 'IMAGE' && rel.image_data?.url) imageMap[rel.id] = rel.image_data.url;
   }
 
-  try {
-    const { searchParams } = new URL(request.url);
-    const cursor = searchParams.get('cursor') || '';
-    const fetchAll = searchParams.get('all') === 'true';
-
-    // 1. Fetch catalog images to map image_id -> image_data.url
-    const imageMap = {};
-    let imgCursor = '';
-    do {
-      let imgUrl = `${baseUrl}/catalog/list?types=IMAGE`;
-      if (imgCursor) imgUrl += `&cursor=${encodeURIComponent(imgCursor)}`;
-      const imgRes = await fetch(imgUrl, {
-        headers: {
-          'Square-Version': '2025-01-23',
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      const imgData = await imgRes.json();
-      (imgData.objects || []).forEach((imgObj) => {
-        if (imgObj.id && imgObj.image_data?.url) {
-          imageMap[imgObj.id] = imgObj.image_data.url;
-        }
-      });
-      imgCursor = imgData.cursor;
-    } while (imgCursor);
-
-    // 2. Fetch ITEM objects
-    let itemObjects = [];
-    let itemCursor = cursor;
-
-    if (fetchAll) {
-      do {
-        let url = `${baseUrl}/catalog/list?types=ITEM`;
-        if (itemCursor) url += `&cursor=${encodeURIComponent(itemCursor)}`;
-        const res = await fetch(url, {
-          headers: {
-            'Square-Version': '2025-01-23',
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        const data = await res.json();
-        if (data.errors) {
-          return NextResponse.json({ success: false, errors: data.errors }, { status: 400 });
-        }
-        itemObjects.push(...(data.objects || []));
-        itemCursor = data.cursor;
-      } while (itemCursor);
-    } else {
-      let url = `${baseUrl}/catalog/list?types=ITEM`;
-      if (itemCursor) url += `&cursor=${encodeURIComponent(itemCursor)}`;
-      const res = await fetch(url, {
-        headers: {
-          'Square-Version': '2025-01-23',
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      const data = await res.json();
-      if (data.errors) {
-        return NextResponse.json({ success: false, errors: data.errors }, { status: 400 });
-      }
-      itemObjects = data.objects || [];
-      itemCursor = data.cursor || null;
-    }
-
-    // 3. Format products with real Square images, prices, and variations
-    const products = itemObjects.map((item) => {
-      const imageIds = item.item_data?.image_ids || [];
-      const imageUrls = imageIds.map((id) => imageMap[id]).filter(Boolean);
-      const primaryImageUrl = imageUrls[0] || null;
-
+  return objects
+    .filter((item) => item.type === 'ITEM' && !item.is_deleted)
+    .map((item) => {
+      const imageUrls = (item.item_data?.image_ids || []).map((id) => imageMap[id]).filter(Boolean);
       const variations = (item.item_data?.variations || []).map((v) => {
         const p = v.item_variation_data?.price_money;
         return {
@@ -99,34 +51,50 @@ export async function GET(request) {
           currency: p?.currency || 'AUD'
         };
       });
-
-      const prices = variations.map(v => v.priceAUD).filter(p => p !== null);
-      const minPrice = prices.length ? Math.min(...prices) : 129;
+      const prices = variations.map((v) => v.priceAUD).filter((p) => p !== null);
 
       return {
         id: item.id,
         name: item.item_data?.name,
         description: item.item_data?.description,
         categoryId: item.item_data?.category_id,
-        previewUrl: primaryImageUrl,
-        imageUrls: imageUrls,
-        minPriceAUD: minPrice,
+        previewUrl: imageUrls[0] || null,
+        imageUrls,
+        minPriceAUD: prices.length ? Math.min(...prices) : null,
         updatedAt: item.updated_at,
-        variations: variations
+        variations
       };
     });
+}
 
-    return NextResponse.json({
-      success: true,
-      totalCount: products.length,
-      nextCursor: itemCursor,
-      products
-    });
+export async function GET(request) {
+  const token = process.env.SQUARE_ACCESS_TOKEN;
+  if (!token) {
+    return NextResponse.json({ success: false, error: 'Products are temporarily unavailable.' }, { status: 503 });
+  }
 
-  } catch (error) {
+  const { searchParams } = new URL(request.url);
+  const cursor = searchParams.get('cursor') || '';
+  const fetchAll = searchParams.get('all') === 'true';
+  if (cursor.length > 2048) {
+    return NextResponse.json({ success: false, error: 'Invalid cursor' }, { status: 400 });
+  }
+
+  try {
+    const products = [];
+    let nextCursor = cursor;
+    do {
+      const data = await searchItems(token, nextCursor);
+      products.push(...formatProducts(data.objects, data.related_objects));
+      nextCursor = data.cursor || null;
+    } while (fetchAll && nextCursor);
+
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to fetch products from Square' },
-      { status: 500 }
+      { success: true, totalCount: products.length, nextCursor, products },
+      { headers: CACHE_HEADERS }
     );
+  } catch (error) {
+    console.error('Square products fetch failed:', error.squareErrors ? JSON.stringify(error.squareErrors) : error);
+    return NextResponse.json({ success: false, error: 'Failed to load products from Square' }, { status: 502 });
   }
 }

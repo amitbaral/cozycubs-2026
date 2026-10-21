@@ -1,35 +1,28 @@
+// Sizes and fabrics match the Square catalog variations; prices always come from Square.
 export const AU_BED_SIZES = [
-  { id: 'single', name: 'Single', dimensions: '140 × 210 cm', price: 129, pillowcases: 1, popular: false, desc: 'Perfect for kids bedrooms & single beds' },
-  { id: 'double', name: 'Double', dimensions: '180 × 210 cm', price: 149, pillowcases: 2, popular: false, desc: 'Great for teens & spare guest rooms' },
-  { id: 'queen', name: 'Queen', dimensions: '210 × 210 cm', price: 169, pillowcases: 2, popular: true, desc: 'Australia’s #1 most popular bed size' },
-  { id: 'king', name: 'King', dimensions: '245 × 210 cm', price: 189, pillowcases: 2, popular: false, desc: 'Spacious luxury for master bedrooms' },
-  { id: 'super_king', name: 'Super King', dimensions: '270 × 240 cm', price: 219, pillowcases: 2, popular: false, desc: 'Ultimate oversized comfort & drape' }
+  { id: 'cot', name: 'Cot', dimensions: '100 × 120 cm', pillowcases: 1, popular: false, desc: 'For cots and toddler beds' },
+  { id: 'single', name: 'Single', dimensions: '140 × 210 cm', pillowcases: 1, popular: false, desc: 'Perfect for kids bedrooms & single beds' },
+  { id: 'king_single', name: 'King Single', dimensions: '160 × 210 cm', pillowcases: 1, popular: false, desc: 'A little extra room for growing kids' },
+  { id: 'double', name: 'Double', dimensions: '180 × 210 cm', pillowcases: 2, popular: false, desc: 'Great for teens & spare guest rooms' },
+  { id: 'queen', name: 'Queen', dimensions: '210 × 210 cm', pillowcases: 2, popular: true, desc: 'Australia’s most popular bed size' },
+  { id: 'king', name: 'King', dimensions: '240 × 220 cm', pillowcases: 2, popular: false, desc: 'Spacious comfort for master bedrooms' },
+  { id: 'super_king', name: 'Super King', dimensions: '260 × 230 cm', pillowcases: 2, popular: false, desc: 'Generous oversized drape' }
 ];
 
 export const FABRIC_OPTIONS = [
   {
-    id: 'microfibre',
-    name: 'Ultra-Soft Microfibre',
-    badge: 'Vibrant & Durable',
-    priceAdd: 0,
-    features: ['Hyper-vibrant HD print clarity', 'Silky soft touch & quick dry', 'Hypoallergenic & fade resistant'],
-    desc: 'Best for photo prints, kids designs & vibrant artwork.'
+    id: 'polyester',
+    name: 'Premium Polyester',
+    badge: 'Vibrant & Easy Care',
+    features: ['Ultra-soft feel', 'Vibrant, fade-resistant colours', 'Easy care, quick drying'],
+    desc: 'Ultra-soft with vibrant colours. Great for photos and bold designs.'
   },
   {
     id: 'cotton',
-    name: '100% Organic Percale Cotton',
-    badge: '300 Thread Count',
-    priceAdd: 30,
-    features: ['100% GOTS Certified Organic', 'Cool, crisp breathable feel', 'Pre-washed for instant softness'],
-    desc: 'The Australian classic for cool summer nights.'
-  },
-  {
-    id: 'linen',
-    name: 'Washed Luxury Linen',
-    badge: 'Artisanal Texture',
-    priceAdd: 60,
-    features: ['French flax linen blend', 'Naturally temperature regulating', 'Gets softer with every single wash'],
-    desc: 'Premium organic feel for contemporary Australian homes.'
+    name: '100% Cotton',
+    badge: 'Natural & Breathable',
+    features: ['Natural fibre', 'Cool and breathable', 'Premium quality feel'],
+    desc: 'Natural, breathable and soft. The classic choice for warm nights.'
   }
 ];
 
@@ -168,7 +161,7 @@ export const FAQS = [
   },
   {
     q: 'What are Australian standard doona cover sizes?',
-    a: 'We strictly adhere to standard Australian sizing: Single (140x210 cm), Double (180x210 cm), Queen (210x210 cm), King (245x210 cm), and Super King (270x240 cm). Every set includes 2 matching pillowcases (1 for Single).'
+    a: 'We make every set in standard Australian sizes: Cot (100x120 cm), Single (140x210 cm), King Single (160x210 cm), Double (180x210 cm), Queen (210x210 cm), King (240x220 cm) and Super King (260x230 cm). Cot, Single and King Single sets include 1 matching pillowcase; Double and larger include 2.'
   },
   {
     q: 'How long does delivery take within Australia?',

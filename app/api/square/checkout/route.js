@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { SquareError } from 'square';
-import { calculateTotals, getItemPrice, normalizePromoCode } from '../../../../src/lib/pricing';
+import { calculateTotals, normalizePromoCode } from '../../../../src/lib/pricing';
+import { parseVariation } from '../../../../src/lib/variations';
+import { AU_BED_SIZES, FABRIC_OPTIONS } from '../../../../src/data/sampleData';
 import { getSquareClient, getLocationId, findOrCreateCustomer } from '../../../../src/lib/square';
 import { sendEmail, orderCustomerEmail, orderBusinessEmail, BUSINESS_EMAIL } from '../../../../src/lib/email';
 import { clean, jsonError, readJson, EMAIL_PATTERN } from '../../../../src/lib/forms';
@@ -53,19 +55,39 @@ export async function POST(request) {
 
   const orderItems = [];
   for (const raw of items) {
-    const item = {
+    const variationId = clean(raw?.variationId, 64);
+    if (!/^[A-Z0-9]{10,64}$/.test(variationId)) return jsonError('One of the items in your cart is no longer available.');
+    orderItems.push({
+      variationId,
       patternName: clean(raw?.patternName) || 'Custom Design',
-      size: clean(raw?.size, 40),
-      fabric: clean(raw?.fabric, 80),
       backingColor: clean(raw?.backingColor, 60),
       customText: clean(raw?.customText, 60),
       font: clean(raw?.font, 60),
       textPlacement: clean(raw?.textPlacement, 60),
       artworkUrl: cleanArtworkUrl(raw?.artworkUrl)
-    };
-    item.price = getItemPrice(item);
-    if (item.price === null) return jsonError('One of the items in your cart is no longer available.');
-    orderItems.push(item);
+    });
+  }
+
+  // Prices, sizes and fabrics are taken from the Square catalog, never from the browser.
+  try {
+    const { objects = [] } = await square.catalog.batchGet({
+      objectIds: [...new Set(orderItems.map((i) => i.variationId))]
+    });
+    const variations = new Map(objects.filter((o) => o.type === 'ITEM_VARIATION' && !o.isDeleted).map((o) => [o.id, o]));
+    for (const item of orderItems) {
+      const data = variations.get(item.variationId)?.itemVariationData;
+      const parsed = parseVariation(data?.name);
+      const cents = data?.priceMoney?.amount;
+      if (!parsed || cents == null || data.priceMoney.currency !== 'AUD') {
+        return jsonError('One of the items in your cart is no longer available.');
+      }
+      item.price = Number(cents) / 100;
+      item.size = AU_BED_SIZES.find((s) => s.id === parsed.sizeId).name;
+      item.fabric = FABRIC_OPTIONS.find((f) => f.id === parsed.fabricId).name;
+    }
+  } catch (err) {
+    console.error('Square catalog lookup failed:', err instanceof SquareError ? JSON.stringify(err.errors) : err);
+    return jsonError('We couldn\u2019t confirm prices right now. You have not been charged. Please try again.', 502);
   }
 
   const buyer = {
@@ -116,11 +138,10 @@ export async function POST(request) {
         referenceId: idempotencyKey,
         source: { name: 'cozycubs.au' },
         lineItems: orderItems.map((item) => ({
-          name: `${item.patternName} Doona Set (${item.size})`,
+          catalogObjectId: item.variationId,
           quantity: '1',
-          basePriceMoney: { amount: toCents(item.price), currency: 'AUD' },
           note: [
-            `Fabric: ${item.fabric}`,
+            `Design: ${item.patternName}`,
             item.backingColor && `Backing: ${item.backingColor}`,
             item.customText && `Name: "${item.customText}"${item.font ? ` (${item.font})` : ''}${item.textPlacement ? ` [${item.textPlacement}]` : ''}`,
             item.artworkUrl && `Artwork: ${item.artworkUrl}`

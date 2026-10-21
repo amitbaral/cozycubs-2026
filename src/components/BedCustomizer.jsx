@@ -1,17 +1,18 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { upload } from '@vercel/blob/client';
 import { Upload, ShoppingBag, Search, RotateCcw, Move, Check, AlertTriangle, ChevronDown, RefreshCw } from 'lucide-react';
 import { BearCub } from './Brand';
 import { AU_BED_SIZES, FABRIC_OPTIONS, BACKING_COLORS, FONTS_LIST } from '../data/sampleData';
-import { getItemPrice } from '../lib/pricing';
+import { getVariationOptions, CUSTOM_PHOTO_ITEM_ID } from '../lib/variations';
+import { useSquareProducts, useInfiniteScroll } from '../lib/useSquareProducts';
 
 const DEFAULT_PATTERN = {
   id: 'default_pattern',
   name: 'Personalised K-Pop Doona Set',
   previewUrl: '/images/custom-doona-kpop.webp',
-  minPriceAUD: 129
+  variations: []
 };
 
 // Share of the doona length that lies on the mattress; the rest hangs over the foot.
@@ -99,9 +100,22 @@ function Step({ number, title, value, isOpen, onToggle, children }) {
 }
 
 export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGuide, selectedPatternProp }) {
-  const [livePatterns, setLivePatterns] = useState([DEFAULT_PATTERN]);
   const [selectedPattern, setSelectedPattern] = useState(selectedPatternProp || DEFAULT_PATTERN);
   const [patternSearch, setPatternSearch] = useState('');
+  const isSearching = patternSearch.trim().length > 0;
+  const { products, loading: patternsLoading, hasMore, loadMore } = useSquareProducts({ loadAll: isSearching });
+  const livePatterns = useMemo(() => (
+    products.length
+      ? products.map((p) => ({
+        id: p.id,
+        name: p.name,
+        previewUrl: p.previewUrl || DEFAULT_PATTERN.previewUrl,
+        variations: p.variations || []
+      }))
+      : [DEFAULT_PATTERN]
+  ), [products]);
+  const patternGridRef = useRef(null);
+  const patternSentinelRef = useRef(null);
 
   const [customImage, setCustomImage] = useState(null);
   const [uploadName, setUploadName] = useState('');
@@ -123,8 +137,9 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
   const [textSize, setTextSize] = useState(TEXT_SIZES[1]);
 
   const [selectedBacking, setSelectedBacking] = useState(BACKING_COLORS[0]);
-  const [selectedSize, setSelectedSize] = useState(AU_BED_SIZES[2]);
-  const [selectedFabric, setSelectedFabric] = useState(FABRIC_OPTIONS[1]);
+  const [sizeId, setSizeId] = useState('queen');
+  const [fabricId, setFabricId] = useState('cotton');
+  const [customPhotoProduct, setCustomPhotoProduct] = useState(null);
 
   const [openStep, setOpenStep] = useState(1);
   const [isPanning, setIsPanning] = useState(false);
@@ -134,28 +149,22 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
   const flatCanvasRef = useRef(null);
 
   useEffect(() => {
+    if (selectedPatternProp || livePatterns[0].id === DEFAULT_PATTERN.id) return;
+    setSelectedPattern((prev) => (prev && prev.id !== DEFAULT_PATTERN.id ? prev : livePatterns[0]));
+  }, [livePatterns, selectedPatternProp]);
+
+  useEffect(() => {
     let isMounted = true;
-    fetch('/api/square/products')
+    fetch(`/api/square/products/${CUSTOM_PHOTO_ITEM_ID}`)
       .then((res) => res.json())
       .then((data) => {
-        if (!isMounted || !data.success || !Array.isArray(data.products) || data.products.length === 0) return;
-        const formatted = data.products.map((p) => ({
-          id: p.id,
-          name: p.name,
-          previewUrl: p.previewUrl || DEFAULT_PATTERN.previewUrl,
-          minPriceAUD: p.minPriceAUD
-        }));
-        setLivePatterns(formatted);
-        if (!selectedPatternProp) {
-          setSelectedPattern((prev) => (prev && prev.id !== DEFAULT_PATTERN.id ? prev : formatted[0]));
-        }
+        if (isMounted && data.success && data.product) setCustomPhotoProduct(data.product);
       })
-      .catch((err) => console.error('Square fetch error in customizer:', err));
-
+      .catch((err) => console.error('Custom photo pricing fetch error:', err));
     return () => {
       isMounted = false;
     };
-  }, [selectedPatternProp]);
+  }, []);
 
   useEffect(() => {
     if (selectedPatternProp) {
@@ -214,8 +223,20 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
     setFit('fill');
   };
 
+  // Uploads are priced from the Square "custom photo" item; catalog designs use their own variations.
+  const pricingProduct = customImage ? customPhotoProduct : selectedPattern;
+  const options = getVariationOptions(pricingProduct?.variations);
+  const selectedSize = options.sizes.find((s) => s.id === sizeId)
+    || options.sizes.find((s) => s.id === 'queen')
+    || options.sizes[0]
+    || AU_BED_SIZES.find((s) => s.id === sizeId);
+  const selectedFabric = options.fabrics.find((f) => f.id === fabricId)
+    || options.fabrics[0]
+    || FABRIC_OPTIONS.find((f) => f.id === fabricId);
+  const variation = options.find(selectedSize.id, selectedFabric.id);
+  const totalPrice = variation?.priceAUD ?? null;
+
   const { w: doonaW, l: doonaL } = parseDimensions(selectedSize.dimensions);
-  const totalPrice = getItemPrice({ size: selectedSize.name, fabric: selectedFabric.name });
   const imageSrc = customImage || selectedPattern.previewUrl;
   const design = {
     image: imageSrc,
@@ -230,9 +251,15 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
     textAt: textPosition.at
   };
 
-  const filteredPatterns = patternSearch
-    ? livePatterns.filter((p) => p.name.toLowerCase().includes(patternSearch.toLowerCase()))
+  const filteredPatterns = isSearching
+    ? livePatterns.filter((p) => p.name.toLowerCase().includes(patternSearch.trim().toLowerCase()))
     : livePatterns;
+
+  const loadMorePatterns = useCallback(() => {
+    if (hasMore && !patternsLoading) loadMore();
+    // Re-observe after each page so a still-visible sentinel keeps loading.
+  }, [hasMore, patternsLoading, loadMore, livePatterns.length]);
+  useInfiniteScroll(patternSentinelRef, loadMorePatterns, { enabled: hasMore && !isSearching, rootRef: patternGridRef, rootMargin: '120px' });
 
   // Drag-to-reposition the image on the print
   const handlePointerDown = (e) => {
@@ -258,6 +285,10 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
 
   const handleAddToCartClick = async () => {
     setAddError('');
+    if (!variation) {
+      setAddError('Prices are still loading. Please try again in a moment.');
+      return;
+    }
     let uploadedUrl = '';
 
     if (uploadFile) {
@@ -292,10 +323,11 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
       font: design.text ? selectedFont.name : '',
       textPlacement: design.text ? `${textPosition.label}, ${textSize.label}, ${textColor}` : '',
       backingColor: selectedBacking.name,
+      variationId: variation.id,
       size: selectedSize.name,
       dimensions: selectedSize.dimensions,
       fabric: selectedFabric.name,
-      price: totalPrice,
+      price: variation.priceAUD,
       pillowcases: selectedSize.pillowcases
     });
   };
@@ -446,14 +478,14 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                   className="field-input"
                   value={patternSearch}
                   onChange={(e) => setPatternSearch(e.target.value)}
-                  placeholder={`Search ${livePatterns.length} designs`}
+                  placeholder={`Search ${hasMore ? 'all' : livePatterns.length} designs`}
                   aria-label="Search designs"
                   style={{ paddingLeft: '40px', fontSize: '0.92rem' }}
                 />
                 <Search size={17} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--plum)' }} />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', maxHeight: '236px', overflowY: 'auto', paddingRight: '4px' }}>
+              <div ref={patternGridRef} style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', maxHeight: '236px', overflowY: 'auto', paddingRight: '4px' }}>
                 {filteredPatterns.map((pattern) => (
                   <button
                     key={pattern.id}
@@ -465,9 +497,15 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                     <img src={pattern.previewUrl} alt="" loading="lazy" />
                   </button>
                 ))}
-                {filteredPatterns.length === 0 && (
+                {filteredPatterns.length === 0 && !patternsLoading && (
                   <p style={{ gridColumn: '1 / -1', fontSize: '0.85rem' }}>No designs match &ldquo;{patternSearch}&rdquo;.</p>
                 )}
+                {patternsLoading && (
+                  <p style={{ gridColumn: '1 / -1', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '8px 0' }}>
+                    <RefreshCw size={15} className="spin-animation" /> {isSearching ? 'Searching all designs...' : 'Loading more designs...'}
+                  </p>
+                )}
+                <div ref={patternSentinelRef} aria-hidden="true" style={{ gridColumn: '1 / -1', height: '1px' }} />
               </div>
 
               {nextStep(2)}
@@ -577,7 +615,7 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
             <Step
               number={4}
               title="Size & fabric"
-              value={`${selectedSize.name} · ${selectedFabric.name.split(' ').slice(-1)[0]}`}
+              value={`${selectedSize.name} · ${selectedFabric.name}`}
               isOpen={openStep === 4}
               onToggle={() => toggleStep(4)}
             >
@@ -585,39 +623,55 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                 <span className="field-label" style={{ margin: 0 }}>Bed size</span>
                 <button onClick={onOpenSizeGuide} style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--plum)' }}>Size guide</button>
               </div>
-              <div className="choice-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(118px, 1fr))' }}>
-                {AU_BED_SIZES.map((size) => (
-                  <button
-                    key={size.id}
-                    onClick={() => setSelectedSize(size)}
-                    className={`choice${selectedSize.id === size.id ? ' is-active' : ''}`}
-                  >
-                    <div style={{ fontWeight: 700 }}>{size.name}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text)' }}>{size.dimensions}</div>
-                    <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--plum)', marginTop: '2px' }}>${size.price}</div>
-                  </button>
-                ))}
-              </div>
+              {options.isEmpty ? (
+                <p style={{ fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <RefreshCw size={16} className="spin-animation" /> Loading sizes and prices...
+                </p>
+              ) : (
+                <>
+                  <div className="choice-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(118px, 1fr))' }}>
+                    {options.sizes.map((size) => {
+                      const price = options.find(size.id, selectedFabric.id)?.priceAUD;
+                      return (
+                        <button
+                          key={size.id}
+                          onClick={() => setSizeId(size.id)}
+                          className={`choice${selectedSize.id === size.id ? ' is-active' : ''}`}
+                        >
+                          <div style={{ fontWeight: 700 }}>{size.name}</div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text)' }}>{size.dimensions}</div>
+                          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--plum)', marginTop: '2px' }}>
+                            {price != null ? `$${price}` : 'Not available'}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
 
-              <span className="field-label" style={{ marginTop: '18px' }}>Fabric</span>
-              <div className="choice-grid">
-                {FABRIC_OPTIONS.map((fabric) => (
-                  <button
-                    key={fabric.id}
-                    onClick={() => setSelectedFabric(fabric)}
-                    className={`choice${selectedFabric.id === fabric.id ? ' is-active' : ''}`}
-                    style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}
-                  >
-                    <span>
-                      <span style={{ display: 'block', fontWeight: 700 }}>{fabric.name}</span>
-                      <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text)' }}>{fabric.desc}</span>
-                    </span>
-                    <span style={{ fontWeight: 700, color: 'var(--plum)', whiteSpace: 'nowrap' }}>
-                      {fabric.priceAdd === 0 ? 'Included' : `+$${fabric.priceAdd}`}
-                    </span>
-                  </button>
-                ))}
-              </div>
+                  <span className="field-label" style={{ marginTop: '18px' }}>Fabric</span>
+                  <div className="choice-grid">
+                    {options.fabrics.map((fabric) => {
+                      const price = options.find(selectedSize.id, fabric.id)?.priceAUD;
+                      return (
+                        <button
+                          key={fabric.id}
+                          onClick={() => setFabricId(fabric.id)}
+                          className={`choice${selectedFabric.id === fabric.id ? ' is-active' : ''}`}
+                          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}
+                        >
+                          <span>
+                            <span style={{ display: 'block', fontWeight: 700 }}>{fabric.name}</span>
+                            <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text)' }}>{fabric.desc}</span>
+                          </span>
+                          <span style={{ fontWeight: 700, color: 'var(--plum)', whiteSpace: 'nowrap' }}>
+                            {price != null ? `$${price}` : 'N/A'}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
             </Step>
 
             <div className="designer__summary">
@@ -627,10 +681,10 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                   <div>{selectedBacking.name} backing{design.text ? ` · “${design.text}”` : ''}</div>
                 </div>
                 <div style={{ fontFamily: 'var(--heading)', fontSize: '2rem', fontWeight: 700, color: 'var(--navy)', lineHeight: 1 }}>
-                  ${totalPrice}
+                  {totalPrice != null ? `$${totalPrice}` : '—'}
                 </div>
               </div>
-              <button onClick={handleAddToCartClick} disabled={isAdding} className="btn-accent" style={{ width: '100%' }}>
+              <button onClick={handleAddToCartClick} disabled={isAdding || !variation} className="btn-accent" style={{ width: '100%' }}>
                 {isAdding
                   ? <><RefreshCw size={19} className="spin-animation" /> Uploading your photo...</>
                   : <><ShoppingBag size={19} /> Add to cart</>}

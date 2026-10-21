@@ -41,7 +41,7 @@ export default function SizeGuideClient() {
               AU Size & Fabric Specifications
             </h1>
             <p style={{ color: '#6B7590', maxWidth: '640px', margin: '0 auto', fontSize: '1.05rem' }}>
-              All Cozy Cubs doona cover sets are tailored strictly to official Australian Bedding Association dimensions.
+              All Cozy Cubs doona cover sets are made to standard Australian bed sizes. Prices vary by design and are shown when you choose a size and fabric.
             </p>
           </div>
 
@@ -56,7 +56,6 @@ export default function SizeGuideClient() {
                   <th style={{ padding: '14px 18px', fontWeight: 700, color: '#002169', fontSize: '0.92rem' }}>AU Bed Size</th>
                   <th style={{ padding: '14px 18px', fontWeight: 700, color: '#002169', fontSize: '0.92rem' }}>Doona Dimensions</th>
                   <th style={{ padding: '14px 18px', fontWeight: 700, color: '#002169', fontSize: '0.92rem' }}>Pillowcases Included</th>
-                  <th style={{ padding: '14px 18px', fontWeight: 700, color: '#002169', fontSize: '0.92rem' }}>Base Price (AUD)</th>
                 </tr>
               </thead>
               <tbody>
@@ -65,7 +64,6 @@ export default function SizeGuideClient() {
                     <td style={{ padding: '14px 18px', fontWeight: 700, color: '#002169' }}>{size.name}</td>
                     <td style={{ padding: '14px 18px', color: '#445374', fontWeight: 600 }}>{size.dimensions}</td>
                     <td style={{ padding: '14px 18px', color: '#6B7590' }}>{size.pillowcases} Standard (48x74cm)</td>
-                    <td style={{ padding: '14px 18px', fontWeight: 800, color: '#894B8D' }}>${size.price} AUD</td>
                   </tr>
                 ))}
               </tbody>
@@ -75,19 +73,12 @@ export default function SizeGuideClient() {
           {/* Fabric Comparison */}
           <div style={{ marginBottom: '48px' }}>
             <h2 style={{ fontSize: '1.4rem', color: '#002169', marginBottom: '24px', textAlign: 'center' }}>
-              Choose Your Luxury Fabric Option
+              Choose Your Fabric
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
               {FABRIC_OPTIONS.map((fabric) => (
                 <div key={fabric.id} className="glass-card" style={{ padding: '28px', borderRadius: '16px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                    <h3 style={{ fontSize: '1.2rem', color: '#002169' }}>{fabric.name}</h3>
-                    {fabric.priceAdd === 0 ? (
-                      <span className="badge-au" style={{ background: '#DCFCE7', color: '#15803D' }}>Included</span>
-                    ) : (
-                      <span className="badge-au" style={{ background: '#F1E6F1', color: '#6F3A73' }}>+${fabric.priceAdd} AUD</span>
-                    )}
-                  </div>
+                  <h3 style={{ fontSize: '1.2rem', color: '#002169', marginBottom: '12px' }}>{fabric.name}</h3>
                   <p style={{ color: '#6B7590', fontSize: '0.92rem', lineHeight: 1.6 }}>{fabric.desc}</p>
                 </div>
               ))}

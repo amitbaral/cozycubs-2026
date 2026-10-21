@@ -51,7 +51,7 @@ export default function GuideClient() {
 
           <div className="glass-card" style={{ padding: '36px', borderRadius: '24px', background: '#FFFFFF', lineHeight: 1.8, color: '#445374', fontSize: '1.02rem' }}>
             <p style={{ fontSize: '1.1rem', color: '#002169', fontWeight: 600, marginBottom: '24px' }}>
-              Shopping for doona covers in Australia can get confusing when comparing international sizing standards (US, UK, European) against standard Australian dimensions. At Cozy Cubs Australia, all our custom bedding is tailored strictly to official Australian Bedding Association measurements.
+              Shopping for doona covers in Australia can get confusing when comparing international sizing standards (US, UK, European) against standard Australian dimensions. At Cozy Cubs Australia, all our custom bedding is made to standard Australian bed sizes.
             </p>
 
             <h2 style={{ fontSize: '1.4rem', color: '#002169', fontWeight: 800, marginTop: '32px', marginBottom: '16px' }}>
@@ -84,17 +84,17 @@ export default function GuideClient() {
             </h2>
             <ul style={{ paddingLeft: '20px', marginBottom: '24px' }}>
               <li><strong>Upsizing Secret:</strong> Many Aussies put a Queen doona on a Single or Double bed for an extra cozy, drape effect.</li>
-              <li><strong>King vs Super King:</strong> If your mattress is extra deep or pillow-topped, a Super King (270 × 240 cm) offers maximum side coverage without exposing mattress edges.</li>
-              <li><strong>Matching Pillowcases:</strong> All Cozy Cubs Single sets include 1 matching standard pillowcase (48 × 74 cm), while Double, Queen, King, and Super King sets include 2 pillowcases.</li>
+              <li><strong>King vs Super King:</strong> If your mattress is extra deep or pillow-topped, a Super King (260 × 230 cm) offers maximum side coverage without exposing mattress edges.</li>
+              <li><strong>Matching Pillowcases:</strong> Cozy Cubs Cot, Single and King Single sets include 1 matching standard pillowcase (48 × 74 cm), while Double, Queen, King, and Super King sets include 2 pillowcases.</li>
             </ul>
 
             <div style={{ background: 'linear-gradient(135deg, #002169 0%, #002169 100%)', color: '#FFFFFF', padding: '32px', borderRadius: '18px', textAlign: 'center', marginTop: '40px' }}>
               <h3 style={{ fontSize: '1.35rem', fontWeight: 800, marginBottom: '10px' }}>Ready to Design Your Custom Set?</h3>
               <p style={{ color: '#98A0B5', fontSize: '0.95rem', marginBottom: '20px' }}>
-                Preview your custom quilt cover live on our interactive 3D bed engine.
+                Preview your custom quilt cover in our online designer before you order.
               </p>
               <a href="/customize" className="btn-accent" style={{ display: 'inline-flex', padding: '12px 24px', textDecoration: 'none' }}>
-                Launch Live 3D Customizer <Sparkles size={16} />
+                Open the Designer <Sparkles size={16} />
               </a>
             </div>
 

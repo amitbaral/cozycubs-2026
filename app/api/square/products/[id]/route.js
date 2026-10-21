@@ -17,6 +17,9 @@ export async function GET(request, { params }) {
   }
 
   const { id } = await params;
+  if (!/^[A-Z0-9]{10,64}$/.test(id)) {
+    return NextResponse.json({ success: false, error: 'Invalid product id' }, { status: 400 });
+  }
 
   try {
     const res = await fetch(`${baseUrl}/catalog/object/${id}?include_related_objects=true`, {

@@ -31,7 +31,7 @@ export function AboutSplit({ scrollToCustomizer }) {
           </div>
 
           <p>
-            Choose from organic percale cotton, soft microfibre or washed linen in every Australian bed size.
+            Choose Premium Polyester or 100% Cotton in every Australian bed size, from Cot to Super King.
             Preview your design before you pay, and your made-to-order set will arrive within 3–3.5 weeks.
           </p>
 
@@ -55,7 +55,7 @@ export function AboutSplit({ scrollToCustomizer }) {
 const STEPS = [
   { icon: Upload, title: 'Upload Or Pick', text: 'Use a family photo, your child\u2019s drawing, or one of our designs.' },
   { icon: Palette, title: 'Personalise It', text: 'Add a name, choose a font, and pick a reverse backing colour.' },
-  { icon: Ruler, title: 'Size & Fabric', text: 'Single to Super King in cotton, microfibre or linen.' },
+  { icon: Ruler, title: 'Size & Fabric', text: 'Cot to Super King in Premium Polyester or 100% Cotton.' },
   { icon: Truck, title: 'Made & Delivered', text: 'Made to order and delivered with tracking in 3\u20133.5 weeks.' }
 ];
 
