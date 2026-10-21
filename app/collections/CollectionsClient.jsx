@@ -19,7 +19,7 @@ export default function CollectionsClient() {
   const cartTotal = cartItems.reduce((sum, item) => sum + item.price, 0);
 
   const handleCustomizeProduct = (product) => {
-    window.location.href = `/#customizer?product=${product.id}`;
+    window.location.href = `/customize?product=${encodeURIComponent(product.id)}`;
   };
 
   return (

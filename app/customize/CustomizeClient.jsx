@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../../src/components/Header';
 import BedCustomizer from '../../src/components/BedCustomizer';
 import Footer from '../../src/components/Footer';
@@ -14,6 +14,36 @@ export default function CustomizeClient() {
   const [cartOpen, setCartOpen] = useState(false);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [presetPattern, setPresetPattern] = useState(null);
+  const [presetSize, setPresetSize] = useState(null);
+  const [presetFabric, setPresetFabric] = useState(null);
+
+  // Links from a product page look like /customize?product=ID&size=queen&fabric=cotton
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('product');
+    setPresetSize(params.get('size'));
+    setPresetFabric(params.get('fabric'));
+    if (!productId || !/^[A-Z0-9]{10,64}$/.test(productId)) return undefined;
+
+    let isMounted = true;
+    fetch(`/api/square/products/${productId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted || !data.success || !data.product) return;
+        const p = data.product;
+        setPresetPattern({
+          id: p.id,
+          name: p.name,
+          previewUrl: p.previewUrl || '/images/custom-doona-kpop.webp',
+          variations: p.variations || []
+        });
+      })
+      .catch((err) => console.error('Could not load product for designer:', err));
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const cartCount = cartItems.length;
   const cartTotal = cartItems.reduce((sum, item) => sum + item.price, 0);
@@ -51,6 +81,9 @@ export default function CustomizeClient() {
           <BedCustomizer
             onAddToCart={handleAddToCart}
             onOpenSizeGuide={() => setSizeGuideOpen(true)}
+            selectedPatternProp={presetPattern}
+            initialSizeId={presetSize}
+            initialFabricId={presetFabric}
           />
         </div>
       </main>

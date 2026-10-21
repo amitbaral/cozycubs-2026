@@ -99,7 +99,7 @@ function Step({ number, title, value, isOpen, onToggle, children }) {
   );
 }
 
-export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGuide, selectedPatternProp }) {
+export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGuide, selectedPatternProp, initialSizeId, initialFabricId }) {
   const [selectedPattern, setSelectedPattern] = useState(selectedPatternProp || DEFAULT_PATTERN);
   const [patternSearch, setPatternSearch] = useState('');
   const isSearching = patternSearch.trim().length > 0;
@@ -173,6 +173,11 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
       resetImagePosition();
     }
   }, [selectedPatternProp]);
+
+  useEffect(() => {
+    if (initialSizeId) setSizeId(initialSizeId);
+    if (initialFabricId) setFabricId(initialFabricId);
+  }, [initialSizeId, initialFabricId]);
 
   const resetImagePosition = () => {
     setZoom(1);

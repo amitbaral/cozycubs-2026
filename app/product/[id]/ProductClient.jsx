@@ -57,7 +57,10 @@ export default function ProductClient({ id }) {
   const priceAUD = variation?.priceAUD ?? null;
 
   const handleLaunchDesigner = () => {
-    window.location.href = `/#customizer?product=${id}`;
+    const params = new URLSearchParams({ product: id });
+    if (selectedSize) params.set('size', selectedSize.id);
+    if (selectedFabric) params.set('fabric', selectedFabric.id);
+    window.location.href = `/customize?${params}`;
   };
 
   const handleAddToCart = () => {
