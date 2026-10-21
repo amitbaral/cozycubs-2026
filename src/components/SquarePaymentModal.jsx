@@ -11,7 +11,8 @@ const SQUARE_SDK_URLS = {
   sandbox: 'https://sandbox.web.squarecdn.com/v1/square.js'
 };
 const CARD_CONTAINER_ID = 'sq-card-container';
-const EMPTY_CUSTOMER = { name: '', email: '', address: '', city: '', state: '', postcode: '' };
+const EMPTY_CUSTOMER = { name: '', email: '', phone: '', address: '', city: '', state: '', postcode: '' };
+const AU_STATES = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT'];
 
 function loadSquareSdk(environment) {
   if (window.Square) return Promise.resolve(window.Square);
@@ -145,15 +146,15 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems = [], pr
         sourceId: tokenResult.token,
         verificationToken: tokenResult.verificationToken,
         idempotencyKey: idempotencyKeyRef.current,
-        items: cartItems.map(({ patternName, size, fabric, backingColor, customText, font, textPlacement }) => ({
-          patternName, size, fabric, backingColor, customText, font, textPlacement
+        items: cartItems.map(({ patternName, size, fabric, backingColor, customText, font, textPlacement, artworkUrl }) => ({
+          patternName, size, fabric, backingColor, customText, font, textPlacement, artworkUrl
         })),
         customer,
         promoCode
       });
 
       pendingTokenRef.current = null;
-      setReceipt(result);
+      setReceipt({ ...result, email: customer.email });
       setStep('success');
       setCustomer(EMPTY_CUSTOMER);
       onClearCart?.();
@@ -293,6 +294,7 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems = [], pr
               <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#002169' }}>Order Confirmed!</h2>
               <p style={{ color: '#445374', fontSize: '0.9rem', marginBottom: '20px' }}>
                 Thank you for your purchase! Your doona cover set is now queued for custom printing.
+                {receipt.emailSent !== false && <> A confirmation email is on its way to {receipt.email}.</>}
               </p>
 
               {/* Receipt Summary Card */}
@@ -409,6 +411,18 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems = [], pr
                       value={customer.email}
                       onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
                       style={inputStyle}
+                      autoComplete="email"
+                    />
+                  </div>
+                  <div style={{ gridColumn: 'span 2' }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#445374' }}>Mobile (optional, for delivery updates)</label>
+                    <input
+                      type="tel"
+                      value={customer.phone}
+                      onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}
+                      placeholder="04xx xxx xxx"
+                      style={inputStyle}
+                      autoComplete="tel"
                     />
                   </div>
                   <div style={{ gridColumn: 'span 2' }}>
@@ -434,22 +448,29 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems = [], pr
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
                     <div>
                       <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#445374' }}>State</label>
-                      <input
-                        type="text"
+                      <select
                         required
                         value={customer.state}
                         onChange={(e) => setCustomer({ ...customer, state: e.target.value })}
-                        style={inputStyle}
-                      />
+                        style={{ ...inputStyle, background: '#FFFFFF' }}
+                      >
+                        <option value="" disabled>Select</option>
+                        {AU_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
+                      </select>
                     </div>
                     <div>
                       <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#445374' }}>Postcode</label>
                       <input
                         type="text"
                         required
+                        inputMode="numeric"
+                        pattern="\d{4}"
+                        maxLength={4}
+                        title="4-digit Australian postcode"
                         value={customer.postcode}
                         onChange={(e) => setCustomer({ ...customer, postcode: e.target.value })}
                         style={inputStyle}
+                        autoComplete="postal-code"
                       />
                     </div>
                   </div>

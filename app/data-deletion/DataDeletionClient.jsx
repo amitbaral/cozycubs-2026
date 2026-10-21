@@ -16,11 +16,29 @@ export default function DataDeletionClient() {
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [requested, setRequested] = useState(false);
   const [email, setEmail] = useState('');
+  const [website, setWebsite] = useState('');
+  const [reference, setReference] = useState('');
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email) {
+    setSending(true);
+    setError('');
+    try {
+      const res = await fetch('/api/data-deletion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, website })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) throw new Error(data.error || 'Something went wrong. Please try again.');
+      setReference(data.reference || '');
       setRequested(true);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSending(false);
     }
   };
 
@@ -80,14 +98,25 @@ export default function DataDeletionClient() {
               {requested ? (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#15803D', fontWeight: 700, padding: '12px', background: '#DCFCE7', borderRadius: '10px' }}>
                   <CheckCircle2 size={20} />
-                  Your data deletion request for "{email}" has been submitted. All linked tokens will be purged within 24 hours. Confirmation Code: CC-DEL-2026.
+                  Request received{reference ? ` (reference ${reference})` : ''}. We&apos;ve emailed a confirmation to {email} and will confirm again once your data has been deleted, within 30 days.
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                   <input
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                    style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }}
+                  />
+                  <input
                     type="email"
                     required
-                    placeholder="Enter your Facebook email..."
+                    aria-label="Your email address"
+                    placeholder="Enter your email address..."
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     style={{
@@ -102,11 +131,13 @@ export default function DataDeletionClient() {
                   />
                   <button
                     type="submit"
+                    disabled={sending}
                     className="btn-accent"
                     style={{ padding: '12px 20px', fontSize: '0.9rem' }}
                   >
-                    Submit Deletion Request
+                    {sending ? 'Submitting...' : 'Submit Deletion Request'}
                   </button>
+                  {error && <p role="alert" style={{ width: '100%', color: '#B91C1C', fontSize: '0.88rem' }}>{error}</p>}
                 </form>
               )}
             </div>

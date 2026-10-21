@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import { Logo, SocialLinks } from './Brand';
 
 const SHOP_LINKS = [
@@ -17,6 +19,71 @@ const CARE_LINKS = [
   { href: '/returns', label: 'Returns' },
   { href: '/social-studio', label: 'Social Studio' }
 ];
+
+function NewsletterForm() {
+  const [email, setEmail] = useState('');
+  const [website, setWebsite] = useState('');
+  const [status, setStatus] = useState('idle'); // idle | sending | done | error
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('sending');
+    setError('');
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, website })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) throw new Error(data.error || 'Something went wrong. Please try again.');
+      setStatus('done');
+    } catch (err) {
+      setError(err.message);
+      setStatus('error');
+    }
+  };
+
+  if (status === 'done') {
+    return (
+      <div className="footer__news" role="status">
+        <h3>You&apos;re in!</h3>
+        <p>Check your inbox for your 10% off code.</p>
+      </div>
+    );
+  }
+
+  return (
+    <form className="footer__news" onSubmit={handleSubmit}>
+      <h3>Get 10% off your first set</h3>
+      <input
+        type="email"
+        required
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Your email address"
+        className="footer__input"
+        aria-label="Email address"
+        autoComplete="email"
+      />
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        value={website}
+        onChange={(e) => setWebsite(e.target.value)}
+        style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }}
+      />
+      <button type="submit" disabled={status === 'sending'} className="btn-accent" style={{ width: '100%', borderRadius: '8px' }}>
+        {status === 'sending' ? 'Subscribing...' : 'Subscribe'}
+      </button>
+      {error && <p role="alert" style={{ color: '#FFB4B4', fontSize: '0.85rem', marginTop: '10px' }}>{error}</p>}
+    </form>
+  );
+}
 
 export default function Footer() {
   return (
@@ -54,13 +121,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <form className="footer__news" onSubmit={(e) => e.preventDefault()}>
-            <h3>Get 10% off your first set</h3>
-            <input type="email" required placeholder="Your email address" className="footer__input" aria-label="Email address" />
-            <button type="submit" className="btn-accent" style={{ width: '100%', borderRadius: '8px' }}>
-              Subscribe
-            </button>
-          </form>
+          <NewsletterForm />
         </div>
       </div>
 

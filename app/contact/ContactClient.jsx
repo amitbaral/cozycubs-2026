@@ -15,21 +15,39 @@ export default function ContactClient() {
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     orderNumber: '',
-    message: ''
+    message: '',
+    website: ''
   });
 
   const cartCount = cartItems.length;
   const cartTotal = cartItems.reduce((sum, item) => sum + item.price, 0);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSending(true);
+    setError('');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) throw new Error(data.error || 'Something went wrong. Please try again.');
+      setSubmitted(true);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -54,7 +72,7 @@ export default function ContactClient() {
               Contact Cozy Cubs Support
             </h1>
             <p style={{ color: '#6B7590', maxWidth: '580px', margin: '0 auto', fontSize: '1.05rem' }}>
-              Have questions about photo resolutions, custom sizes, or existing orders? Our customer support team responds within 24 hours.
+              Have questions about photo resolutions, custom sizes, or existing orders? We reply within 1 business day.
             </p>
           </div>
 
@@ -102,7 +120,7 @@ export default function ContactClient() {
                   </div>
                   <h3 style={{ fontSize: '1.3rem', color: '#002169', marginBottom: '8px' }}>Message Received!</h3>
                   <p style={{ color: '#6B7590', fontSize: '0.92rem' }}>
-                    Thank you for reaching out to Cozy Cubs Australia. A customer specialist will respond to your inquiry via email shortly.
+                    Thanks for getting in touch. We&apos;ve emailed you a copy of your message and will reply within 1 business day.
                   </p>
                 </div>
               ) : (
@@ -134,10 +152,24 @@ export default function ContactClient() {
                   </div>
 
                   <div>
+                    <label htmlFor="contact-order" style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#445374', marginBottom: '6px' }}>Order Reference (optional)</label>
+                    <input
+                      id="contact-order"
+                      type="text"
+                      maxLength={60}
+                      value={formData.orderNumber}
+                      onChange={(e) => setFormData({ ...formData, orderNumber: e.target.value })}
+                      placeholder="From your confirmation email"
+                      style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1.5px solid #E6E1EA', outline: 'none' }}
+                    />
+                  </div>
+
+                  <div>
                     <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#445374', marginBottom: '6px' }}>Message *</label>
                     <textarea
                       required
                       rows={4}
+                      maxLength={5000}
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       placeholder="How can we help you today?"
@@ -145,8 +177,22 @@ export default function ContactClient() {
                     />
                   </div>
 
-                  <button type="submit" className="btn-accent" style={{ marginTop: '8px', justifyContent: 'center' }}>
-                    Send Inquiry <Send size={16} />
+                  {/* Honeypot: hidden from people, filled in by spam bots */}
+                  <input
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    value={formData.website}
+                    onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                    style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }}
+                  />
+
+                  {error && <p role="alert" style={{ color: '#B91C1C', fontSize: '0.88rem' }}>{error}</p>}
+
+                  <button type="submit" disabled={sending} className="btn-accent" style={{ marginTop: '8px', justifyContent: 'center' }}>
+                    {sending ? 'Sending...' : <>Send Inquiry <Send size={16} /></>}
                   </button>
                 </form>
               )}

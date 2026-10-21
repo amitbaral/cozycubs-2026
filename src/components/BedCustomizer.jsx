@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Upload, ShoppingBag, Search, RotateCcw, Move, Check, AlertTriangle, ChevronDown } from 'lucide-react';
+import { upload } from '@vercel/blob/client';
+import { Upload, ShoppingBag, Search, RotateCcw, Move, Check, AlertTriangle, ChevronDown, RefreshCw } from 'lucide-react';
 import { BearCub } from './Brand';
 import { AU_BED_SIZES, FABRIC_OPTIONS, BACKING_COLORS, FONTS_LIST } from '../data/sampleData';
 import { getItemPrice } from '../lib/pricing';
@@ -104,6 +105,10 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
 
   const [customImage, setCustomImage] = useState(null);
   const [uploadName, setUploadName] = useState('');
+  const [uploadFile, setUploadFile] = useState(null);
+  const [artworkUrl, setArtworkUrl] = useState('');
+  const [isAdding, setIsAdding] = useState(false);
+  const [addError, setAddError] = useState('');
   const [uploadError, setUploadError] = useState('');
   const [quality, setQuality] = useState(null);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -184,6 +189,8 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
         setQuality({ ...photoQuality(probe.naturalWidth), width: probe.naturalWidth, height: probe.naturalHeight });
         setCustomImage(dataUrl);
         setUploadName(file.name);
+        setUploadFile(file);
+        setArtworkUrl('');
         resetImagePosition();
       };
       probe.onerror = () => setUploadError('We couldn\u2019t read that image. Please try a different file.');
@@ -195,6 +202,8 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
   const clearUpload = () => {
     setCustomImage(null);
     setUploadName('');
+    setUploadFile(null);
+    setArtworkUrl('');
     setQuality(null);
     resetImagePosition();
   };
@@ -247,11 +256,38 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
     setIsPanning(false);
   };
 
-  const handleAddToCartClick = () => {
+  const handleAddToCartClick = async () => {
+    setAddError('');
+    let uploadedUrl = '';
+
+    if (uploadFile) {
+      uploadedUrl = artworkUrl;
+      if (!uploadedUrl) {
+        setIsAdding(true);
+        try {
+          const ext = uploadFile.name.split('.').pop()?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+          const blob = await upload(`artwork/customer-photo.${ext}`, uploadFile, {
+            access: 'public',
+            handleUploadUrl: '/api/upload',
+            multipart: uploadFile.size > 8 * 1024 * 1024
+          });
+          uploadedUrl = blob.url;
+          setArtworkUrl(blob.url);
+        } catch (err) {
+          console.error('Artwork upload failed:', err);
+          setAddError('We couldn\u2019t upload your photo. Please check your connection and try again.');
+          return;
+        } finally {
+          setIsAdding(false);
+        }
+      }
+    }
+
     onAddToCart({
       id: `custom-${Date.now()}`,
       patternName: customImage ? 'Custom Photo Upload' : selectedPattern.name,
-      patternImage: imageSrc,
+      patternImage: uploadedUrl || imageSrc,
+      artworkUrl: uploadedUrl,
       customText: design.text,
       font: design.text ? selectedFont.name : '',
       textPlacement: design.text ? `${textPosition.label}, ${textSize.label}, ${textColor}` : '',
@@ -594,9 +630,14 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
                   ${totalPrice}
                 </div>
               </div>
-              <button onClick={handleAddToCartClick} className="btn-accent" style={{ width: '100%' }}>
-                <ShoppingBag size={19} /> Add to cart
+              <button onClick={handleAddToCartClick} disabled={isAdding} className="btn-accent" style={{ width: '100%' }}>
+                {isAdding
+                  ? <><RefreshCw size={19} className="spin-animation" /> Uploading your photo...</>
+                  : <><ShoppingBag size={19} /> Add to cart</>}
               </button>
+              {addError && (
+                <p role="alert" style={{ color: '#B91C1C', fontSize: '0.85rem', marginTop: '10px' }}>{addError}</p>
+              )}
             </div>
           </div>
         </div>

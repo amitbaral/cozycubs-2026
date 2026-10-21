@@ -1,59 +1,54 @@
 import { NextResponse } from 'next/server';
-import { SquareClient, SquareEnvironment, SquareError } from 'square';
+import { SquareError } from 'square';
 import { calculateTotals, getItemPrice, normalizePromoCode } from '../../../../src/lib/pricing';
+import { getSquareClient, getLocationId, findOrCreateCustomer } from '../../../../src/lib/square';
+import { sendEmail, orderCustomerEmail, orderBusinessEmail, BUSINESS_EMAIL } from '../../../../src/lib/email';
+import { clean, jsonError, readJson, EMAIL_PATTERN } from '../../../../src/lib/forms';
 
 const MAX_ITEMS = 20;
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function clean(value, maxLength = 120) {
-  return typeof value === 'string' ? value.trim().slice(0, maxLength) : '';
-}
 
 function toCents(amountAUD) {
   return BigInt(Math.round(amountAUD * 100));
 }
 
-function badRequest(error) {
-  return NextResponse.json({ success: false, error }, { status: 400 });
+// Only accept artwork links that point at our own Vercel Blob store.
+function cleanArtworkUrl(value) {
+  if (typeof value !== 'string' || value.length > 500) return '';
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && url.hostname.endsWith('.public.blob.vercel-storage.com') ? url.href : '';
+  } catch {
+    return '';
+  }
 }
 
-function getSquareClient() {
-  const token = process.env.SQUARE_ACCESS_TOKEN;
-  if (!token) return null;
-  return new SquareClient({
-    token,
-    environment: process.env.SQUARE_ENVIRONMENT === 'production'
-      ? SquareEnvironment.Production
-      : SquareEnvironment.Sandbox
-  });
+// Square rejects malformed numbers (failing the whole order), so anything unrecognised is dropped.
+function toAuPhone(value) {
+  const digits = clean(value, 20).replace(/[^\d+]/g, '');
+  if (/^0[2-478]\d{8}$/.test(digits)) return `+61${digits.slice(1)}`;
+  if (/^\+?61[2-478]\d{8}$/.test(digits)) return `+${digits.replace('+', '')}`;
+  return '';
 }
 
 export async function POST(request) {
-  const client = getSquareClient();
-  const locationId = process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID;
-  if (!client || !locationId) {
+  const square = getSquareClient();
+  const locationId = getLocationId();
+  if (!square || !locationId) {
     console.error('Square checkout is not configured: missing SQUARE_ACCESS_TOKEN or NEXT_PUBLIC_SQUARE_LOCATION_ID');
-    return NextResponse.json(
-      { success: false, error: 'Checkout is temporarily unavailable. Please try again later.' },
-      { status: 503 }
-    );
+    return jsonError('Checkout is temporarily unavailable. Please try again later.', 503);
   }
 
-  let body;
-  try {
-    body = await request.json();
-  } catch {
-    return badRequest('Invalid request body.');
-  }
+  const body = await readJson(request);
+  if (!body) return jsonError('Invalid request body.');
 
-  const { sourceId, verificationToken, idempotencyKey, items, customer = {}, promoCode } = body || {};
+  const { sourceId, verificationToken, idempotencyKey, items, customer = {}, promoCode } = body;
 
-  if (typeof sourceId !== 'string' || !sourceId) return badRequest('Missing payment details.');
+  if (typeof sourceId !== 'string' || !sourceId) return jsonError('Missing payment details.');
   if (typeof idempotencyKey !== 'string' || idempotencyKey.length < 8 || idempotencyKey.length > 40) {
-    return badRequest('Invalid checkout session. Please refresh and try again.');
+    return jsonError('Invalid checkout session. Please refresh and try again.');
   }
   if (!Array.isArray(items) || items.length === 0 || items.length > MAX_ITEMS) {
-    return badRequest('Your cart is empty or has too many items.');
+    return jsonError('Your cart is empty or has too many items.');
   }
 
   const orderItems = [];
@@ -65,36 +60,61 @@ export async function POST(request) {
       backingColor: clean(raw?.backingColor, 60),
       customText: clean(raw?.customText, 60),
       font: clean(raw?.font, 60),
-      textPlacement: clean(raw?.textPlacement, 60)
+      textPlacement: clean(raw?.textPlacement, 60),
+      artworkUrl: cleanArtworkUrl(raw?.artworkUrl)
     };
     item.price = getItemPrice(item);
-    if (item.price === null) return badRequest('One of the items in your cart is no longer available.');
+    if (item.price === null) return jsonError('One of the items in your cart is no longer available.');
     orderItems.push(item);
   }
 
   const buyer = {
     name: clean(customer.name, 100),
-    email: clean(customer.email, 254),
+    email: clean(customer.email, 254).toLowerCase(),
+    phone: toAuPhone(customer.phone),
     address: clean(customer.address, 200),
     city: clean(customer.city, 80),
     state: clean(customer.state, 40),
     postcode: clean(customer.postcode, 10)
   };
   if (!buyer.name || !buyer.address || !buyer.city || !buyer.state || !buyer.postcode) {
-    return badRequest('Please complete your shipping details.');
+    return jsonError('Please complete your shipping details.');
   }
-  if (!EMAIL_PATTERN.test(buyer.email)) return badRequest('Please enter a valid email address.');
+  if (!EMAIL_PATTERN.test(buyer.email)) return jsonError('Please enter a valid email address.');
 
   const promo = normalizePromoCode(promoCode);
   const totals = calculateTotals(orderItems, promo);
-  if (totals.total <= 0) return badRequest('Order total must be greater than zero.');
+  if (totals.total <= 0) return jsonError('Order total must be greater than zero.');
+
+  const squareAddress = {
+    addressLine1: buyer.address,
+    locality: buyer.city,
+    administrativeDistrictLevel1: buyer.state,
+    postalCode: buyer.postcode,
+    country: 'AU'
+  };
+
+  // A missing customer profile shouldn't block the sale, so failures here are logged and skipped.
+  let customerId;
+  try {
+    customerId = await findOrCreateCustomer(square, {
+      name: buyer.name,
+      email: buyer.email,
+      phone: buyer.phone,
+      address: squareAddress
+    });
+  } catch (err) {
+    console.error('Square customer lookup failed:', err instanceof SquareError ? JSON.stringify(err.errors) : err);
+  }
 
   try {
-    const { order } = await client.orders.create({
+    const { order } = await square.orders.create({
       idempotencyKey: `${idempotencyKey}-order`,
       order: {
         locationId,
+        customerId,
         referenceId: idempotencyKey,
+        source: { name: 'cozycubs.au' },
         lineItems: orderItems.map((item) => ({
           name: `${item.patternName} Doona Set (${item.size})`,
           quantity: '1',
@@ -102,7 +122,8 @@ export async function POST(request) {
           note: [
             `Fabric: ${item.fabric}`,
             item.backingColor && `Backing: ${item.backingColor}`,
-            item.customText && `Name: "${item.customText}"${item.font ? ` (${item.font})` : ''}${item.textPlacement ? ` [${item.textPlacement}]` : ''}`
+            item.customText && `Name: "${item.customText}"${item.font ? ` (${item.font})` : ''}${item.textPlacement ? ` [${item.textPlacement}]` : ''}`,
+            item.artworkUrl && `Artwork: ${item.artworkUrl}`
           ].filter(Boolean).join(', ')
         })),
         discounts: totals.discountAmount > 0 ? [{
@@ -123,15 +144,11 @@ export async function POST(request) {
           state: 'PROPOSED',
           shipmentDetails: {
             recipient: {
+              customerId,
               displayName: buyer.name,
               emailAddress: buyer.email,
-              address: {
-                addressLine1: buyer.address,
-                locality: buyer.city,
-                administrativeDistrictLevel1: buyer.state,
-                postalCode: buyer.postcode,
-                country: 'AU'
-              }
+              phoneNumber: buyer.phone || undefined,
+              address: squareAddress
             }
           }
         }]
@@ -141,22 +158,40 @@ export async function POST(request) {
     const expectedCents = toCents(totals.total);
     if (order?.totalMoney?.amount !== expectedCents) {
       console.error('Square order total mismatch', { orderId: order?.id, expected: String(expectedCents), actual: String(order?.totalMoney?.amount) });
-      return NextResponse.json(
-        { success: false, error: 'We could not confirm your order total. You have not been charged.' },
-        { status: 500 }
-      );
+      return jsonError('We could not confirm your order total. You have not been charged.', 500);
     }
 
-    const { payment } = await client.payments.create({
+    const { payment } = await square.payments.create({
       sourceId,
       verificationToken: typeof verificationToken === 'string' ? verificationToken : undefined,
       idempotencyKey,
       amountMoney: { amount: expectedCents, currency: 'AUD' },
       orderId: order.id,
+      customerId,
       locationId,
       buyerEmailAddress: buyer.email,
-      note: 'CozyCubs Australia Custom Bedding Order'
+      shippingAddress: squareAddress,
+      note: `cozycubs.au order for ${buyer.name}`
     });
+
+    const emailData = { buyer, items: orderItems, totals, orderId: order.id, paymentId: payment.id, receiptUrl: payment.receiptUrl };
+    const [customerMail, businessMail] = await Promise.all([
+      sendEmail({
+        to: buyer.email,
+        subject: 'Your Cozy Cubs order is confirmed',
+        html: orderCustomerEmail(emailData),
+        replyTo: BUSINESS_EMAIL
+      }),
+      sendEmail({
+        to: BUSINESS_EMAIL,
+        subject: `New order: ${buyer.name} – $${totals.total.toFixed(2)}`,
+        html: orderBusinessEmail(emailData),
+        replyTo: buyer.email
+      })
+    ]);
+    if (!customerMail.ok || !businessMail.ok) {
+      console.error('Order emails incomplete', { orderId: order.id, customerMail, businessMail });
+    }
 
     return NextResponse.json({
       success: true,
@@ -165,7 +200,8 @@ export async function POST(request) {
       receiptUrl: payment.receiptUrl,
       status: payment.status,
       amount: Number(payment.amountMoney.amount) / 100,
-      currency: payment.amountMoney.currency
+      currency: payment.amountMoney.currency,
+      emailSent: customerMail.ok
     });
   } catch (error) {
     if (error instanceof SquareError) {
@@ -178,10 +214,7 @@ export async function POST(request) {
         );
       }
       if (error.errors?.some((e) => e.code === 'IDEMPOTENCY_KEY_REUSED')) {
-        return NextResponse.json(
-          { success: false, error: 'Your order details changed during a retry. Please check your email for a receipt before trying again.' },
-          { status: 409 }
-        );
+        return jsonError('Your order details changed during a retry. Please check your email for a receipt before trying again.', 409);
       }
     } else {
       console.error('Square checkout error:', error);
