@@ -60,7 +60,7 @@ export default function SocialStudioClient() {
 
   // Generated Content state
   const [caption, setCaption] = useState(
-    `Transform your bedroom with the ${SAMPLE_PATTERNS[0].name} by Cozy Cubs Australia! 🌿✨\n\nHandcrafted with 100% GOTS-certified organic cotton percale and printed with non-toxic eco reactive dyes, this custom bedding set brings warm luxury to any Aussie home.\n\n🎨 Custom-made with live 3D preview\n🇦🇺 Designed for standard AU sizes\n🚚 2-4 day express Sydney manufacturing\n\nTag a friend who needs a bedroom glow-up! 👇\n\nOrder online today at cozycubs.au with 10% off using code COZY10 ✨`
+    `Transform your bedroom with the ${SAMPLE_PATTERNS[0].name} by Cozy Cubs Australia! 🌿✨\n\nHandcrafted with 100% GOTS-certified organic cotton percale and printed with non-toxic eco reactive dyes, this custom bedding set brings warm luxury to any Aussie home.\n\n🎨 Custom-made with live 3D preview\n🇦🇺 Designed for standard AU sizes\n🚚 Made to order, tracked delivery Australia-wide\n\nTag a friend who needs a bedroom glow-up! 👇\n\nOrder online today at cozycubs.au with 10% off using code COZY10 ✨`
   );
   const [hashtags, setHashtags] = useState([
     '#CozyCubs',

@@ -113,7 +113,7 @@ export async function POST(request) {
           scope: 'ORDER'
         }] : undefined,
         serviceCharges: totals.shippingCost > 0 ? [{
-          name: 'Express AU Shipping',
+          name: 'Tracked AU Shipping',
           amountMoney: { amount: toCents(totals.shippingCost), currency: 'AUD' },
           calculationPhase: 'TOTAL_PHASE',
           taxable: false

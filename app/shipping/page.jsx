@@ -1,14 +1,14 @@
 import ShippingClient from './ShippingClient';
 
 export const metadata = {
-  title: 'Shipping Policy & Express Australia Post Delivery | Cozy Cubs Australia',
-  description: 'Cozy Cubs Australia shipping details: 2-4 business day custom production, free standard AU delivery over $150, and express Australia Post options nationwide.',
+  title: 'Shipping Policy & Delivery Times | Cozy Cubs Australia',
+  description: 'Cozy Cubs Australia shipping: custom bedding made to order and delivered in 3–3.5 weeks, free tracked shipping on orders over $120 Australia-wide.',
   alternates: {
     canonical: 'https://cozycubs.au/shipping',
   },
   openGraph: {
     title: 'Shipping Policy & Delivery | Cozy Cubs Australia',
-    description: 'Australia Post express delivery rates, custom production timelines, and order tracking.',
+    description: 'Made-to-order timelines, shipping rates and order tracking.',
     url: 'https://cozycubs.au/shipping',
     siteName: 'Cozy Cubs Australia',
   },

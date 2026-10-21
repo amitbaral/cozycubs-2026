@@ -2,8 +2,8 @@ import React from 'react';
 import { ArrowRight, Upload, Palette, Ruler, Truck, Check, Star } from 'lucide-react';
 import { BearCub } from './Brand';
 
-const ABOUT_IMAGE = 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=900&q=80';
-const QUALITY_IMAGE = 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=900&q=80';
+const ABOUT_IMAGE = '/images/custom-doona-kpop.webp';
+const QUALITY_IMAGE = '/images/quality-doona.webp';
 
 export function AboutSplit({ scrollToCustomizer }) {
   return (
@@ -14,7 +14,7 @@ export function AboutSplit({ scrollToCustomizer }) {
           <div style={{ position: 'absolute', inset: '0 6% 0 0', background: 'var(--peach)', borderRadius: 'var(--blob)' }} />
           <span className="blob-outline" style={{ inset: '6px 3% 6px -3%' }} />
           <div className="blob-frame" style={{ position: 'relative', aspectRatio: '1 / 1', maxWidth: '520px' }}>
-            <img src={ABOUT_IMAGE} alt="Soft pillow on fresh cotton bedding" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src={ABOUT_IMAGE} alt="Personalised doona cover set printed with the name Sofia" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
         </div>
 
@@ -27,12 +27,12 @@ export function AboutSplit({ scrollToCustomizer }) {
               <strong>4.9</strong>
               <span>Star rating</span>
             </div>
-            <p>Every set is printed to order in Sydney, so the name, photo or artwork on it is exactly what you designed.</p>
+            <p>Every set is printed to order, so the name, photo or artwork on it is exactly what you designed.</p>
           </div>
 
           <p>
             Choose from organic percale cotton, soft microfibre or washed linen in every Australian bed size.
-            Preview your design on a real bed before you pay, and we&apos;ll have it printed and on its way within a few days.
+            Preview your design before you pay, and your made-to-order set will arrive within 3–3.5 weeks.
           </p>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginTop: '34px', flexWrap: 'wrap' }}>
@@ -56,7 +56,7 @@ const STEPS = [
   { icon: Upload, title: 'Upload Or Pick', text: 'Use a family photo, your child\u2019s drawing, or one of our designs.' },
   { icon: Palette, title: 'Personalise It', text: 'Add a name, choose a font, and pick a reverse backing colour.' },
   { icon: Ruler, title: 'Size & Fabric', text: 'Single to Super King in cotton, microfibre or linen.' },
-  { icon: Truck, title: 'Printed & Shipped', text: 'Made to order in Sydney and sent tracked Australia-wide.' }
+  { icon: Truck, title: 'Made & Delivered', text: 'Made to order and delivered with tracking in 3\u20133.5 weeks.' }
 ];
 
 export function HowItWorks({ scrollToCustomizer }) {
@@ -88,7 +88,7 @@ export function HowItWorks({ scrollToCustomizer }) {
   );
 }
 
-const MARQUEE_ITEMS = ['Organic Cotton', 'Australian Sizes', 'Custom Names', 'Kids Artwork', 'Family Photos', 'Printed In Sydney'];
+const MARQUEE_ITEMS = ['Organic Cotton', 'Australian Sizes', 'Custom Names', 'Kids Artwork', 'Family Photos', 'Made To Order'];
 
 export function Marquee() {
   const items = [...MARQUEE_ITEMS, ...MARQUEE_ITEMS];
@@ -134,8 +134,8 @@ export function QualityBand() {
             Custom sets delivered
           </div>
           <div className="counter">
-            <strong>2–4</strong>
-            Business days to print
+            <strong>3–3.5</strong>
+            Weeks, made to order
           </div>
           <div className="counter">
             <strong>5</strong>

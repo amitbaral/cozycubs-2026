@@ -171,8 +171,8 @@ export const FAQS = [
     a: 'We strictly adhere to standard Australian sizing: Single (140x210 cm), Double (180x210 cm), Queen (210x210 cm), King (245x210 cm), and Super King (270x240 cm). Every set includes 2 matching pillowcases (1 for Single).'
   },
   {
-    q: 'How fast is production and delivery within Australia?',
-    a: 'Because each set is custom made to order, production takes 2-3 business days, followed by Express tracked delivery to Sydney, Melbourne, Brisbane, Adelaide, Perth, and regional Australia.'
+    q: 'How long does delivery take within Australia?',
+    a: 'Because each set is made to order, please allow 3–3.5 weeks from order to delivery. That includes printing, sewing and tracked shipping to anywhere in Australia, and you\u2019ll get a tracking number as soon as it\u2019s dispatched.'
   },
   {
     q: 'Are the custom printed quilt covers washable?',

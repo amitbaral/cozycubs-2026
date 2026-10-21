@@ -77,7 +77,7 @@ Handcrafted with 100% GOTS-certified organic cotton percale and printed with non
 
 🎨 Custom-made with live 3D preview
 🇦🇺 Designed for standard AU sizes
-🚚 2-4 day express Sydney manufacturing
+🚚 Made to order, tracked delivery Australia-wide
 
 Tag a friend who needs a bedroom glow-up! 👇
 

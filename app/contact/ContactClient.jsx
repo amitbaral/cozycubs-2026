@@ -78,7 +78,7 @@ export default function ContactClient() {
                 </div>
                 <div>
                   <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#6B7590', textTransform: 'uppercase' }}>Phone Support (Mon-Fri)</div>
-                  <div style={{ fontWeight: 800, fontSize: '1.05rem', color: '#002169' }}>1300 COZY CUBS (1300 269 928)</div>
+                  <div style={{ fontWeight: 800, fontSize: '1.05rem', color: '#002169' }}><a href="tel:+61272395211" style={{ color: 'inherit', textDecoration: 'none' }}>02 7239 5211</a></div>
                 </div>
               </div>
 

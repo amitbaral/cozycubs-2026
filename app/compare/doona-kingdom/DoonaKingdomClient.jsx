@@ -36,8 +36,8 @@ export default function DoonaKingdomClient() {
     },
     {
       feature: 'Australian Dispatch & Delivery',
-      cozyCubs: '⚡ Sydney Express (2–4 Business Days)',
-      doonaKingdom: '🐢 Overseas Drop-Shipping (10–18 Days)',
+      cozyCubs: '✅ Made to Order, Tracked (3–3.5 Weeks)',
+      doonaKingdom: '✅ Made to Order, Tracked (3–3.5 Weeks)',
     },
     {
       feature: 'Personalized Name Embroidery',
@@ -178,7 +178,7 @@ export default function DoonaKingdomClient() {
               Design Your Cozy Cubs Custom Bedding Now
             </h2>
             <p style={{ color: '#98A0B5', maxWidth: '600px', margin: '0 auto 28px', fontSize: '1.02rem' }}>
-              Test our instant 3D customizer and experience 100% GOTS organic cotton handcrafted in Sydney.
+              Test our instant 3D customizer and experience 100% GOTS organic cotton made to order.
             </p>
             <a
               href="/customize"

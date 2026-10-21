@@ -292,7 +292,7 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems = [], pr
 
               <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#002169' }}>Order Confirmed!</h2>
               <p style={{ color: '#445374', fontSize: '0.9rem', marginBottom: '20px' }}>
-                Thank you for your purchase! Your doona cover set has been queued for custom printing at our Sydney hub.
+                Thank you for your purchase! Your doona cover set is now queued for custom printing.
               </p>
 
               {/* Receipt Summary Card */}
@@ -379,7 +379,7 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems = [], pr
                 </div>
                 <div style={{ textAlign: 'right', fontSize: '0.8rem', color: '#6F3A73' }}>
                   📦 {cartItems.length} Custom {cartItems.length === 1 ? 'Item' : 'Items'}<br />
-                  🚚 {totals.shippingCost === 0 ? 'Free Express Delivery AU' : `Express Delivery $${totals.shippingCost}`}
+                  🚚 {totals.shippingCost === 0 ? 'Free tracked shipping' : `Tracked shipping $${totals.shippingCost}`}
                 </div>
               </div>
 

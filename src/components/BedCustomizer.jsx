@@ -8,8 +8,8 @@ import { getItemPrice } from '../lib/pricing';
 
 const DEFAULT_PATTERN = {
   id: 'default_pattern',
-  name: 'Native Wattle & Eucalyptus',
-  previewUrl: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80',
+  name: 'Personalised K-Pop Doona Set',
+  previewUrl: '/images/custom-doona-kpop.webp',
   minPriceAUD: 129
 };
 

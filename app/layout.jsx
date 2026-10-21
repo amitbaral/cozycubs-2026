@@ -21,7 +21,7 @@ export const metadata = {
     default: 'Cozy Cubs Australia | Custom Bedding & Doona Cover Studio',
     template: '%s | Cozy Cubs Australia',
   },
-  description: 'Design custom 100% Organic Cotton doona covers and bedding sets for kids & adults in Australia. Live instant 3D bed customizer with name embroidery & express Sydney delivery.',
+  description: 'Design custom 100% Organic Cotton doona covers and bedding sets for kids & adults in Australia. Live instant 3D bed customizer with name embroidery & tracked Australia-wide delivery.',
   keywords: [
     'custom doona covers',
     'custom quilt cover Australia',
@@ -81,6 +81,7 @@ export default function RootLayout({ children }) {
     url: 'https://cozycubs.au',
     logo: 'https://cozycubs.au/favicon.svg',
     description: "Australia's premier custom quilt cover and organic cotton bedding studio.",
+    telephone: '+61 2 7239 5211',
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Sydney',

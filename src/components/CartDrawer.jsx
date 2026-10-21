@@ -90,8 +90,8 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, o
             <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#6F3A73', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Truck size={16} /> 
               {subtotal >= freeShippingThreshold 
-                ? '🎉 You Unlocked FREE Express Delivery across Australia!' 
-                : `Add $${remainingForFreeShipping} AUD more for FREE Express Shipping`}
+                ? '🎉 You unlocked FREE tracked shipping across Australia!'
+                : `Add $${remainingForFreeShipping} AUD more for FREE tracked shipping`}
             </div>
 
             <div style={{ width: '100%', height: '7px', background: '#DDB8DE', borderRadius: '999px', overflow: 'hidden' }}>
@@ -224,7 +224,7 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, o
                   </div>
                 )}
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span>Express AU Shipping:</span>
+                  <span>Tracked Shipping:</span>
                   <span style={{ fontWeight: 700 }}>{shippingCost === 0 ? 'FREE' : `$${shippingCost} AUD`}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 800, color: '#002169', paddingTop: '8px', borderTop: '1px solid #F7F4F7' }}>
@@ -255,7 +255,7 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, o
                 <span>•</span>
                 <span>💳 Cards & Apple Pay</span>
                 <span>•</span>
-                <span>🇦🇺 Sydney Hub</span>
+                <span>🇦🇺 Australian Owned</span>
               </div>
             </div>
           )}

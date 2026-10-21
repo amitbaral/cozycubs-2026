@@ -27,10 +27,10 @@ export default function Footer() {
             <Logo light />
           </div>
           <p style={{ marginBottom: '18px', maxWidth: '300px' }}>
-            Custom doona covers and bedding sets, designed by you and printed to order in Sydney.
+            Custom doona covers and bedding sets, designed by you and made to order.
           </p>
           <p style={{ color: '#FFFFFF', fontWeight: 700, marginBottom: '6px' }}>
-            <a href="tel:1300269928">1300 269 928</a>
+            <a href="tel:+61272395211">02 7239 5211</a>
           </p>
           <p style={{ color: '#FFFFFF', fontWeight: 600, marginBottom: '22px' }}>
             <a href="mailto:info@cozycubs.au">info@cozycubs.au</a>

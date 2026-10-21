@@ -33,34 +33,35 @@ export default function ShippingClient() {
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '40px' }}>
             <span className="badge-au" style={{ background: '#F1E6F1', color: '#6F3A73', borderColor: '#894B8D', marginBottom: '12px' }}>
-              🚚 AUSTRALIA POST & EXPRESS DELIVERY
+              🚚 TRACKED AUSTRALIA-WIDE DELIVERY
             </span>
             <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 2.8rem)', fontWeight: 800, color: '#002169', marginBottom: '12px' }}>
               Shipping Policy & Timeline
             </h1>
             <p style={{ color: '#6B7590', fontSize: '1.05rem' }}>
-              Fast, reliable Australian shipping direct to your door with full tracking by Cozy Cubs Australia.
+              Every set is made to order for you, then sent with tracking to your door anywhere in Australia.
             </p>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div className="glass-card" style={{ padding: '28px', borderRadius: '16px' }}>
               <h3 style={{ fontSize: '1.2rem', color: '#002169', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Clock size={20} color="#894B8D" /> Custom Print Production Timeline
+                <Clock size={20} color="#894B8D" /> Made-to-Order Timeline
               </h3>
               <p style={{ color: '#445374', fontSize: '0.94rem', lineHeight: 1.6 }}>
-                Because each quilt cover set is individually printed and stitched with your custom names, family photos, or artwork, production takes <strong>2-4 business days</strong> prior to dispatch.
+                Each doona cover set is individually printed and sewn with your names, photos or artwork, so it isn&apos;t sitting on a shelf.
+                Please allow <strong>3–3.5 weeks</strong> from order to delivery, including production and tracked shipping.
               </p>
             </div>
 
             <div className="glass-card" style={{ padding: '28px', borderRadius: '16px' }}>
               <h3 style={{ fontSize: '1.2rem', color: '#002169', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Truck size={20} color="#2563EB" /> Australian Shipping Options & Rates
+                <Truck size={20} color="#894B8D" /> Shipping Rates & Tracking
               </h3>
               <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.94rem', color: '#445374' }}>
-                <li><strong>FREE AU Standard Shipping:</strong> On all orders over $150 AUD (3-6 business days transit).</li>
-                <li><strong>Standard AU Shipping:</strong> $9.95 AUD flat rate for orders under $150 AUD.</li>
-                <li><strong>Express Australia Post:</strong> $14.95 AUD flat rate (1-3 business days transit).</li>
+                <li><strong>Free tracked shipping:</strong> On all orders of $120 AUD or more.</li>
+                <li><strong>Tracked shipping:</strong> $15 AUD flat rate for orders under $120 AUD.</li>
+                <li><strong>Tracking:</strong> You&apos;ll receive a tracking number by email as soon as your order is dispatched.</li>
               </ul>
             </div>
           </div>

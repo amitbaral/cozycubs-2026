@@ -62,11 +62,11 @@ export default function CompareClient() {
       adairs: '✅ AU Standard Matrix',
     },
     {
-      feature: 'Local Sydney Express Manufacturing',
-      cozyCubs: '✅ 2–4 Business Days Express',
-      pillowtalk: '❌ Overseas Mass Imports',
-      kas: '❌ Overseas Mass Imports',
-      adairs: '❌ Overseas Mass Imports',
+      feature: 'Made to Order for You',
+      cozyCubs: '✅ Printed to Order (3–3.5 Weeks)',
+      pillowtalk: '❌ Ready-Made Stock',
+      kas: '❌ Ready-Made Stock',
+      adairs: '❌ Ready-Made Stock',
     },
     {
       feature: '30-Day Quality & Happiness Guarantee',
@@ -176,10 +176,10 @@ export default function CompareClient() {
                 <Heart size={24} />
               </div>
               <h3 style={{ fontSize: '1.25rem', color: '#002169', fontWeight: 800, marginBottom: '10px' }}>
-                3. Fast Australian Express Delivery
+                3. Made to Order, Tracked to Your Door
               </h3>
               <p style={{ color: '#6B7590', fontSize: '0.94rem', lineHeight: 1.6 }}>
-                Every Cozy Cubs set is printed and stitched locally in Sydney within 2-4 business days, guaranteeing faster turnaround times than long international supply chains.
+                Every Cozy Cubs set is printed and sewn to order, then delivered with tracking anywhere in Australia within 3–3.5 weeks.
               </p>
             </div>
 

@@ -2,7 +2,7 @@ import DoonaKingdomClient from './DoonaKingdomClient';
 
 export const metadata = {
   title: 'Cozy Cubs vs Doona Kingdom | Custom Quilt Cover Comparison',
-  description: 'Detailed head-to-head comparison: Cozy Cubs vs Doona Kingdom. Compare 100% GOTS organic cotton vs synthetic microfibre, live 3D preview, price, and Sydney express delivery.',
+  description: 'Detailed head-to-head comparison: Cozy Cubs vs Doona Kingdom. Compare 100% GOTS organic cotton vs synthetic microfibre, live 3D preview, price, and delivery.',
   alternates: {
     canonical: 'https://cozycubs.au/compare/doona-kingdom',
   },

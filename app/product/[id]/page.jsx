@@ -11,7 +11,7 @@ export async function generateMetadata({ params }) {
     : `Custom Doona Cover Set #${id} | Cozy Cubs Australia`;
 
   const description = foundPattern
-    ? `Order ${foundPattern.name} custom doona cover in 100% GOTS organic cotton. Live 3D bed customizer with name embroidery & express Australian shipping.`
+    ? `Order ${foundPattern.name} custom doona cover in 100% GOTS organic cotton. Live 3D bed customizer with name embroidery & tracked Australian shipping.`
     : `Custom handcrafted doona cover set by Cozy Cubs Australia. Premium organic cotton bedding set in standard Australian sizes.`;
 
   return {
