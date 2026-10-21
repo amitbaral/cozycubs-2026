@@ -155,7 +155,7 @@ export default function Catalog({ onCustomizePattern }) {
 
                 return (
                   <article key={product.id} className="product-card">
-                    <div className="product-card__img">
+                    <a href={`/product/${product.id}`} className="product-card__img" aria-label={`View details for ${product.name}`} style={{ display: 'block' }}>
                       <img src={displayImage} alt={product.name} loading="lazy" />
                       <span style={{
                         position: 'absolute',
@@ -170,7 +170,7 @@ export default function Catalog({ onCustomizePattern }) {
                       }}>
                         {getProductCategory(product)}
                       </span>
-                    </div>
+                    </a>
 
                     <div className="product-card__body">
                       <h3 className="product-card__title">
