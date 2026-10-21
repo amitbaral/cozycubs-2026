@@ -64,7 +64,8 @@ export async function POST(request) {
       fabric: clean(raw?.fabric, 80),
       backingColor: clean(raw?.backingColor, 60),
       customText: clean(raw?.customText, 60),
-      font: clean(raw?.font, 60)
+      font: clean(raw?.font, 60),
+      textPlacement: clean(raw?.textPlacement, 60)
     };
     item.price = getItemPrice(item);
     if (item.price === null) return badRequest('One of the items in your cart is no longer available.');
@@ -101,7 +102,7 @@ export async function POST(request) {
           note: [
             `Fabric: ${item.fabric}`,
             item.backingColor && `Backing: ${item.backingColor}`,
-            item.customText && `Name: "${item.customText}"${item.font ? ` (${item.font})` : ''}`
+            item.customText && `Name: "${item.customText}"${item.font ? ` (${item.font})` : ''}${item.textPlacement ? ` [${item.textPlacement}]` : ''}`
           ].filter(Boolean).join(', ')
         })),
         discounts: totals.discountAmount > 0 ? [{

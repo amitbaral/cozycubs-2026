@@ -1,12 +1,10 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Sparkles, Upload, Type, Palette, Layers, ShoppingBag, 
-  RefreshCw, ZoomIn, ZoomOut, PawPrint
-} from 'lucide-react';
-import confetti from 'canvas-confetti';
+import { Upload, ShoppingBag, Search, RotateCcw, Move, Check, AlertTriangle, ChevronDown } from 'lucide-react';
+import { BearCub } from './Brand';
 import { AU_BED_SIZES, FABRIC_OPTIONS, BACKING_COLORS, FONTS_LIST } from '../data/sampleData';
+import { getItemPrice } from '../lib/pricing';
 
 const DEFAULT_PATTERN = {
   id: 'default_pattern',
@@ -15,48 +13,136 @@ const DEFAULT_PATTERN = {
   minPriceAUD: 129
 };
 
+// Share of the doona length that lies on the mattress; the rest hangs over the foot.
+const TOP_SHARE = 0.78;
+// Where the folded-back edge ends, as a share of the mattress-top length.
+const FOLD_END = 0.33;
+const TEXT_POSITIONS = [
+  { id: 'top', label: 'Top', at: 0.36 },
+  { id: 'middle', label: 'Middle', at: 0.52 },
+  { id: 'lower', label: 'Lower', at: 0.68 }
+];
+const TEXT_SIZES = [
+  { id: 'S', label: 'Small', cqw: 6 },
+  { id: 'M', label: 'Medium', cqw: 9 },
+  { id: 'L', label: 'Large', cqw: 13 }
+];
+const TEXT_COLORS = [
+  { name: 'Navy', hex: '#002169' },
+  { name: 'White', hex: '#FFFFFF' },
+  { name: 'Black', hex: '#111111' },
+  { name: 'Plum', hex: '#894B8D' },
+  { name: 'Gold', hex: '#C9962B' }
+];
+const MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
+
+function parseDimensions(dimensions) {
+  const [w, l] = dimensions.match(/\d+/g).map(Number);
+  return { w, l };
+}
+
+function photoQuality(width) {
+  if (width >= 3000) return { level: 'good', text: 'Great quality for printing' };
+  if (width >= 1800) return { level: 'ok', text: 'Okay — may print slightly soft' };
+  return { level: 'low', text: 'Low resolution — likely to print blurry' };
+}
+
+function PrintArtwork({ design }) {
+  const { image, fit, zoom, pan, backing, text, font, textColor, textSize, textAt } = design;
+  const lightText = textColor.toUpperCase() === '#FFFFFF';
+  return (
+    <>
+      <div style={{ position: 'absolute', inset: 0, background: backing }} />
+      {image && (
+        <img
+          src={image}
+          alt=""
+          draggable={false}
+          style={{
+            objectFit: fit === 'fit' ? 'contain' : 'cover',
+            transform: `translate(${pan.x}%, ${pan.y}%) scale(${zoom})`
+          }}
+        />
+      )}
+      {text && (
+        <div
+          className="print-canvas__text"
+          style={{
+            top: `${textAt * 100}%`,
+            transform: 'translateY(-50%)',
+            fontFamily: font,
+            fontSize: `${textSize}cqw`,
+            color: textColor,
+            textShadow: lightText ? '0 1px 3px rgba(0,0,0,0.45)' : '0 1px 2px rgba(255,255,255,0.35)'
+          }}
+        >
+          {text}
+        </div>
+      )}
+    </>
+  );
+}
+
+function Step({ number, title, value, isOpen, onToggle, children }) {
+  return (
+    <div className={`step${isOpen ? ' is-open' : ''}`}>
+      <button className="step__head" onClick={onToggle} aria-expanded={isOpen}>
+        <span className="step__num">{number}</span>
+        <span className="step__title">{title}</span>
+        <span className="step__value">{value}</span>
+        <ChevronDown size={18} style={{ flexShrink: 0, color: 'var(--plum)', transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+      </button>
+      {isOpen && <div className="step__body animate-fade-in">{children}</div>}
+    </div>
+  );
+}
+
 export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGuide, selectedPatternProp }) {
-  const [mounted, setMounted] = useState(false);
   const [livePatterns, setLivePatterns] = useState([DEFAULT_PATTERN]);
   const [selectedPattern, setSelectedPattern] = useState(selectedPatternProp || DEFAULT_PATTERN);
-  
-  // Guaranteed non-null active pattern object
-  const activePattern = selectedPattern || selectedPatternProp || DEFAULT_PATTERN;
+  const [patternSearch, setPatternSearch] = useState('');
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const [activeTab, setActiveTab] = useState('design'); // 'design', 'text', 'backing', 'size_fabric'
   const [customImage, setCustomImage] = useState(null);
-  const [customText, setCustomText] = useState('Your Custom Name');
-  const [selectedFont, setSelectedFont] = useState(FONTS_LIST[0]);
-  const [textColor, setTextColor] = useState('#002169');
-  const [textPosition, setTextPosition] = useState('bottom'); // 'top', 'center', 'bottom'
-  const [selectedBacking, setSelectedBacking] = useState(BACKING_COLORS[0]);
-  const [selectedSize, setSelectedSize] = useState(AU_BED_SIZES[2]); // Default Queen
-  const [selectedFabric, setSelectedFabric] = useState(FABRIC_OPTIONS[1]); // Default Organic Cotton
-  const [zoomLevel, setZoomLevel] = useState(1);
-  const [dpiStatus, setDpiStatus] = useState('high');
+  const [uploadName, setUploadName] = useState('');
+  const [uploadError, setUploadError] = useState('');
+  const [quality, setQuality] = useState(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [fit, setFit] = useState('fill');
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
 
-  // Fetch live products from Square API
+  const [customText, setCustomText] = useState('');
+  const [selectedFont, setSelectedFont] = useState(FONTS_LIST[0]);
+  const [textColor, setTextColor] = useState(TEXT_COLORS[0].hex);
+  const [textPosition, setTextPosition] = useState(TEXT_POSITIONS[1]);
+  const [textSize, setTextSize] = useState(TEXT_SIZES[1]);
+
+  const [selectedBacking, setSelectedBacking] = useState(BACKING_COLORS[0]);
+  const [selectedSize, setSelectedSize] = useState(AU_BED_SIZES[2]);
+  const [selectedFabric, setSelectedFabric] = useState(FABRIC_OPTIONS[1]);
+
+  const [openStep, setOpenStep] = useState(1);
+  const [isPanning, setIsPanning] = useState(false);
+
+  const fileInputRef = useRef(null);
+  const panStartRef = useRef(null);
+  const flatCanvasRef = useRef(null);
+
   useEffect(() => {
     let isMounted = true;
     fetch('/api/square/products')
       .then((res) => res.json())
       .then((data) => {
-        if (!isMounted) return;
-        if (data.success && Array.isArray(data.products) && data.products.length > 0) {
-          const formatted = data.products.map((p) => ({
-            id: p.id,
-            name: p.name,
-            previewUrl: p.previewUrl || 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80',
-            minPriceAUD: p.minPriceAUD
-          }));
-          setLivePatterns(formatted);
-          if (!selectedPatternProp) {
-            setSelectedPattern((prev) => (prev && prev.id !== 'default_pattern' ? prev : formatted[0]));
-          }
+        if (!isMounted || !data.success || !Array.isArray(data.products) || data.products.length === 0) return;
+        const formatted = data.products.map((p) => ({
+          id: p.id,
+          name: p.name,
+          previewUrl: p.previewUrl || DEFAULT_PATTERN.previewUrl,
+          minPriceAUD: p.minPriceAUD
+        }));
+        setLivePatterns(formatted);
+        if (!selectedPatternProp) {
+          setSelectedPattern((prev) => (prev && prev.id !== DEFAULT_PATTERN.id ? prev : formatted[0]));
         }
       })
       .catch((err) => console.error('Square fetch error in customizer:', err));
@@ -66,787 +152,454 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
     };
   }, [selectedPatternProp]);
 
-  // Update selected pattern when prop changes
   useEffect(() => {
     if (selectedPatternProp) {
       setSelectedPattern(selectedPatternProp);
+      setCustomImage(null);
+      resetImagePosition();
     }
   }, [selectedPatternProp]);
 
-  const fileInputRef = useRef(null);
-
-  // Calculate dynamic price
-  const totalPrice = selectedSize.price + selectedFabric.priceAdd;
-
-  // Handle Image Upload
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size < 500000) {
-        setDpiStatus('medium');
-      } else {
-        setDpiStatus('high');
-      }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setCustomImage(event.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
+  const resetImagePosition = () => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
   };
 
-  // Trigger Add To Cart with Confetti
-  const handleAddToCartClick = () => {
-    confetti({
-      particleCount: 80,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
+  const loadFile = (file) => {
+    setUploadError('');
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setUploadError('Please choose an image file (JPG, PNG or WEBP).');
+      return;
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setUploadError('That image is over 25 MB. Please choose a smaller file.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target.result;
+      const probe = new Image();
+      probe.onload = () => {
+        setQuality({ ...photoQuality(probe.naturalWidth), width: probe.naturalWidth, height: probe.naturalHeight });
+        setCustomImage(dataUrl);
+        setUploadName(file.name);
+        resetImagePosition();
+      };
+      probe.onerror = () => setUploadError('We couldn\u2019t read that image. Please try a different file.');
+      probe.src = dataUrl;
+    };
+    reader.readAsDataURL(file);
+  };
 
-    const customItem = {
+  const clearUpload = () => {
+    setCustomImage(null);
+    setUploadName('');
+    setQuality(null);
+    resetImagePosition();
+  };
+
+  const choosePattern = (pattern) => {
+    setSelectedPattern(pattern);
+    clearUpload();
+    setFit('fill');
+  };
+
+  const { w: doonaW, l: doonaL } = parseDimensions(selectedSize.dimensions);
+  const totalPrice = getItemPrice({ size: selectedSize.name, fabric: selectedFabric.name });
+  const imageSrc = customImage || selectedPattern.previewUrl;
+  const design = {
+    image: imageSrc,
+    fit,
+    zoom,
+    pan,
+    backing: selectedBacking.hex,
+    text: customText.trim(),
+    font: selectedFont.family,
+    textColor,
+    textSize: textSize.cqw,
+    textAt: textPosition.at
+  };
+
+  const filteredPatterns = patternSearch
+    ? livePatterns.filter((p) => p.name.toLowerCase().includes(patternSearch.toLowerCase()))
+    : livePatterns;
+
+  // Drag-to-reposition the image on the print
+  const handlePointerDown = (e) => {
+    if (!imageSrc) return;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    panStartRef.current = { x: e.clientX, y: e.clientY, pan };
+    setIsPanning(true);
+  };
+  const handlePointerMove = (e) => {
+    if (!panStartRef.current || !flatCanvasRef.current) return;
+    const rect = flatCanvasRef.current.getBoundingClientRect();
+    const start = panStartRef.current;
+    const clamp = (v) => Math.max(-50, Math.min(50, v));
+    setPan({
+      x: clamp(start.pan.x + ((e.clientX - start.x) / rect.width) * 100),
+      y: clamp(start.pan.y + ((e.clientY - start.y) / rect.height) * 100)
+    });
+  };
+  const handlePointerUp = () => {
+    panStartRef.current = null;
+    setIsPanning(false);
+  };
+
+  const handleAddToCartClick = () => {
+    onAddToCart({
       id: `custom-${Date.now()}`,
-      patternName: customImage ? 'Custom Photo Upload' : activePattern.name,
-      patternImage: customImage || activePattern.previewUrl,
-      customText: customText,
-      font: selectedFont.name,
+      patternName: customImage ? 'Custom Photo Upload' : selectedPattern.name,
+      patternImage: imageSrc,
+      customText: design.text,
+      font: design.text ? selectedFont.name : '',
+      textPlacement: design.text ? `${textPosition.label}, ${textSize.label}, ${textColor}` : '',
       backingColor: selectedBacking.name,
       size: selectedSize.name,
       dimensions: selectedSize.dimensions,
       fabric: selectedFabric.name,
       price: totalPrice,
       pillowcases: selectedSize.pillowcases
-    };
-
-    onAddToCart(customItem);
+    });
   };
+
+  const toggleStep = (n) => setOpenStep((prev) => (prev === n ? 0 : n));
+  const nextStep = (n) => (
+    <button onClick={() => setOpenStep(n)} className="btn-outline" style={{ marginTop: '18px', padding: '12px 22px 10px', fontSize: '1rem' }}>
+      Next step
+    </button>
+  );
 
   return (
     <section ref={customizerRef} id="customizer" style={{ scrollMarginTop: '110px' }}>
       <div className="container">
 
         <div className="section-head section-head--center" style={{ marginBottom: '24px' }}>
-          <span className="section-label">Live Bed Designer <PawPrint size={16} /></span>
+          <span className="section-label">Live Bed Designer <BearCub size={18} /></span>
           <h2 className="section-title">Design Your Doona Cover</h2>
           <p className="section-text">
-            Pick a pattern or upload your photo, add a name, choose your backing colour, and see it on a bed as you go.
+            Build your design and see exactly what we&apos;ll print, at the real proportions of your bed size.
           </p>
         </div>
 
-        {/* Customizer Main Container */}
-        <div className="customizer-container">
+        <div className="designer">
 
-          {/* LEFT COLUMN: REAL-TIME BED PREVIEW CANVAS */}
-          <div>
-            <div className="bed-preview-box">
-              {/* Bed Background & Mockup Shadows */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                backgroundColor: selectedBacking.hex,
-                transition: 'background-color 0.4s ease'
-              }} />
+          {/* PREVIEW */}
+          <div className="designer__preview">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', marginBottom: '14px', flexWrap: 'wrap' }}>
+              <span style={{ fontFamily: 'var(--heading)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--navy)' }}>Print preview</span>
+              <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>
+                {selectedSize.name} · {doonaW} × {doonaL} cm
+              </span>
+            </div>
 
-              {/* Main Doona Cover Outer Layer */}
-              <div style={{
-                position: 'relative',
-                width: '78%',
-                height: '78%',
-                borderRadius: '16px',
-                overflow: 'hidden',
-                boxShadow: '0 18px 40px rgba(0, 33, 105, 0.25)',
-                border: '2px solid rgba(255,255,255,0.4)',
-                transform: `scale(${zoomLevel})`,
-                transition: 'transform 0.3s ease'
-              }}>
-                {/* Pattern / Image Background Layer */}
-                {customImage ? (
-                  <img
-                    src={customImage}
-                    alt="Custom Upload"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover'
-                    }}
-                  />
-                ) : (
-                  <div style={{
-                    width: '100%',
-                    height: '100%',
-                    backgroundImage: `url(${activePattern.previewUrl})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
-                  }} />
-                )}
-
-                {/* Folded Top Reverse Backing Preview */}
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '18%',
-                  backgroundColor: selectedBacking.hex,
-                  borderBottom: '2px dashed rgba(255,255,255,0.5)',
-                  boxShadow: '0 4px 10px rgba(0,0,0,0.15)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  <span style={{
-                    fontSize: '0.68rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase',
-                    color: selectedBacking.id === 'charcoal' || selectedBacking.id === 'navy' ? '#FFFFFF' : '#445374'
-                  }}>
-                    Folded Backing: {selectedBacking.name}
-                  </span>
+            <div className="flat-view">
+              <div
+                ref={flatCanvasRef}
+                className={`flat-view__canvas is-draggable${isPanning ? ' is-dragging' : ''}`}
+                style={{ aspectRatio: `${doonaW} / ${doonaL}` }}
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={handlePointerUp}
+                aria-label={`Print preview of your ${selectedSize.name} doona cover`}
+              >
+                <div className="print-canvas" style={{ top: 0, height: '100%' }}>
+                  <PrintArtwork design={design} />
                 </div>
-
-                {/* Fabric Texture Fold & Highlight Shadow Overlay */}
-                <div style={{
-                  position: 'absolute',
-                  inset: 0,
-                  pointerEvents: 'none',
-                  background: 'linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.2) 100%)',
-                  mixBlendMode: 'multiply'
-                }} />
-
-                {/* Custom Overlay Typography */}
-                {customText && (
-                  <div style={{
-                    position: 'absolute',
-                    inset: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: textPosition === 'top' || textPosition === 'upper' ? 'flex-start' : textPosition === 'center' ? 'center' : 'flex-end',
-                    alignItems: 'center',
-                    padding: textPosition === 'top' 
-                      ? '22% 16px 12px' 
-                      : textPosition === 'upper' 
-                      ? '36% 16px 12px' 
-                      : textPosition === 'center' 
-                      ? '12px 16px' 
-                      : '12px 16px 20px',
-                    pointerEvents: 'none',
-                    zIndex: 10,
-                    transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)'
-                  }}>
-                    <div style={{
-                      fontFamily: selectedFont.family,
-                      fontSize: 'clamp(1.15rem, 2.8vw, 2.2rem)',
-                      fontWeight: 700,
-                      color: textColor,
-                      textAlign: 'center',
-                      textShadow: '0 2px 12px rgba(255,255,255,0.95), 0 1px 4px rgba(0,0,0,0.35)',
-                      lineHeight: 1.25,
-                      padding: '6px 18px',
-                      background: 'rgba(255,255,255,0.45)',
-                      backdropFilter: 'blur(6px)',
-                      borderRadius: '12px',
-                      maxWidth: '90%',
-                      wordBreak: 'break-word',
-                      boxShadow: '0 4px 16px rgba(0, 33, 105,0.12)',
-                      transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)'
-                    }}>
-                      {customText}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Pillowcases Preview overlay */}
-              <div style={{
-                position: 'absolute',
-                top: '20px',
-                display: 'flex',
-                gap: '12px',
-                zIndex: 15
-              }}>
-                <div style={{
-                  width: '70px',
-                  height: '44px',
-                  borderRadius: '8px',
-                  backgroundColor: selectedBacking.hex,
-                  backgroundImage: `url(${customImage || activePattern.previewUrl})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  border: '1.5px solid rgba(255,255,255,0.6)',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }} />
-                {selectedSize.pillowcases > 1 && (
-                  <div style={{
-                    width: '70px',
-                    height: '44px',
-                    borderRadius: '8px',
-                    backgroundColor: selectedBacking.hex,
-                    backgroundImage: `url(${customImage || activePattern.previewUrl})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    border: '1.5px solid rgba(255,255,255,0.6)',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
-                  }} />
-                )}
-              </div>
-
-              {/* Canvas Controls Bar */}
-              <div style={{
-                position: 'absolute',
-                bottom: '14px',
-                left: '14px',
-                right: '14px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                background: 'rgba(0, 33, 105, 0.85)',
-                backdropFilter: 'blur(10px)',
-                padding: '8px 14px',
-                borderRadius: '10px',
-                color: '#FFFFFF',
-                fontSize: '0.78rem'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
-                    background: dpiStatus === 'high' ? '#10B981' : '#FFC23C'
-                  }} />
-                  <span style={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
-                    {customImage ? (dpiStatus === 'high' ? 'HD Crisp 300 DPI' : 'Standard Quality') : 'HD Vector Pattern'}
-                  </span>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <button 
-                    onClick={() => setZoomLevel(prev => Math.max(0.85, prev - 0.1))} 
-                    style={{ color: '#FFFFFF' }}
-                    title="Zoom Out"
-                  >
-                    <ZoomOut size={15} />
-                  </button>
-                  <span style={{ fontWeight: 700 }}>{Math.round(zoomLevel * 100)}%</span>
-                  <button 
-                    onClick={() => setZoomLevel(prev => Math.min(1.25, prev + 0.1))} 
-                    style={{ color: '#FFFFFF' }}
-                    title="Zoom In"
-                  >
-                    <ZoomIn size={15} />
-                  </button>
-                </div>
+                <div className="flat-view__guide" style={{ top: `${FOLD_END * TOP_SHARE * 100}%` }}><span>Folds back above here</span></div>
+                <div className="flat-view__guide" style={{ top: `${TOP_SHARE * 100}%` }}><span>Hangs over foot of bed</span></div>
+                <span className="flat-view__dim" style={{ top: '-24px', left: '50%', transform: 'translateX(-50%)' }}>{doonaW} cm</span>
+                <span className="flat-view__dim" style={{ top: '50%', left: '-12px', transform: 'translate(-100%, -50%) rotate(-90deg)', transformOrigin: 'right center' }}>{doonaL} cm</span>
               </div>
             </div>
 
-            {/* Print Guarantee Tag */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '12px',
-              marginTop: '14px',
-              fontSize: '0.8rem',
-              color: '#445374',
-              fontWeight: 600,
-              flexWrap: 'wrap'
-            }}>
-              <span>🇦🇺 Sydney/Melb Printed</span>
-              <span>•</span>
-              <span>✨ Reversible Backing</span>
-              <span>•</span>
-              <span>🛏️ {selectedSize.pillowcases} Pillowcase{selectedSize.pillowcases > 1 ? 's' : ''}</span>
-            </div>
+            <p style={{ fontSize: '0.82rem', marginTop: '12px', display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center', textAlign: 'center' }}>
+              <Move size={14} /> Drag the image to reposition it. Includes {selectedSize.pillowcases} matching pillowcase{selectedSize.pillowcases > 1 ? 's' : ''}.
+            </p>
           </div>
 
-
-          {/* RIGHT COLUMN: INTERACTIVE CONTROLS TABS */}
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            
-            {/* Tab Navigation - Single Row Horizontal Scrollable */}
-            <div>
-              <div style={{
-                display: 'flex',
-                borderBottom: '1px solid #E6E1EA',
-                marginBottom: '20px',
-                overflowX: 'auto',
-                whiteSpace: 'nowrap',
-                gap: '4px',
-                paddingBottom: '2px'
-              }}>
-                <button
-                  onClick={() => setActiveTab('design')}
-                  className={`tab-btn ${activeTab === 'design' ? 'active' : ''}`}
-                >
-                  <Upload size={15} style={{ display: 'inline', marginRight: '6px' }} />
-                  1. Pattern / Photo
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('text')}
-                  className={`tab-btn ${activeTab === 'text' ? 'active' : ''}`}
-                >
-                  <Type size={15} style={{ display: 'inline', marginRight: '6px' }} />
-                  2. Name & Font
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('backing')}
-                  className={`tab-btn ${activeTab === 'backing' ? 'active' : ''}`}
-                >
-                  <Palette size={15} style={{ display: 'inline', marginRight: '6px' }} />
-                  3. Reverse Backing
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('size_fabric')}
-                  className={`tab-btn ${activeTab === 'size_fabric' ? 'active' : ''}`}
-                >
-                  <Layers size={15} style={{ display: 'inline', marginRight: '6px' }} />
-                  4. Size & Fabric
-                </button>
+          {/* CONTROLS */}
+          <div>
+            <Step
+              number={1}
+              title="Choose your design"
+              value={customImage ? 'Your photo' : selectedPattern.name}
+              isOpen={openStep === 1}
+              onToggle={() => toggleStep(1)}
+            >
+              <div
+                className={`upload-drop${isDragOver ? ' is-over' : ''}`}
+                onClick={() => fileInputRef.current?.click()}
+                onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
+                onDragLeave={() => setIsDragOver(false)}
+                onDrop={(e) => { e.preventDefault(); setIsDragOver(false); loadFile(e.dataTransfer.files?.[0]); }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') fileInputRef.current?.click(); }}
+              >
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={(e) => { loadFile(e.target.files?.[0]); e.target.value = ''; }}
+                  accept="image/jpeg,image/png,image/webp"
+                  style={{ display: 'none' }}
+                />
+                <Upload size={26} style={{ margin: '0 auto 6px', color: 'var(--plum)' }} />
+                <div style={{ fontWeight: 700, color: 'var(--navy)' }}>
+                  {customImage ? 'Replace your photo' : 'Upload a photo or drawing'}
+                </div>
+                <div style={{ fontSize: '0.8rem' }}>Drag & drop or click · JPG, PNG, WEBP up to 25 MB</div>
               </div>
 
-              {/* TAB 1 CONTENT: PATTERN OR PHOTO UPLOAD */}
-              {activeTab === 'design' && (
-                <div className="animate-fade-in">
-                  <h4 suppressHydrationWarning style={{ fontSize: '0.98rem', color: '#002169', marginBottom: '4px' }}>
-                    {mounted && (activePattern.name?.toLowerCase().includes('artwork') || activePattern.name?.toLowerCase().includes('drawing'))
-                      ? '🎨 Kids Artwork Doona Studio'
-                      : mounted && activePattern.name?.toLowerCase().includes('photo')
-                      ? '📷 Personal Family Photo Studio'
-                      : 'Upload Your Photo or Pick a Pattern'}
-                  </h4>
-                  <p suppressHydrationWarning style={{ fontSize: '0.8rem', color: '#6B7590', marginBottom: '12px' }}>
-                    {mounted && (activePattern.name?.toLowerCase().includes('artwork') || activePattern.name?.toLowerCase().includes('drawing'))
-                      ? "Upload a photo or scan of your child's drawing/artwork to render live on the bed mockup!"
-                      : mounted && activePattern.name?.toLowerCase().includes('photo')
-                      ? "Upload your high-res family photo to preview live on your custom doona cover!"
-                      : "Upload your custom design photo or select from our curated Square catalog below."}
-                  </p>
+              {uploadError && (
+                <p style={{ color: '#B91C1C', fontSize: '0.85rem', marginTop: '8px' }}>{uploadError}</p>
+              )}
 
-                  {/* Photo Upload Drop Area */}
-                  <div 
-                    onClick={() => fileInputRef.current?.click()}
-                    style={{
-                      border: '2px dashed #894B8D',
-                      borderRadius: '12px',
-                      padding: '18px',
-                      textAlign: 'center',
-                      background: '#F1E6F1',
-                      cursor: 'pointer',
-                      marginBottom: '16px',
-                      transition: 'border-color 0.2s ease'
-                    }}
-                  >
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={handleImageUpload}
-                      accept="image/*"
-                      style={{ display: 'none' }}
-                    />
-                    <Upload size={26} color="#894B8D" style={{ margin: '0 auto 6px' }} />
-                    <div suppressHydrationWarning style={{ fontWeight: 700, fontSize: '0.9rem', color: '#002169' }}>
-                      {customImage
-                        ? 'Change Uploaded Image'
-                        : mounted && (activePattern.name?.toLowerCase().includes('artwork') || activePattern.name?.toLowerCase().includes('drawing'))
-                        ? "Click to Upload Child's Artwork / Drawing"
-                        : mounted && activePattern.name?.toLowerCase().includes('photo')
-                        ? 'Click to Upload Personal / Family Photo'
-                        : 'Click to Upload Photo / Artwork'}
-                    </div>
-                    <div style={{ fontSize: '0.76rem', color: '#6B7590', marginTop: '4px' }}>
-                      Supports JPG, PNG, WEBP (High resolution recommended)
-                    </div>
+              {customImage && (
+                <div style={{ marginTop: '14px', padding: '14px', borderRadius: '14px', border: '1.5px solid var(--line)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', alignItems: 'center', marginBottom: '12px' }}>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{uploadName}</span>
+                    <button onClick={clearUpload} style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--plum)' }}>Remove</button>
                   </div>
 
-                  {customImage && (
-                    <button
-                      onClick={() => setCustomImage(null)}
-                      style={{
-                        fontSize: '0.78rem',
-                        color: '#EF4444',
-                        fontWeight: 600,
-                        marginBottom: '14px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px'
-                      }}
-                    >
-                      <RefreshCw size={12} /> Clear Upload & Return to Curated Patterns
-                    </button>
+                  {quality && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      fontSize: '0.84rem',
+                      fontWeight: 600,
+                      marginBottom: '14px',
+                      color: quality.level === 'good' ? '#15803D' : quality.level === 'ok' ? '#92400E' : '#B91C1C'
+                    }}>
+                      {quality.level === 'good' ? <Check size={16} /> : <AlertTriangle size={16} />}
+                      {quality.text} ({quality.width} × {quality.height}px)
+                    </div>
                   )}
 
-                  {/* Live Square API Catalog Patterns Grid */}
-                  <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#445374', marginBottom: '10px' }}>
-                    Or Select Live Square Product Designs ({livePatterns.length}):
+                  <span className="field-label">Photo fit</span>
+                  <div className="segmented" style={{ marginBottom: '14px' }}>
+                    <button className={fit === 'fill' ? 'is-active' : ''} onClick={() => setFit('fill')}>Fill cover</button>
+                    <button className={fit === 'fit' ? 'is-active' : ''} onClick={() => setFit('fit')}>Show whole photo</button>
                   </div>
 
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: '10px',
-                    maxHeight: '320px',
-                    overflowY: 'auto',
-                    paddingRight: '4px'
-                  }}>
-                    {livePatterns.map((pattern) => (
-                      <div
-                        key={pattern.id}
-                        onClick={() => {
-                          setSelectedPattern(pattern);
-                          setCustomImage(null);
-                        }}
-                        style={{
-                          borderRadius: '10px',
-                          overflow: 'hidden',
-                          border: activePattern.id === pattern.id && !customImage ? '2.5px solid #894B8D' : '1px solid #E6E1EA',
-                          cursor: 'pointer',
-                          position: 'relative',
-                          aspectRatio: '1 / 1'
-                        }}
-                      >
-                        <img
-                          src={pattern.previewUrl}
-                          alt={pattern.name}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
-                        <div style={{
-                          position: 'absolute',
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          background: 'rgba(0, 33, 105,0.85)',
-                          color: '#FFFFFF',
-                          fontSize: '0.65rem',
-                          fontWeight: 600,
-                          padding: '3px 4px',
-                          textAlign: 'center',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis'
-                        }}>
-                          {pattern.name}
-                        </div>
-                      </div>
-                    ))}
+                  <label className="field-label" htmlFor="photo-zoom">Zoom</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <input id="photo-zoom" className="range" type="range" min="1" max="2.5" step="0.05" value={zoom} onChange={(e) => setZoom(Number(e.target.value))} />
+                    <button onClick={resetImagePosition} title="Reset position" aria-label="Reset photo position" style={{ color: 'var(--plum)', display: 'inline-flex' }}>
+                      <RotateCcw size={18} />
+                    </button>
                   </div>
-                </div>
-              )}
-
-
-              {/* TAB 2 CONTENT: CUSTOM TYPOGRAPHY STUDIO */}
-              {activeTab === 'text' && (
-                <div className="animate-fade-in">
-                  <h4 style={{ fontSize: '0.98rem', color: '#002169', marginBottom: '12px' }}>
-                    Add Personalised Name or Quote
-                  </h4>
-
-                  {/* Text Input */}
-                  <div style={{ marginBottom: '14px' }}>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#445374', marginBottom: '6px' }}>
-                      Enter Name, Initials or Words:
-                    </label>
-                    <input
-                      type="text"
-                      value={customText}
-                      onChange={(e) => setCustomText(e.target.value)}
-                      placeholder="e.g. Oliver / The Millers"
-                      style={{
-                        width: '100%',
-                        padding: '9px 12px',
-                        borderRadius: '8px',
-                        border: '1.5px solid #E6E1EA',
-                        fontSize: '0.95rem',
-                        fontWeight: 600,
-                        outline: 'none'
-                      }}
-                    />
-                  </div>
-
-                  {/* Font Picker */}
-                  <div style={{ marginBottom: '16px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#445374' }}>
-                        Select Typography Style ({FONTS_LIST.length} Cool Fonts):
-                      </label>
-                      <span style={{ fontSize: '0.72rem', color: '#894B8D', fontWeight: 700 }}>
-                        Active: {selectedFont.name}
-                      </span>
-                    </div>
-
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(2, 1fr)',
-                      gap: '8px',
-                      maxHeight: '210px',
-                      overflowY: 'auto',
-                      paddingRight: '4px'
-                    }}>
-                      {FONTS_LIST.map((font) => (
-                        <button
-                          key={font.id}
-                          onClick={() => setSelectedFont(font)}
-                          style={{
-                            padding: '8px 10px',
-                            borderRadius: '10px',
-                            border: selectedFont.id === font.id ? '2.5px solid #894B8D' : '1px solid #E6E1EA',
-                            background: selectedFont.id === font.id ? '#F1E6F1' : '#FFFFFF',
-                            textAlign: 'left',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            transition: 'all 0.2s ease',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          <span style={{
-                            fontFamily: font.family,
-                            fontSize: '1rem',
-                            fontWeight: 700,
-                            color: selectedFont.id === font.id ? '#6F3A73' : '#002169',
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis'
-                          }}>
-                            {font.name}
-                          </span>
-                          <span style={{
-                            fontSize: '0.66rem',
-                            fontWeight: 600,
-                            color: selectedFont.id === font.id ? '#894B8D' : '#6B7590',
-                            marginTop: '2px'
-                          }}>
-                            {font.style}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Text Position & Color */}
-                  <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
-                    <div style={{ flex: 1 }}>
-                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#445374', marginBottom: '6px' }}>
-                        Text Position:
-                      </label>
-                      <select
-                        value={textPosition}
-                        onChange={(e) => setTextPosition(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '9px 12px',
-                          borderRadius: '8px',
-                          border: '1.5px solid #E6E1EA',
-                          fontWeight: 700,
-                          fontSize: '0.85rem',
-                          background: '#FFFFFF',
-                          color: '#002169',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <option value="top">Top Fold (Upper Bed)</option>
-                        <option value="upper">Upper Chest Area</option>
-                        <option value="center">Center Bed</option>
-                        <option value="bottom">Bottom Hem</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#445374', marginBottom: '6px' }}>
-                        Font Color:
-                      </label>
-                      <input
-                        type="color"
-                        value={textColor}
-                        onChange={(e) => setTextColor(e.target.value)}
-                        style={{
-                          width: '40px',
-                          height: '36px',
-                          borderRadius: '8px',
-                          border: 'none',
-                          cursor: 'pointer'
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-
-              {/* TAB 3 CONTENT: REVERSE BACKING COLOR */}
-              {activeTab === 'backing' && (
-                <div className="animate-fade-in">
-                  <h4 style={{ fontSize: '0.98rem', color: '#002169', marginBottom: '6px' }}>
-                    Choose Reverse Backing Color
-                  </h4>
-                  <p style={{ fontSize: '0.8rem', color: '#6B7590', marginBottom: '14px' }}>
-                    All DoonaCraft covers are 100% reversible. Pick a solid accent color for the back and top fold.
+                  <p style={{ marginTop: '10px', fontSize: '0.84rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Move size={15} /> Drag the preview to reposition your photo
                   </p>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
-                    {BACKING_COLORS.map((color) => (
-                      <div
-                        key={color.id}
-                        onClick={() => setSelectedBacking(color)}
-                        style={{
-                          padding: '9px 12px',
-                          borderRadius: '8px',
-                          border: selectedBacking.id === color.id ? '2.5px solid #894B8D' : '1px solid #E6E1EA',
-                          background: '#FFFFFF',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '10px'
-                        }}
-                      >
-                        <span style={{
-                          width: '24px',
-                          height: '24px',
-                          borderRadius: '50%',
-                          backgroundColor: color.hex,
-                          border: '1px solid #E6E1EA',
-                          display: 'inline-block',
-                          flexShrink: 0
-                        }} />
-                        <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#002169', whiteSpace: 'nowrap' }}>
-                          {color.name}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
                 </div>
               )}
 
-
-              {/* TAB 4 CONTENT: SIZE & FABRIC SELECTOR */}
-              {activeTab === 'size_fabric' && (
-                <div className="animate-fade-in">
-                  
-                  {/* AU Size Selector */}
-                  <div style={{ marginBottom: '18px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                      <h4 style={{ fontSize: '0.88rem', color: '#002169' }}>Select Australian Bed Size:</h4>
-                      <button onClick={onOpenSizeGuide} style={{ fontSize: '0.76rem', color: '#894B8D', fontWeight: 700 }}>
-                        📏 AU Size Guide
-                      </button>
-                    </div>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {AU_BED_SIZES.map((size) => (
-                        <div
-                          key={size.id}
-                          onClick={() => setSelectedSize(size)}
-                          style={{
-                            padding: '9px 12px',
-                            borderRadius: '8px',
-                            border: selectedSize.id === size.id ? '2.5px solid #894B8D' : '1px solid #E6E1EA',
-                            background: selectedSize.id === size.id ? '#F1E6F1' : '#FFFFFF',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between'
-                          }}
-                        >
-                          <div>
-                            <span style={{ fontWeight: 800, fontSize: '0.88rem', color: '#002169' }}>
-                              {size.name}
-                            </span>
-                            <span style={{ fontSize: '0.76rem', color: '#6B7590', marginLeft: '6px' }}>
-                              ({size.dimensions})
-                            </span>
-                          </div>
-                          <span style={{ fontWeight: 800, color: '#002169', fontSize: '0.88rem' }}>
-                            ${size.price} AUD
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Fabric Option Selector */}
-                  <div>
-                    <h4 style={{ fontSize: '0.88rem', color: '#002169', marginBottom: '8px' }}>Select Premium Fabric:</h4>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {FABRIC_OPTIONS.map((fabric) => (
-                        <div
-                          key={fabric.id}
-                          onClick={() => setSelectedFabric(fabric)}
-                          style={{
-                            padding: '9px 12px',
-                            borderRadius: '8px',
-                            border: selectedFabric.id === fabric.id ? '2.5px solid #894B8D' : '1px solid #E6E1EA',
-                            background: selectedFabric.id === fabric.id ? '#F1E6F1' : '#FFFFFF',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between'
-                          }}
-                        >
-                          <div>
-                            <div style={{ fontWeight: 800, fontSize: '0.86rem', color: '#002169' }}>
-                              {fabric.name}
-                            </div>
-                            <div style={{ fontSize: '0.72rem', color: '#6B7590' }}>
-                              {fabric.badge}
-                            </div>
-                          </div>
-                          <span style={{ fontWeight: 800, color: '#894B8D', fontSize: '0.82rem' }}>
-                            {fabric.priceAdd === 0 ? 'Included' : `+$${fabric.priceAdd} AUD`}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                </div>
-              )}
-
-            </div>
-
-
-            {/* BOTTOM SUMMARY & ADD TO CART CTA */}
-            <div style={{
-              marginTop: '20px',
-              paddingTop: '14px',
-              borderTop: '1px solid #E6E1EA'
-            }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '12px'
-              }}>
-                <div>
-                  <div style={{ fontSize: '0.75rem', color: '#6B7590', fontWeight: 600 }}>
-                    Selected: {selectedSize.name} Set ({selectedFabric.name})
-                  </div>
-                  <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#002169' }}>
-                    Total: ${totalPrice} AUD
-                  </div>
-                </div>
-
-                <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#16A34A', background: '#DCFCE7', padding: '3px 8px', borderRadius: '6px', whiteSpace: 'nowrap' }}>
-                  ⚡ Free AU Express Delivery
-                </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '18px 0 10px' }}>
+                <span style={{ flex: 1, height: '1px', background: 'var(--line)' }} />
+                <span style={{ fontSize: '0.82rem', fontWeight: 700 }}>or pick one of our designs</span>
+                <span style={{ flex: 1, height: '1px', background: 'var(--line)' }} />
               </div>
 
-              <button
-                onClick={handleAddToCartClick}
-                className="btn-accent"
-                style={{ width: '100%', fontSize: '1rem', padding: '14px' }}
-              >
-                <ShoppingBag size={18} /> Add Custom Set To Cart (${totalPrice} AUD)
+              <div style={{ position: 'relative', marginBottom: '10px' }}>
+                <input
+                  type="search"
+                  className="field-input"
+                  value={patternSearch}
+                  onChange={(e) => setPatternSearch(e.target.value)}
+                  placeholder={`Search ${livePatterns.length} designs`}
+                  aria-label="Search designs"
+                  style={{ paddingLeft: '40px', fontSize: '0.92rem' }}
+                />
+                <Search size={17} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--plum)' }} />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', maxHeight: '236px', overflowY: 'auto', paddingRight: '4px' }}>
+                {filteredPatterns.map((pattern) => (
+                  <button
+                    key={pattern.id}
+                    onClick={() => choosePattern(pattern)}
+                    className={`pattern-tile${!customImage && selectedPattern.id === pattern.id ? ' is-active' : ''}`}
+                    title={pattern.name}
+                    aria-label={pattern.name}
+                  >
+                    <img src={pattern.previewUrl} alt="" loading="lazy" />
+                  </button>
+                ))}
+                {filteredPatterns.length === 0 && (
+                  <p style={{ gridColumn: '1 / -1', fontSize: '0.85rem' }}>No designs match &ldquo;{patternSearch}&rdquo;.</p>
+                )}
+              </div>
+
+              {nextStep(2)}
+            </Step>
+
+            <Step
+              number={2}
+              title="Add a name"
+              value={design.text || 'Optional'}
+              isOpen={openStep === 2}
+              onToggle={() => toggleStep(2)}
+            >
+              <label className="field-label" htmlFor="custom-name">Name or short message</label>
+              <input
+                id="custom-name"
+                type="text"
+                className="field-input"
+                value={customText}
+                maxLength={30}
+                onChange={(e) => setCustomText(e.target.value)}
+                placeholder="e.g. Oliver"
+              />
+              <div style={{ fontSize: '0.78rem', textAlign: 'right', marginTop: '4px' }}>{customText.length}/30</div>
+
+              {design.text && (
+                <>
+                  <span className="field-label" style={{ marginTop: '10px' }}>Font</span>
+                  <div className="choice-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)', maxHeight: '196px', overflowY: 'auto', paddingRight: '4px' }}>
+                    {FONTS_LIST.map((font) => (
+                      <button
+                        key={font.id}
+                        onClick={() => setSelectedFont(font)}
+                        className={`choice${selectedFont.id === font.id ? ' is-active' : ''}`}
+                        style={{ fontFamily: font.family, fontSize: '1.15rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                        title={font.name}
+                        aria-label={`${font.name} font`}
+                        aria-pressed={selectedFont.id === font.id}
+                      >
+                        {design.text}
+                      </button>
+                    ))}
+                  </div>
+
+                  <span className="field-label" style={{ marginTop: '16px' }}>Position</span>
+                  <div className="segmented">
+                    {TEXT_POSITIONS.map((p) => (
+                      <button key={p.id} className={textPosition.id === p.id ? 'is-active' : ''} onClick={() => setTextPosition(p)}>{p.label}</button>
+                    ))}
+                  </div>
+
+                  <span className="field-label" style={{ marginTop: '16px' }}>Size</span>
+                  <div className="segmented">
+                    {TEXT_SIZES.map((s) => (
+                      <button key={s.id} className={textSize.id === s.id ? 'is-active' : ''} onClick={() => setTextSize(s)}>{s.label}</button>
+                    ))}
+                  </div>
+
+                  <span className="field-label" style={{ marginTop: '16px' }}>Colour</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                    {TEXT_COLORS.map((c) => (
+                      <button
+                        key={c.hex}
+                        className={`swatch${textColor === c.hex ? ' is-active' : ''}`}
+                        style={{ background: c.hex }}
+                        onClick={() => setTextColor(c.hex)}
+                        title={c.name}
+                        aria-label={c.name}
+                      />
+                    ))}
+                    <label title="Custom colour" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer' }}>
+                      <input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value.toUpperCase())} style={{ width: '38px', height: '38px', border: 'none', background: 'none', cursor: 'pointer' }} />
+                      Custom
+                    </label>
+                  </div>
+                </>
+              )}
+
+              {nextStep(3)}
+            </Step>
+
+            <Step
+              number={3}
+              title="Backing colour"
+              value={selectedBacking.name}
+              isOpen={openStep === 3}
+              onToggle={() => toggleStep(3)}
+            >
+              <p style={{ fontSize: '0.88rem', marginBottom: '12px' }}>
+                The plain reverse side. You&apos;ll see it where the cover folds back at the top.
+              </p>
+              <div className="choice-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+                {BACKING_COLORS.map((color) => (
+                  <button
+                    key={color.id}
+                    onClick={() => setSelectedBacking(color)}
+                    className={`choice${selectedBacking.id === color.id ? ' is-active' : ''}`}
+                    style={{ display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 600, fontSize: '0.88rem' }}
+                  >
+                    <span style={{ width: '26px', height: '26px', borderRadius: '50%', background: color.hex, border: '1px solid var(--line)', flexShrink: 0 }} />
+                    {color.name}
+                  </button>
+                ))}
+              </div>
+              {nextStep(4)}
+            </Step>
+
+            <Step
+              number={4}
+              title="Size & fabric"
+              value={`${selectedSize.name} · ${selectedFabric.name.split(' ').slice(-1)[0]}`}
+              isOpen={openStep === 4}
+              onToggle={() => toggleStep(4)}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <span className="field-label" style={{ margin: 0 }}>Bed size</span>
+                <button onClick={onOpenSizeGuide} style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--plum)' }}>Size guide</button>
+              </div>
+              <div className="choice-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(118px, 1fr))' }}>
+                {AU_BED_SIZES.map((size) => (
+                  <button
+                    key={size.id}
+                    onClick={() => setSelectedSize(size)}
+                    className={`choice${selectedSize.id === size.id ? ' is-active' : ''}`}
+                  >
+                    <div style={{ fontWeight: 700 }}>{size.name}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text)' }}>{size.dimensions}</div>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--plum)', marginTop: '2px' }}>${size.price}</div>
+                  </button>
+                ))}
+              </div>
+
+              <span className="field-label" style={{ marginTop: '18px' }}>Fabric</span>
+              <div className="choice-grid">
+                {FABRIC_OPTIONS.map((fabric) => (
+                  <button
+                    key={fabric.id}
+                    onClick={() => setSelectedFabric(fabric)}
+                    className={`choice${selectedFabric.id === fabric.id ? ' is-active' : ''}`}
+                    style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}
+                  >
+                    <span>
+                      <span style={{ display: 'block', fontWeight: 700 }}>{fabric.name}</span>
+                      <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text)' }}>{fabric.desc}</span>
+                    </span>
+                    <span style={{ fontWeight: 700, color: 'var(--plum)', whiteSpace: 'nowrap' }}>
+                      {fabric.priceAdd === 0 ? 'Included' : `+$${fabric.priceAdd}`}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </Step>
+
+            <div className="designer__summary">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '12px', marginBottom: '14px' }}>
+                <div style={{ fontSize: '0.85rem', lineHeight: 1.5 }}>
+                  <div>{selectedSize.name} set · {selectedFabric.name}</div>
+                  <div>{selectedBacking.name} backing{design.text ? ` · “${design.text}”` : ''}</div>
+                </div>
+                <div style={{ fontFamily: 'var(--heading)', fontSize: '2rem', fontWeight: 700, color: 'var(--navy)', lineHeight: 1 }}>
+                  ${totalPrice}
+                </div>
+              </div>
+              <button onClick={handleAddToCartClick} className="btn-accent" style={{ width: '100%' }}>
+                <ShoppingBag size={19} /> Add to cart
               </button>
             </div>
-
           </div>
-
         </div>
-
       </div>
     </section>
   );

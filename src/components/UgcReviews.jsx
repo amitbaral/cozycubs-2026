@@ -1,14 +1,15 @@
 import React from 'react';
-import { Star, Quote, PawPrint, MapPin } from 'lucide-react';
+import { Star, Quote, MapPin } from 'lucide-react';
+import { BearCub } from './Brand';
 import { CUSTOMER_REVIEWS } from '../data/sampleData';
 
 export default function UgcReviews() {
   return (
     <section id="reviews" className="section" style={{ scrollMarginTop: '110px' }}>
-      <PawPrint className="paw-bg" size={120} style={{ top: '60px', right: '5%', transform: 'rotate(22deg)' }} />
+      <BearCub className="paw-bg" size={120} style={{ top: '60px', right: '5%', transform: 'rotate(22deg)' }} />
       <div className="container">
         <div className="section-head section-head--center">
-          <span className="section-label">Testimonials <PawPrint size={16} /></span>
+          <span className="section-label">Testimonials <BearCub size={18} /></span>
           <h2 className="section-title">What Aussie Families Say</h2>
           <p className="section-text" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
             <span style={{ display: 'inline-flex', gap: '2px', color: 'var(--sun)' }}>

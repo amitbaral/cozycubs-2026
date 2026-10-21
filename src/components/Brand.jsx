@@ -1,11 +1,40 @@
 import React from 'react';
-import { PawPrint } from 'lucide-react';
+
+// Line icon in the same style as lucide-react, so it accepts the same props.
+export function BearCub({ size = 24, strokeWidth = 2, className, style, ...rest }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      style={style}
+      aria-hidden="true"
+      {...rest}
+    >
+      <path d="M5.38 9.48A2.8 2.8 0 1 1 8.93 6.16" />
+      <path d="M18.62 9.48A2.8 2.8 0 1 0 15.07 6.16" />
+      <circle cx="12" cy="13" r="7.5" />
+      <ellipse cx="12" cy="15.8" rx="3.1" ry="2.4" />
+      <path d="M10.9 17.1q1.1.7 2.2 0" />
+      <ellipse cx="12" cy="14.8" rx="1.05" ry=".7" fill="currentColor" stroke="none" />
+      <circle cx="9.2" cy="11.6" r=".95" fill="currentColor" stroke="none" />
+      <circle cx="14.8" cy="11.6" r=".95" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
 
 export function Logo({ light = false }) {
   return (
     <a href="/" className={`logo${light ? ' logo--light' : ''}`} aria-label="Cozy Cubs Australia home">
       <span className="logo__mark">
-        <PawPrint size={24} strokeWidth={2.2} />
+        <BearCub size={28} strokeWidth={1.8} />
       </span>
       <span>
         <span className="logo__name">Cozy Cubs</span>

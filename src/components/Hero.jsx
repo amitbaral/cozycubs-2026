@@ -1,5 +1,6 @@
 import React from 'react';
-import { ArrowRight, PawPrint, Heart } from 'lucide-react';
+import { ArrowRight, Heart } from 'lucide-react';
+import { BearCub } from './Brand';
 
 const HERO_IMAGE = 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=1000&q=80';
 const PILL_IMAGE = 'https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=300&q=70';
@@ -7,13 +8,13 @@ const PILL_IMAGE = 'https://images.unsplash.com/photo-1616046229478-9901c5536a45
 export default function Hero({ scrollToCustomizer, onOpenSizeGuide }) {
   return (
     <section className="hero">
-      <PawPrint className="hero__doodle" size={64} style={{ top: '40px', left: '6%', transform: 'rotate(-18deg)' }} />
+      <BearCub className="hero__doodle" size={64} style={{ top: '40px', left: '6%', transform: 'rotate(-18deg)' }} />
       <Heart className="hero__doodle" size={52} style={{ bottom: '60px', left: '44%', transform: 'rotate(12deg)' }} />
 
       <div className="container hero__grid">
         <div style={{ paddingBottom: '60px' }}>
           <span className="section-label">
-            Printed in Sydney <PawPrint size={16} />
+            Printed in Sydney <BearCub size={18} />
           </span>
           <h1 className="hero__title">
             Custom Doona
@@ -48,7 +49,7 @@ export default function Hero({ scrollToCustomizer, onOpenSizeGuide }) {
                 <textPath href="#hero-ring">ORGANIC • COTTON • MADE • TO • ORDER •</textPath>
               </text>
             </svg>
-            <PawPrint size={38} />
+            <BearCub size={44} strokeWidth={1.7} />
           </div>
         </div>
       </div>

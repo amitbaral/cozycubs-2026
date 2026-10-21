@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, Search, PawPrint, ArrowRight } from 'lucide-react';
+import { RefreshCw, Search, ArrowRight } from 'lucide-react';
+import { BearCub } from './Brand';
 
 export default function Catalog({ onCustomizePattern }) {
   const [products, setProducts] = useState([]);
@@ -91,12 +92,12 @@ export default function Catalog({ onCustomizePattern }) {
 
   return (
     <section id="collections" className="section section--lilac" style={{ scrollMarginTop: '110px' }}>
-      <PawPrint className="paw-bg" size={130} style={{ top: '70px', left: '3%', transform: 'rotate(-20deg)' }} />
+      <BearCub className="paw-bg" size={130} style={{ top: '70px', left: '3%', transform: 'rotate(-20deg)' }} />
       <div className="container">
 
         <div className="section-head section-head--split" style={{ marginBottom: '32px' }}>
           <div>
-            <span className="section-label">Our Collections <PawPrint size={16} /></span>
+            <span className="section-label">Our Collections <BearCub size={18} /></span>
             <h2 className="section-title">Find A Design You&apos;ll Love</h2>
           </div>
           <div style={{ position: 'relative', width: '100%', maxWidth: '360px' }}>

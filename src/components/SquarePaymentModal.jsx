@@ -145,8 +145,8 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems = [], pr
         sourceId: tokenResult.token,
         verificationToken: tokenResult.verificationToken,
         idempotencyKey: idempotencyKeyRef.current,
-        items: cartItems.map(({ patternName, size, fabric, backingColor, customText, font }) => ({
-          patternName, size, fabric, backingColor, customText, font
+        items: cartItems.map(({ patternName, size, fabric, backingColor, customText, font, textPlacement }) => ({
+          patternName, size, fabric, backingColor, customText, font, textPlacement
         })),
         customer,
         promoCode

@@ -1,5 +1,6 @@
 import React from 'react';
-import { ArrowRight, PawPrint, Upload, Palette, Ruler, Truck, Check, Star } from 'lucide-react';
+import { ArrowRight, Upload, Palette, Ruler, Truck, Check, Star } from 'lucide-react';
+import { BearCub } from './Brand';
 
 const ABOUT_IMAGE = 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=900&q=80';
 const QUALITY_IMAGE = 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=900&q=80';
@@ -7,7 +8,7 @@ const QUALITY_IMAGE = 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f1
 export function AboutSplit({ scrollToCustomizer }) {
   return (
     <section className="section">
-      <PawPrint className="paw-bg" size={120} style={{ top: '60px', right: '6%', transform: 'rotate(20deg)' }} />
+      <BearCub className="paw-bg" size={120} style={{ top: '60px', right: '6%', transform: 'rotate(20deg)' }} />
       <div className="container split">
         <div style={{ position: 'relative', padding: '20px', color: '#E8C9B0' }}>
           <div style={{ position: 'absolute', inset: '0 6% 0 0', background: 'var(--peach)', borderRadius: 'var(--blob)' }} />
@@ -18,7 +19,7 @@ export function AboutSplit({ scrollToCustomizer }) {
         </div>
 
         <div>
-          <span className="section-label">About Cozy Cubs <PawPrint size={16} /></span>
+          <span className="section-label">About Cozy Cubs <BearCub size={18} /></span>
           <h2 className="section-title">Bedding That Feels Like It Was Made For Them</h2>
 
           <div className="stat-block">
@@ -61,11 +62,11 @@ const STEPS = [
 export function HowItWorks({ scrollToCustomizer }) {
   return (
     <section className="section section--lilac">
-      <PawPrint className="paw-bg" size={140} style={{ bottom: '40px', right: '3%', transform: 'rotate(-25deg)' }} />
+      <BearCub className="paw-bg" size={140} style={{ bottom: '40px', right: '3%', transform: 'rotate(-25deg)' }} />
       <div className="container">
         <div className="section-head section-head--split">
           <div>
-            <span className="section-label">How It Works <PawPrint size={16} /></span>
+            <span className="section-label">How It Works <BearCub size={18} /></span>
             <h2 className="section-title">Your Custom Set In<br />Four Simple Steps</h2>
           </div>
           <button onClick={scrollToCustomizer} className="btn-outline">
@@ -96,7 +97,7 @@ export function Marquee() {
       <div className="marquee__track">
         {items.map((item, i) => (
           <span key={i} className="marquee__item">
-            {item} <PawPrint size={26} />
+            {item} <BearCub size={30} />
           </span>
         ))}
       </div>
@@ -107,10 +108,10 @@ export function Marquee() {
 export function QualityBand() {
   return (
     <section className="section section--navy">
-      <PawPrint className="paw-bg" size={150} style={{ top: '80px', right: '2%', transform: 'rotate(18deg)' }} />
+      <BearCub className="paw-bg" size={150} style={{ top: '80px', right: '2%', transform: 'rotate(18deg)' }} />
       <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '50px', alignItems: 'center' }}>
         <div>
-          <span className="section-label">Our Promise <PawPrint size={16} /></span>
+          <span className="section-label">Our Promise <BearCub size={18} /></span>
           <h2 className="section-title">Quality You Can Feel, Night After Night</h2>
           <ul className="check-list" style={{ color: '#FFFFFF' }}>
             {['GOTS certified organic cotton', 'Eco reactive inks that survive the wash', '30-day quality guarantee'].map((t) => (
