@@ -1,8 +1,8 @@
 import ShippingClient from './ShippingClient';
 
 export const metadata = {
-  title: 'Shipping Policy & Delivery Times | Cozy Cubs Australia',
-  description: 'Cozy Cubs Australia shipping: custom bedding made to order and delivered in 3–3.5 weeks, free tracked shipping on orders over $120 Australia-wide.',
+  title: 'Shipping & Delivery Times',
+  description: 'Cozy Cubs Australia shipping: custom bedding made to order and delivered in 3–4 weeks, free tracked shipping on orders over $120 Australia-wide.',
   alternates: {
     canonical: 'https://cozycubs.au/shipping',
   },

@@ -1,14 +1,14 @@
 import CareClient from './CareClient';
 
 export const metadata = {
-  title: 'How to Care for 100% Organic Cotton Doona Covers | Cozy Cubs Australia',
-  description: 'Expert fabric care guide for organic cotton quilt covers. Learn washing tips, eco-friendly detergents, and line-drying methods to keep custom bedding soft & vibrant.',
+  title: 'How to Wash & Care for Cotton and Polyester Doona Covers',
+  description: 'How to wash and care for printed doona covers in cotton or polyester: water temperature, detergents and drying tips to keep colours bright and fabric soft.',
   alternates: {
     canonical: 'https://cozycubs.au/blog/organic-cotton-doona-care-guide',
   },
   openGraph: {
-    title: 'How to Care for Organic Cotton Doona Covers | Cozy Cubs Australia',
-    description: 'Washing and care guide for 100% GOTS organic cotton custom bedding.',
+    title: 'How to Care for Cotton & Polyester Doona Covers | Cozy Cubs Australia',
+    description: 'Washing and care guide for printed cotton and polyester doona covers.',
     url: 'https://cozycubs.au/blog/organic-cotton-doona-care-guide',
     siteName: 'Cozy Cubs Australia',
   },
@@ -18,8 +18,8 @@ export default function CareArticlePage() {
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: 'How to Care for 100% Organic Cotton Doona Covers',
-    description: 'Expert washing & care guide for GOTS organic cotton custom quilt cover sets.',
+    headline: 'How to Wash & Care for Cotton and Polyester Doona Covers',
+    description: 'Washing & care guide for printed cotton and polyester quilt cover sets.',
     url: 'https://cozycubs.au/blog/organic-cotton-doona-care-guide',
     datePublished: '2026-08-25',
     dateModified: '2026-08-25',
@@ -56,7 +56,7 @@ export default function CareArticlePage() {
       {
         '@type': 'ListItem',
         position: 3,
-        name: 'Organic Cotton Care Guide',
+        name: 'Doona Cover Care Guide',
         item: 'https://cozycubs.au/blog/organic-cotton-doona-care-guide',
       },
     ],

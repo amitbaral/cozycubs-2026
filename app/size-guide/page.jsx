@@ -1,7 +1,7 @@
 import SizeGuideClient from './SizeGuideClient';
 
 export const metadata = {
-  title: 'Australian Bed Size & Fabric Matrix | Cozy Cubs Australia',
+  title: 'Australian Bed & Doona Cover Size Guide',
   description: 'Official Australian Bed Size guide for Single, Double, Queen, King, and Super King doona covers by Cozy Cubs. View dimensions, fabric comparisons, and thread counts.',
   alternates: {
     canonical: 'https://cozycubs.au/size-guide',

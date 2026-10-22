@@ -1,133 +1,59 @@
-import { SAMPLE_PATTERNS } from '../src/data/sampleData';
+import { getProductSummaries } from '../src/lib/catalog';
+import { productPath } from '../src/lib/productUrl';
+import { CATEGORIES } from '../src/data/categories';
+
+const SITE = 'https://cozycubs.au';
+
+export const revalidate = 3600;
+
+const STATIC_ROUTES = [
+  ['/', 'daily', 1.0],
+  ['/collections', 'daily', 0.9],
+  ['/customize', 'weekly', 0.9],
+  ['/size-guide', 'monthly', 0.7],
+  ['/faq', 'monthly', 0.7],
+  ['/shipping', 'monthly', 0.5],
+  ['/returns', 'monthly', 0.5],
+  ['/about', 'monthly', 0.6],
+  ['/contact', 'monthly', 0.5],
+  ['/blog', 'weekly', 0.7],
+  ['/blog/australian-bedding-size-guide', 'monthly', 0.7],
+  ['/blog/organic-cotton-doona-care-guide', 'monthly', 0.6],
+  ['/blog/kids-artwork-custom-bedding', 'monthly', 0.7],
+  ['/blog/personalised-christmas-gift-ideas', 'weekly', 0.8],
+  ['/compare', 'monthly', 0.5],
+  ['/compare/doona-kingdom', 'monthly', 0.5],
+  ['/privacy', 'yearly', 0.2],
+  ['/terms', 'yearly', 0.2]
+];
 
 export default async function sitemap() {
-  const baseUrl = 'https://cozycubs.au';
-
-  // Static routes
-  const staticRoutes = [
-    {
-      url: `${baseUrl}/`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 1.0,
-    },
-    {
-      url: `${baseUrl}/collections`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/customize`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/size-guide`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/faq`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/shipping`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/returns`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.4,
-    },
-    {
-      url: `${baseUrl}/terms`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.4,
-    },
-    {
-      url: `${baseUrl}/blog`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/blog/australian-bedding-size-guide`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/blog/organic-cotton-doona-care-guide`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/blog/kids-artwork-custom-bedding`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/compare`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/compare/doona-kingdom`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/social-studio`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/data-deletion`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-  ];
-
-  // Dynamic Product routes from sample patterns
-  const productRoutes = SAMPLE_PATTERNS.map((pattern) => ({
-    url: `${baseUrl}/product/${pattern.id}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly',
-    priority: 0.8,
+  const staticEntries = STATIC_ROUTES.map(([path, changeFrequency, priority]) => ({
+    url: `${SITE}${path}`,
+    changeFrequency,
+    priority
   }));
 
-  return [...staticRoutes, ...productRoutes];
+  let products = [];
+  try {
+    products = await getProductSummaries();
+  } catch (err) {
+    console.error('Sitemap: could not load Square products', err.squareErrors ? JSON.stringify(err.squareErrors) : err);
+  }
+
+  const productEntries = products.map((p) => ({
+    url: `${SITE}${productPath(p)}`,
+    lastModified: p.updatedAt ? new Date(p.updatedAt) : undefined,
+    changeFrequency: 'weekly',
+    priority: 0.8,
+    images: p.previewUrl ? [p.previewUrl] : undefined
+  }));
+
+  const categoryEntries = CATEGORIES.map((c) => ({
+    url: `${SITE}/collections/${c.slug}`,
+    changeFrequency: 'weekly',
+    priority: 0.85
+  }));
+
+  return [...staticEntries, ...categoryEntries, ...productEntries];
 }

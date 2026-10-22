@@ -6,14 +6,13 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import BedCustomizer from './components/BedCustomizer';
 import Catalog from './components/Catalog';
-import UgcReviews from './components/UgcReviews';
 import FaqSection from './components/FaqSection';
 import { AboutSplit, HowItWorks, Marquee, QualityBand } from './components/HomeSections';
 import CartDrawer from './components/CartDrawer';
 import SizeFabricGuideModal from './components/SizeFabricGuideModal';
 import Footer from './components/Footer';
 
-export default function App() {
+export default function App({ initialPage = null }) {
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
@@ -75,6 +74,7 @@ export default function App() {
         <BedCustomizer
           customizerRef={customizerRef}
           selectedPatternProp={selectedPattern}
+          initialPage={initialPage}
           onAddToCart={handleAddToCart}
           onOpenSizeGuide={() => setIsSizeGuideOpen(true)}
         />
@@ -82,11 +82,10 @@ export default function App() {
 
       <Catalog
         onCustomizePattern={handleCustomizePattern}
+        initialPage={initialPage}
       />
 
       <QualityBand />
-
-      <UgcReviews />
 
       <FaqSection />
 

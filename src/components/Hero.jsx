@@ -25,8 +25,8 @@ export default function Hero({ scrollToCustomizer, onOpenSizeGuide }) {
             By You
           </h1>
           <p className="hero__text">
-            Upload a photo or your child&apos;s drawing, add a name, pick your fabric, and see it on a bed before you order.
-            Australian sizes, organic cotton, delivered nationwide.
+            Upload a photo or your child&apos;s drawing, add a name, pick your fabric, and see a print preview before you order.
+            Australian sizes, polyester or cotton, delivered nationwide.
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px' }}>
             <button onClick={scrollToCustomizer} className="btn-accent">
@@ -46,7 +46,7 @@ export default function Hero({ scrollToCustomizer, onOpenSizeGuide }) {
                 <path id="hero-ring" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0" />
               </defs>
               <text fontSize="10.5" fontWeight="700" letterSpacing="3.2" fill="currentColor">
-                <textPath href="#hero-ring">ORGANIC • COTTON • MADE • TO • ORDER •</textPath>
+                <textPath href="#hero-ring">PERSONALISED • MADE • TO • ORDER •</textPath>
               </text>
             </svg>
             <BearCub size={44} strokeWidth={1.7} />

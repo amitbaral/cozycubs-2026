@@ -21,15 +21,15 @@ export const metadata = {
     default: 'Cozy Cubs Australia | Custom Bedding & Doona Cover Studio',
     template: '%s | Cozy Cubs Australia',
   },
-  description: 'Design custom 100% Organic Cotton doona covers and bedding sets for kids & adults in Australia. Live instant 3D bed customizer with name embroidery & tracked Australia-wide delivery.',
+  description: 'Design a custom doona cover set online with names, photos or kids\u2019 artwork. Standard Australian bed sizes in Premium Polyester or 100% Cotton, made to order and delivered Australia-wide.',
   keywords: [
-    'custom doona covers',
+    'custom doona cover',
+    'personalised doona cover Australia',
     'custom quilt cover Australia',
-    'bedding customizer',
-    'organic cotton doona',
-    'personalized kids bedding Australia',
-    'Cozy Cubs Australia',
-    'custom bedding studio Sydney'
+    'photo doona cover',
+    'kids name doona cover',
+    'personalised kids bedding Australia',
+    'Cozy Cubs Australia'
   ],
   authors: [{ name: 'Cozy Cubs Australia', url: 'https://cozycubs.au' }],
   creator: 'Cozy Cubs Australia',
@@ -46,8 +46,8 @@ export const metadata = {
     },
   },
   openGraph: {
-    title: 'Cozy Cubs Australia | Custom Doona Cover Studio',
-    description: 'Design your custom 100% organic cotton bedding set online with our Live 3D Bed Customizer. Standard Australian bed sizes with fast nationwide delivery.',
+    title: 'Cozy Cubs Australia | Custom Doona Covers & Personalised Bedding',
+    description: 'Personalise a doona cover set with names, photos or kids\u2019 artwork. Standard Australian bed sizes, made to order.',
     url: 'https://cozycubs.au',
     siteName: 'Cozy Cubs Australia',
     locale: 'en_AU',
@@ -63,8 +63,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Cozy Cubs Australia | Custom Doona Cover Studio',
-    description: 'Design custom 100% Organic Cotton doona covers & bedding sets online in Australia.',
+    title: 'Cozy Cubs Australia | Custom Doona Covers & Personalised Bedding',
+    description: 'Design a custom doona cover set online in standard Australian bed sizes.',
     images: ['/og-image.jpg'],
   },
   icons: {
@@ -80,22 +80,20 @@ export default function RootLayout({ children }) {
     name: 'Cozy Cubs Australia',
     url: 'https://cozycubs.au',
     logo: 'https://cozycubs.au/favicon.svg',
-    description: "Australia's premier custom quilt cover and organic cotton bedding studio.",
+    description: 'Personalised doona cover sets and custom bedding, made to order in standard Australian bed sizes.',
     telephone: '+61 2 7239 5211',
+    email: 'info@cozycubs.au',
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Sydney',
       addressRegion: 'NSW',
       addressCountry: 'AU',
     },
-    priceRange: '$$',
     currenciesAccepted: 'AUD',
-    paymentAccepted: 'Credit Card, Square, Afterpay, Zip, Apple Pay',
+    paymentAccepted: 'Credit Card, Debit Card',
     sameAs: [
       'https://www.facebook.com/cozycubsau/',
       'https://www.instagram.com/ocozycubso',
-      'https://pinterest.com/cozycubsau',
-      'https://tiktok.com/@cozycubsau',
     ],
   };
 

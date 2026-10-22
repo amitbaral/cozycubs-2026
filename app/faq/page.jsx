@@ -2,8 +2,8 @@ import FaqClient from './FaqClient';
 import { FAQS } from '../../src/data/sampleData';
 
 export const metadata = {
-  title: 'Frequently Asked Questions & Care Guide | Cozy Cubs Australia',
-  description: 'Find answers about Cozy Cubs custom bedding printing, Australian size specifications, wash care, eco-friendly organic cotton, and delivery times.',
+  title: 'FAQs \u2013 Sizes, Fabrics, Care & Delivery',
+  description: 'Answers about Cozy Cubs custom doona covers: Australian bed sizes, Premium Polyester vs 100% Cotton, photo quality, washing and delivery times.',
   alternates: {
     canonical: 'https://cozycubs.au/faq',
   },

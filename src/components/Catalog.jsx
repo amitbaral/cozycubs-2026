@@ -1,21 +1,29 @@
 'use client';
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { RefreshCw, Search, ArrowRight } from 'lucide-react';
 import { BearCub } from './Brand';
 import { useSquareProducts, useInfiniteScroll } from '../lib/useSquareProducts';
+import { productPath } from '../lib/productUrl';
+import { CATEGORIES } from '../data/categories';
 
 const PAGE_STEP = 12;
 
-export default function Catalog({ onCustomizePattern }) {
+export default function Catalog({ onCustomizePattern, initialPage = null }) {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [visibleCount, setVisibleCount] = useState(PAGE_STEP);
   const sentinelRef = useRef(null);
 
+  // Supports the sitelinks search box target (/collections?search=...).
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get('search');
+    if (q) setSearchQuery(q.slice(0, 80));
+  }, []);
+
   // Filters only make sense across the whole catalog, so they pull in every page.
   const isFiltering = activeCategory !== 'All' || searchQuery.trim().length > 0;
-  const { products, loading: fetching, error: fetchError, hasMore, loadMore } = useSquareProducts({ loadAll: isFiltering });
+  const { products, loading: fetching, error: fetchError, hasMore, loadMore } = useSquareProducts({ loadAll: isFiltering, initial: initialPage });
   const loading = fetching && products.length === 0;
   const error = products.length === 0 ? fetchError : null;
 
@@ -114,6 +122,15 @@ export default function Catalog({ onCustomizePattern }) {
           </div>
         </div>
 
+        <nav aria-label="Shop by theme" style={{ marginBottom: '22px' }}>
+          <span style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '10px' }}>Shop by theme</span>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {CATEGORIES.map((c) => (
+              <a key={c.slug} href={`/collections/${c.slug}`} className="filter-pill" style={{ textDecoration: 'none', fontSize: '0.85rem' }}>{c.name}</a>
+            ))}
+          </div>
+        </nav>
+
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '40px' }}>
           {categories.map((cat) => (
             <button
@@ -155,7 +172,7 @@ export default function Catalog({ onCustomizePattern }) {
 
                 return (
                   <article key={product.id} className="product-card">
-                    <a href={`/product/${product.id}`} className="product-card__img" aria-label={`View details for ${product.name}`} style={{ display: 'block' }}>
+                    <a href={productPath(product)} className="product-card__img" aria-label={`View details for ${product.name}`} style={{ display: 'block' }}>
                       <img src={displayImage} alt={product.name} loading="lazy" />
                       <span style={{
                         position: 'absolute',
@@ -174,7 +191,7 @@ export default function Catalog({ onCustomizePattern }) {
 
                     <div className="product-card__body">
                       <h3 className="product-card__title">
-                        <a href={`/product/${product.id}`} style={{ textDecoration: 'none' }}>{product.name}</a>
+                        <a href={productPath(product)} style={{ textDecoration: 'none' }}>{product.name}</a>
                       </h3>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto', paddingTop: '14px' }}>
                         <div>

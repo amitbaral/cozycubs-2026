@@ -50,7 +50,7 @@ export default function ShippingClient() {
               </h3>
               <p style={{ color: '#445374', fontSize: '0.94rem', lineHeight: 1.6 }}>
                 Each doona cover set is individually printed and sewn with your names, photos or artwork, so it isn&apos;t sitting on a shelf.
-                Please allow <strong>3–3.5 weeks</strong> from order to delivery, including production and tracked shipping.
+                Please allow <strong>3–4 weeks</strong> from order to delivery, including production and tracked shipping.
               </p>
             </div>
 

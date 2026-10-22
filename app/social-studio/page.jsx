@@ -1,7 +1,8 @@
 import SocialStudioClient from './SocialStudioClient';
 
 export const metadata = {
-  title: 'AI Social Media Content & Carousel Studio | Cozy Cubs Australia',
+  title: 'Social Studio',
+  robots: { index: false, follow: false },
   description: 'AI-powered social media generator for Cozy Cubs Australia. Create captions, hashtags, and 5-slide visual carousels, then publish directly to Instagram and Facebook.',
   alternates: {
     canonical: 'https://cozycubs.au/social-studio',

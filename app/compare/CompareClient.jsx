@@ -20,60 +20,53 @@ export default function CompareClient() {
 
   const COMPARISON_DATA = [
     {
-      feature: 'Live 3D Interactive Bed Preview',
-      cozyCubs: '✅ Instant Real-Time 3D Engine',
-      pillowtalk: '❌ Static Catalog Photos Only',
-      kas: '❌ Static Catalog Photos Only',
-      adairs: '❌ Static Catalog Photos Only',
+      feature: 'Personalise with Names, Photos & Artwork',
+      cozyCubs: '✅ Upload Any Image or Add Names',
+      pillowtalk: 'Varies — check their website',
+      kas: 'Varies — check their website',
+      adairs: 'Varies — check their website',
     },
     {
-      feature: 'Custom Photo & Artwork Printing',
-      cozyCubs: '✅ Upload Any Image / Drawings',
-      pillowtalk: '❌ Mass-Produced Stock Designs',
-      kas: '❌ Pre-Printed Stock Patterns',
-      adairs: '❌ Mass-Produced Stock Designs',
+      feature: 'Print Preview Before Ordering',
+      cozyCubs: '✅ Live Print Preview in Online Designer',
+      pillowtalk: 'Varies — check their website',
+      kas: 'Varies — check their website',
+      adairs: 'Varies — check their website',
     },
     {
-      feature: 'Personalized Name Typography',
-      cozyCubs: '✅ Custom Fonts & Colors',
-      pillowtalk: '❌ Not Offered',
-      kas: '❌ Not Offered',
-      adairs: '❌ Monogramming Extra ($25+)',
+      feature: 'Fabric Choice',
+      cozyCubs: '✅ Premium Polyester or 100% Cotton',
+      pillowtalk: 'Varies — check their website',
+      kas: 'Varies — check their website',
+      adairs: 'Varies — check their website',
     },
     {
-      feature: '100% GOTS Certified Organic Cotton',
-      cozyCubs: '✅ Standard 300TC Organic',
-      pillowtalk: '⚠️ Select Organic Lines Only',
-      kas: '⚠️ Standard Cotton Blend',
-      adairs: '⚠️ Premium Lines Only ($220+)',
-    },
-    {
-      feature: 'Eco-Friendly Non-Toxic Reactive Inks',
-      cozyCubs: '✅ OEKO-TEX Water-Based Inks',
-      pillowtalk: '❌ Mass Chemical Dyes',
-      kas: '❌ Pigment Print Screen',
-      adairs: '⚠️ Standard Dyeing',
-    },
-    {
-      feature: 'Australian Bed Sizing (Single - Super King)',
-      cozyCubs: '✅ AU Standard Matrix',
-      pillowtalk: '✅ AU Standard Matrix',
-      kas: '✅ AU Standard Matrix',
-      adairs: '✅ AU Standard Matrix',
+      feature: 'Australian Bed Sizes',
+      cozyCubs: '✅ 7 Sizes, Cot to Super King',
+      pillowtalk: 'Varies — check their website',
+      kas: 'Varies — check their website',
+      adairs: 'Varies — check their website',
     },
     {
       feature: 'Made to Order for You',
-      cozyCubs: '✅ Printed to Order (3–3.5 Weeks)',
-      pillowtalk: '❌ Ready-Made Stock',
-      kas: '❌ Ready-Made Stock',
-      adairs: '❌ Ready-Made Stock',
+      cozyCubs: '✅ Made to Order (3–4 Weeks)',
+      pillowtalk: 'Varies — check their website',
+      kas: 'Varies — check their website',
+      adairs: 'Varies — check their website',
     },
     {
-      feature: '30-Day Quality & Happiness Guarantee',
-      cozyCubs: '✅ 100% Reprint Guarantee',
-      pillowtalk: '⚠️ Standard Policy',
-      kas: '⚠️ Standard Policy',
-      adairs: '⚠️ Member Store Credit',
+      feature: 'Free Shipping',
+      cozyCubs: '✅ Free Tracked Shipping Over $120',
+      pillowtalk: 'Varies — check their website',
+      kas: 'Varies — check their website',
+      adairs: 'Varies — check their website',
+    },
+    {
+      feature: 'Faulty or Misprinted Items',
+      cozyCubs: '✅ Free Reprint (Report Within 30 Days)',
+      pillowtalk: 'Varies — check their website',
+      kas: 'Varies — check their website',
+      adairs: 'Varies — check their website',
     },
   ];
 
@@ -100,7 +93,7 @@ export default function CompareClient() {
               Cozy Cubs vs Pillowtalk vs KAS Australia vs Adairs
             </h1>
             <p style={{ fontSize: '1.1rem', color: '#6B7590', maxWidth: '720px', margin: '0 auto', lineHeight: 1.6 }}>
-              Discover why thousands of Aussie families are choosing custom GOTS organic cotton doona covers with live 3D preview over traditional mass-produced retail bedding.
+              See what Cozy Cubs offers: doona covers personalised with your names, photos or artwork, previewed online and made to order in Australian sizes.
             </p>
           </div>
 
@@ -152,10 +145,10 @@ export default function CompareClient() {
                 <Sparkles size={24} />
               </div>
               <h3 style={{ fontSize: '1.25rem', color: '#002169', fontWeight: 800, marginBottom: '10px' }}>
-                1. Customization vs Mass Production
+                1. Personalised for Your Family
               </h3>
               <p style={{ color: '#6B7590', fontSize: '0.94rem', lineHeight: 1.6 }}>
-                Retailers like Adairs, Pillowtalk, and KAS sell fixed off-the-shelf patterns imported in mass containers. Cozy Cubs allows you to design your own doona cover with personalized names, children's drawings, or family photos.
+                Cozy Cubs lets you design your own doona cover with printed names, children's drawings or family photos, or choose from 470+ ready-made designs.
               </p>
             </div>
 
@@ -164,10 +157,10 @@ export default function CompareClient() {
                 <ShieldCheck size={24} />
               </div>
               <h3 style={{ fontSize: '1.25rem', color: '#002169', fontWeight: 800, marginBottom: '10px' }}>
-                2. 100% GOTS Organic Cotton Standard
+                2. Premium Polyester or 100% Cotton
               </h3>
               <p style={{ color: '#6B7590', fontSize: '0.94rem', lineHeight: 1.6 }}>
-                While traditional retailers charge high markups ($200+) for organic cotton lines, Cozy Cubs uses 300TC GOTS-certified organic cotton as our standard baseline fabric, paired with non-toxic reactive inks.
+                Every Cozy Cubs design is available in Premium Polyester or 100% Cotton, printed with eco-friendly, non-toxic inks. If anything arrives faulty or misprinted, report it within 30 days for a free reprint.
               </p>
             </div>
 
@@ -179,7 +172,7 @@ export default function CompareClient() {
                 3. Made to Order, Tracked to Your Door
               </h3>
               <p style={{ color: '#6B7590', fontSize: '0.94rem', lineHeight: 1.6 }}>
-                Every Cozy Cubs set is printed and sewn to order, then delivered with tracking anywhere in Australia within 3–3.5 weeks.
+                Every Cozy Cubs set is printed and sewn to order, then delivered with tracking anywhere in Australia. Allow 3–4 weeks. Shipping is free over $120, otherwise $15.
               </p>
             </div>
 
@@ -197,14 +190,14 @@ export default function CompareClient() {
               Experience the Cozy Cubs Difference
             </h2>
             <p style={{ color: '#98A0B5', maxWidth: '600px', margin: '0 auto 28px', fontSize: '1.02rem' }}>
-              Try our live 3D bed customizer right now and design a 100% organic cotton quilt cover made uniquely for your home.
+              Open our online designer and create a doona cover in Premium Polyester or 100% Cotton, made uniquely for your home.
             </p>
             <a
               href="/customize"
               className="btn-accent"
               style={{ fontSize: '1.05rem', padding: '14px 32px', display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}
             >
-              Launch Live 3D Bed Studio <ArrowRight size={18} />
+              Open the Designer <ArrowRight size={18} />
             </a>
           </div>
 

@@ -1,14 +1,14 @@
 import AboutClient from './AboutClient';
 
 export const metadata = {
-  title: 'About Cozy Cubs Australia | Organic Custom Bedding Studio',
-  description: 'Learn about Cozy Cubs Australia. We craft personalized organic cotton doona covers and custom bedding sets with eco-friendly reactive inks for Australian homes.',
+  title: 'About Us \u2013 Personalised Doona Cover Studio',
+  description: 'Meet Cozy Cubs Australia: a Sydney-based studio making personalised doona cover sets with your names, photos and kids\u2019 artwork, in standard Australian bed sizes.',
   alternates: {
     canonical: 'https://cozycubs.au/about',
   },
   openGraph: {
-    title: 'About Cozy Cubs Australia | Organic Custom Bedding Studio',
-    description: 'Discover how Cozy Cubs crafts 100% GOTS certified organic cotton custom bedding in Australia.',
+    title: 'About Cozy Cubs Australia',
+    description: 'The story behind Cozy Cubs personalised doona covers and custom bedding for Australian homes.',
     url: 'https://cozycubs.au/about',
     siteName: 'Cozy Cubs Australia',
   },

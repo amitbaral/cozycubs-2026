@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../../../src/components/Header';
 import Footer from '../../../src/components/Footer';
 import CartDrawer from '../../../src/components/CartDrawer';
@@ -8,12 +8,20 @@ import SizeFabricGuideModal from '../../../src/components/SizeFabricGuideModal';
 import SquarePaymentModal from '../../../src/components/SquarePaymentModal';
 import AnnouncementBar from '../../../src/components/AnnouncementBar';
 import { getVariationOptions } from '../../../src/lib/variations';
+import ProductCardGrid from '../../../src/components/ProductCardGrid';
 import { Sparkles, RefreshCw } from 'lucide-react';
 
-export default function ProductClient({ id }) {
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
+function descriptionParagraphs(product) {
+  const lines = (product.description || '').split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  if (lines[0]?.toLowerCase() === product.name.toLowerCase()) lines.shift();
+  return lines;
+}
+
+export default function ProductClient({ id, initialProduct = null, related = [], category = null }) {
+  const [product, setProduct] = useState(initialProduct);
+  const [loading, setLoading] = useState(!initialProduct);
   const [error, setError] = useState(null);
+  const [activeImage, setActiveImage] = useState(0);
   const [sizeId, setSizeId] = useState('queen');
   const [fabricId, setFabricId] = useState('cotton');
   const [cartItems, setCartItems] = useState([]);
@@ -25,6 +33,7 @@ export default function ProductClient({ id }) {
   const cartTotal = cartItems.reduce((sum, item) => sum + item.price, 0);
 
   useEffect(() => {
+    if (initialProduct) return undefined;
     let isMounted = true;
     setLoading(true);
 
@@ -48,7 +57,7 @@ export default function ProductClient({ id }) {
     return () => {
       isMounted = false;
     };
-  }, [id]);
+  }, [id, initialProduct]);
 
   const options = getVariationOptions(product?.variations);
   const selectedSize = options.sizes.find((s) => s.id === sizeId) || options.sizes[0];
@@ -91,9 +100,18 @@ export default function ProductClient({ id }) {
         scrollToCustomizer={handleLaunchDesigner}
       />
 
-      <main style={{ flex: 1, padding: '40px 24px' }}>
+      <main style={{ flex: 1, padding: '28px 24px 40px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          
+          {product && (
+            <nav aria-label="Breadcrumb" style={{ fontSize: '0.85rem', marginBottom: '20px', color: '#6B7590' }}>
+              <a href="/" style={{ color: 'inherit' }}>Home</a>
+              <span aria-hidden="true"> / </span>
+              <a href={category ? `/collections/${category.slug}` : '/collections'} style={{ color: 'inherit' }}>{category ? category.name : 'Collections'}</a>
+              <span aria-hidden="true"> / </span>
+              <span aria-current="page" style={{ color: '#002169', fontWeight: 600 }}>{product.name}</span>
+            </nav>
+          )}
+
           {loading && (
             <div style={{ textAlign: 'center', padding: '80px 20px', color: '#6B7590' }}>
               <RefreshCw size={36} color="#894B8D" className="spin-animation" style={{ margin: '0 auto 16px' }} />
@@ -127,18 +145,33 @@ export default function ProductClient({ id }) {
                   marginBottom: '16px'
                 }}>
                   <img
-                    src={product.previewUrl || 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80'}
-                    alt={`${product.name} - Cozy Cubs Custom Australian Quilt Cover`}
+                    src={product.imageUrls?.[activeImage] || product.previewUrl || '/images/custom-doona-kpop.webp'}
+                    alt={product.name}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </div>
 
+                {product.imageUrls?.length > 1 && (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: '8px', marginBottom: '16px' }}>
+                    {product.imageUrls.slice(0, 5).map((src, idx) => (
+                      <button
+                        key={src}
+                        onClick={() => setActiveImage(idx)}
+                        aria-label={`View image ${idx + 1} of ${product.name}`}
+                        className={`pattern-tile${activeImage === idx ? ' is-active' : ''}`}
+                      >
+                        <img src={src} alt="" loading="lazy" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+
                 <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                  <span className="badge-au" style={{ background: '#F1E6F1', color: '#6F3A73' }}>
-                    ⚡ Cozy Cubs Exclusive #{product.id.slice(0, 8)}
-                  </span>
                   <span className="badge-au" style={{ background: '#DBEAFE', color: '#1E40AF' }}>
                     🇦🇺 Standard AU Sizing
+                  </span>
+                  <span className="badge-au" style={{ background: '#F1E6F1', color: '#6F3A73' }}>
+                    Made to order
                   </span>
                 </div>
               </div>
@@ -152,10 +185,6 @@ export default function ProductClient({ id }) {
                 <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#894B8D', marginBottom: '20px' }}>
                   {priceAUD != null ? `$${priceAUD} AUD` : 'Price unavailable'}
                 </div>
-
-                <p style={{ color: '#445374', fontSize: '0.96rem', lineHeight: 1.6, marginBottom: '24px' }}>
-                  {product.description || 'Custom handcrafted Cozy Cubs doona cover set. Choose your Australian bed size, luxury fabric, and add personalized names or family photo overlays.'}
-                </p>
 
                 {/* Size Selector */}
                 <div style={{ marginBottom: '20px' }}>
@@ -242,6 +271,29 @@ export default function ProductClient({ id }) {
                   </button>
                 </div>
               </div>
+
+              <section style={{ gridColumn: '1 / -1', background: '#FFFFFF', borderRadius: '20px', padding: '28px', color: '#445374', fontSize: '0.96rem', lineHeight: 1.7 }}>
+                <h2 style={{ fontSize: '1.4rem', color: '#002169', marginBottom: '12px' }}>Product details</h2>
+                {descriptionParagraphs(product).length
+                  ? descriptionParagraphs(product).map((line, idx) => (
+                    <p key={idx} style={{ marginBottom: '8px' }}>{line}</p>
+                  ))
+                  : <p>Custom printed Cozy Cubs doona cover set, made to order in your choice of Australian bed size and fabric.</p>}
+              </section>
+
+              {related.length > 0 && (
+                <section style={{ gridColumn: '1 / -1' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', marginBottom: '18px' }}>
+                    <h2 style={{ fontSize: '1.6rem', color: '#002169' }}>More like this</h2>
+                    {category && (
+                      <a href={`/collections/${category.slug}`} style={{ fontWeight: 700, color: 'var(--plum)' }}>
+                        See all {category.name.toLowerCase()} →
+                      </a>
+                    )}
+                  </div>
+                  <ProductCardGrid products={related} minWidth={220} />
+                </section>
+              )}
 
             </div>
           )}

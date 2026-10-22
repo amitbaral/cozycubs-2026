@@ -68,13 +68,13 @@ export default function CustomizeClient() {
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '32px' }}>
             <span className="badge-au" style={{ background: '#F1E6F1', color: '#6F3A73', borderColor: '#894B8D', marginBottom: '10px' }}>
-              🎨 LIVE 3D BED MOCKUP & DESIGNER STUDIO
+              🎨 ONLINE DOONA COVER DESIGNER
             </span>
             <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', fontWeight: 800, color: '#002169' }}>
               Design Your Custom Doona Cover & Bedding Set
             </h1>
             <p style={{ color: '#6B7590', maxWidth: '640px', margin: '8px auto 0' }}>
-              Upload your child's drawings, family photos, or choose from our Cozy Cubs catalog. Pick custom typography, backing colors, Australian bed sizes, and organic cotton fabrics.
+              Upload your child's drawings, family photos, or choose from our Cozy Cubs catalog. Pick custom typography, backing colors, Australian bed sizes, and Premium Polyester or 100% Cotton.
             </p>
           </div>
 

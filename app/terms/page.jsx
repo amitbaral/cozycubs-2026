@@ -1,7 +1,7 @@
 import TermsClient from './TermsClient';
 
 export const metadata = {
-  title: 'Terms & Conditions of Service | Cozy Cubs Australia',
+  title: 'Terms & Conditions',
   description: 'Cozy Cubs Australia terms and conditions: custom made-to-order bedding policies, copyright guidelines, and Australian Consumer Law guarantees.',
   alternates: {
     canonical: 'https://cozycubs.au/terms',

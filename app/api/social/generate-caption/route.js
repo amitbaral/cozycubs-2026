@@ -11,7 +11,7 @@ export async function POST(req) {
       '#CozyCubs',
       '#CozyCubsAustralia',
       '#CustomBedding',
-      '#OrganicCottonBedding',
+      '#PersonalisedBedding',
       '#DoonaCover',
       '#KidsBedroom',
       '#NurseryDecor',
@@ -22,11 +22,11 @@ export async function POST(req) {
 
     if (apiKey) {
       try {
-        const systemPrompt = `You are a world-class social media copywriter for Cozy Cubs Australia (a premium Australian custom bedding brand specializing in 100% GOTS organic cotton doona covers with live 3D preview). Create engaging social media copy for Instagram and Facebook. Tone: ${tone}.`;
+        const systemPrompt = `You are a world-class social media copywriter for Cozy Cubs Australia (a Sydney-based brand selling custom-printed doona cover sets, made to order in Premium Polyester or 100% Cotton, printed with eco-friendly, non-toxic inks, with an online designer that shows a live print preview). Only use these facts: 7 Australian sizes from Cot to Super King; made to order, allow 3–4 weeks; tracked shipping, free over $120 AUD; free reprint if an item arrives faulty or misprinted (report within 30 days). Never claim organic, certifications, thread counts, 3D previews, embroidery, reviews, ratings, customer counts, discount codes or local printing. Create engaging social media copy for Instagram and Facebook. Tone: ${tone}.`;
 
         const userPrompt = `Write a high-converting social media post for product: "${productName || 'Custom Doona Cover'}".
-Description: ${productDesc || 'Custom handcrafted quilt cover set in 100% organic cotton'}.
-Fabric: ${fabric || '100% Organic Percale Cotton'}.
+Description: ${productDesc || 'Custom printed doona cover set, made to order'}.
+Fabric: ${fabric || 'Premium Polyester or 100% Cotton'}.
 Bed Size: ${size || 'Queen Size'}.
 ${customPrompt ? `Additional Instructions: ${customPrompt}` : ''}
 
@@ -37,9 +37,9 @@ Respond in JSON with the exact following schema:
   "carousel": [
     {"slide": 1, "headline": "Main Hero Headline", "subhead": "Sub-banner description"},
     {"slide": 2, "headline": "Lifestyle Highlight", "subhead": "Why Aussie homes love this design"},
-    {"slide": 3, "headline": "100% GOTS Organic Cotton", "subhead": "300TC percale with eco-friendly reactive dyes"},
-    {"slide": 4, "headline": "5-Star Aussie Review", "subhead": "Verified customer quote"},
-    {"slide": 5, "headline": "Get 10% Off Your Custom Set", "subhead": "Use code COZY10 at cozycubs.au"}
+    {"slide": 3, "headline": "Premium Polyester or 100% Cotton", "subhead": "Printed with eco-friendly, non-toxic inks"},
+    {"slide": 4, "headline": "Made to Order in Australian Sizes", "subhead": "Cot to Super King • Free shipping over $120"},
+    {"slide": 5, "headline": "Design Yours Today", "subhead": "Order online at cozycubs.au"}
   ]
 }`;
 
@@ -73,22 +73,22 @@ Respond in JSON with the exact following schema:
     // Local fallback generator if OpenAI API key is not present or API call fails
     const fallbackCaption = `Transform your bedroom with the ${productName || 'Custom Doona Cover'} by Cozy Cubs Australia! 🌿✨
 
-Handcrafted with 100% GOTS-certified organic cotton percale and printed with non-toxic eco reactive dyes, this custom bedding set brings warm luxury to any Aussie home.
+Made to order in Premium Polyester or 100% Cotton and printed with eco-friendly, non-toxic inks, this custom bedding set brings a personal touch to any Aussie home.
 
-🎨 Custom-made with live 3D preview
+🎨 Personalise it with a live print preview
 🇦🇺 Designed for standard AU sizes
 🚚 Made to order, tracked delivery Australia-wide
 
 Tag a friend who needs a bedroom glow-up! 👇
 
-Order online today at cozycubs.au with 10% off using code COZY10 ✨`;
+Order online at cozycubs.au ✨`;
 
     const fallbackCarousel = [
-      { slide: 1, headline: productName || 'Custom Doona Cover', subhead: 'Cozy Cubs Australia • Live 3D Bed Studio' },
-      { slide: 2, headline: 'Designed for Aussie Homes', subhead: 'Custom colors, photos & typography' },
-      { slide: 3, headline: '100% Organic Percale Cotton', subhead: '300TC GOTS Certified • Cool & Breathable' },
-      { slide: 4, headline: '4.9 ★★★★★ Verified Review', subhead: '"Softest doona cover ever! Shipped in 3 days."' },
-      { slide: 5, headline: 'Get 10% Off Your First Order', subhead: 'Use Code COZY10 at cozycubs.au' },
+      { slide: 1, headline: productName || 'Custom Doona Cover', subhead: 'Cozy Cubs Australia • Online Designer' },
+      { slide: 2, headline: 'Designed for Aussie Homes', subhead: 'Custom colours, photos & names' },
+      { slide: 3, headline: 'Premium Polyester or 100% Cotton', subhead: 'Printed with eco-friendly, non-toxic inks' },
+      { slide: 4, headline: 'Made to Order in Australian Sizes', subhead: 'Cot to Super King • Free shipping over $120' },
+      { slide: 5, headline: 'Design Yours Today', subhead: 'Order online at cozycubs.au' },
     ];
 
     return NextResponse.json({

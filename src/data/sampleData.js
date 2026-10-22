@@ -115,49 +115,10 @@ export const FONTS_LIST = [
   { id: 'Montserrat', name: 'Montserrat', style: 'Urban Clean', family: "'Montserrat', sans-serif" }
 ];
 
-export const CUSTOMER_REVIEWS = [
-  {
-    id: 1,
-    name: 'Sarah M.',
-    location: 'Surry Hills, Sydney NSW',
-    rating: 5,
-    date: '2 days ago',
-    verified: true,
-    size: 'Queen Size / 100% Organic Cotton',
-    title: 'Wiped the floor with Doona Kingdom!',
-    comment: 'I ordered a personalized name doona for my daughter. The live bed preview tool on the website showed EXACTLY how it would turn out. Softness is incredible and shipped in 3 days!',
-    photo: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=400&q=80'
-  },
-  {
-    id: 2,
-    name: 'Lachlan T.',
-    location: 'South Yarra, Melbourne VIC',
-    rating: 5,
-    date: '1 week ago',
-    verified: true,
-    size: 'King Size / Washed Linen',
-    title: 'Best custom pet portrait ever',
-    comment: 'Uploaded a photo of our Golden Retriever Archie. Print crispness on the linen fabric blew me away. 10/10 Australian quality.',
-    photo: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=400&q=80'
-  },
-  {
-    id: 3,
-    name: 'Jessica & Dan P.',
-    location: 'Paddington, Brisbane QLD',
-    rating: 5,
-    date: '2 weeks ago',
-    verified: true,
-    size: 'Super King / Organic Cotton',
-    title: 'Wedding gift perfection!',
-    comment: 'Custom monogram set with our wedding date. The reverse side sage green backing matched our bedroom wallpaper perfectly.',
-    photo: 'https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=400&q=80'
-  }
-];
-
 export const FAQS = [
   {
-    q: 'How does the Live Bed Visualizer work?',
-    a: 'Our customizer lets you upload any photo, image, or design from your phone or computer. You can add custom text in curated typography, choose your bed size (Single to Super King), select your fabric, and preview your doona cover on a realistic bed mockup before buying.'
+    q: 'How does the online designer work?',
+    a: 'Upload any photo, drawing or design from your phone or computer, or start from one of our designs. Add a printed name in your choice of font, pick your bed size (Cot to Super King) and fabric, and the live print preview shows your doona cover design flat, at real proportions, before you buy.'
   },
   {
     q: 'What are Australian standard doona cover sizes?',
@@ -165,11 +126,11 @@ export const FAQS = [
   },
   {
     q: 'How long does delivery take within Australia?',
-    a: 'Because each set is made to order, please allow 3–3.5 weeks from order to delivery. That includes printing, sewing and tracked shipping to anywhere in Australia, and you\u2019ll get a tracking number as soon as it\u2019s dispatched.'
+    a: 'Because each set is made to order, please allow 3–4 weeks from order to delivery. That includes printing, sewing and tracked shipping to anywhere in Australia, and you\u2019ll get a tracking number as soon as it\u2019s dispatched.'
   },
   {
     q: 'Are the custom printed quilt covers washable?',
-    a: '100% Yes! We use eco-friendly OEKO-TEX certified reactive dyes that penetrate deep into the fabric fibers. Wash in warm or cold water at 40°C. They are fade-resistant, shrink-resistant, and machine washable.'
+    a: 'Yes. Your design is printed with eco-friendly, non-toxic inks that are machine washable. Wash on a gentle cycle below 40°C, turn the cover inside out, and line dry out of direct sun to keep colours bright.'
   },
   {
     q: 'What image quality or photo resolution should I upload?',

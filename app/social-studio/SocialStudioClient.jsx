@@ -60,13 +60,13 @@ export default function SocialStudioClient() {
 
   // Generated Content state
   const [caption, setCaption] = useState(
-    `Transform your bedroom with the ${SAMPLE_PATTERNS[0].name} by Cozy Cubs Australia! 🌿✨\n\nHandcrafted with 100% GOTS-certified organic cotton percale and printed with non-toxic eco reactive dyes, this custom bedding set brings warm luxury to any Aussie home.\n\n🎨 Custom-made with live 3D preview\n🇦🇺 Designed for standard AU sizes\n🚚 Made to order, tracked delivery Australia-wide\n\nTag a friend who needs a bedroom glow-up! 👇\n\nOrder online today at cozycubs.au with 10% off using code COZY10 ✨`
+    `Transform your bedroom with the ${SAMPLE_PATTERNS[0].name} by Cozy Cubs Australia! 🌿✨\n\nMade to order in Premium Polyester or 100% Cotton and printed with eco-friendly, non-toxic inks, this custom bedding set brings a personal touch to any Aussie home.\n\n🎨 Personalise it with a live print preview\n🇦🇺 Designed for standard AU sizes\n🚚 Made to order, tracked delivery Australia-wide\n\nTag a friend who needs a bedroom glow-up! 👇\n\nOrder online at cozycubs.au ✨`
   );
   const [hashtags, setHashtags] = useState([
     '#CozyCubs',
     '#CozyCubsAustralia',
     '#CustomBedding',
-    '#OrganicCottonBedding',
+    '#PersonalisedBedding',
     '#DoonaCover',
     '#KidsBedroom',
     '#NurseryDecor',
@@ -74,11 +74,11 @@ export default function SocialStudioClient() {
     '#CustomQuiltCover',
   ]);
   const [carousel, setCarousel] = useState([
-    { slide: 1, headline: SAMPLE_PATTERNS[0].name, subhead: 'Cozy Cubs Australia • Live 3D Bed Studio' },
-    { slide: 2, headline: 'Designed for Aussie Homes', subhead: 'Custom colors, photos & typography' },
-    { slide: 3, headline: '100% Organic Percale Cotton', subhead: '300TC GOTS Certified • Cool & Breathable' },
-    { slide: 4, headline: '4.9 ★★★★★ Verified Review', subhead: '"Softest doona cover ever! Shipped in 3 days."' },
-    { slide: 5, headline: 'Get 10% Off Your First Order', subhead: 'Use Code COZY10 at cozycubs.au' },
+    { slide: 1, headline: SAMPLE_PATTERNS[0].name, subhead: 'Cozy Cubs Australia • Online Designer' },
+    { slide: 2, headline: 'Designed for Aussie Homes', subhead: 'Custom colours, photos & names' },
+    { slide: 3, headline: 'Premium Polyester or 100% Cotton', subhead: 'Printed with eco-friendly, non-toxic inks' },
+    { slide: 4, headline: 'Made to Order in Australian Sizes', subhead: 'Cot to Super King • Free shipping over $120' },
+    { slide: 5, headline: 'Design Yours Today', subhead: 'Order online at cozycubs.au' },
   ]);
 
   const activeImage = customImage || selectedProduct.image;
@@ -106,7 +106,7 @@ export default function SocialStudioClient() {
         body: JSON.stringify({
           productName: selectedProduct.name,
           productDesc: selectedProduct.description,
-          fabric: '100% Organic Percale Cotton (300TC)',
+          fabric: 'Premium Polyester or 100% Cotton',
           tone,
         }),
       });
@@ -475,7 +475,7 @@ export default function SocialStudioClient() {
                         {carousel[currentSlide]?.headline || selectedProduct.name}
                       </h2>
                       <p style={{ fontSize: '0.92rem', color: '#E6E1EA', lineHeight: 1.5, margin: 0 }}>
-                        {carousel[currentSlide]?.subhead || '100% GOTS Certified Organic Cotton • Live 3D Preview'}
+                        {carousel[currentSlide]?.subhead || 'Premium Polyester or 100% Cotton • Live Print Preview'}
                       </p>
                     </div>
 

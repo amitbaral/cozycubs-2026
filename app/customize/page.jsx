@@ -1,14 +1,14 @@
 import CustomizeClient from './CustomizeClient';
 
 export const metadata = {
-  title: '3D Custom Bedding Studio & Doona Designer | Cozy Cubs Australia',
-  description: 'Use our real-time interactive 3D bed customizer to create personalized quilt covers, name embroidered pillowcases, and custom photo bedding in Australia.',
+  title: 'Design Your Own Doona Cover \u2013 Online Designer',
+  description: 'Design your own doona cover online. Upload a photo or kids\u2019 drawing, add a name, preview the print at real proportions and order in any Australian bed size.',
   alternates: {
     canonical: 'https://cozycubs.au/customize',
   },
   openGraph: {
-    title: 'Live 3D Bed Customizer Studio | Cozy Cubs Australia',
-    description: 'Design custom 100% GOTS organic cotton doona covers online with instant 3D preview.',
+    title: 'Design Your Own Doona Cover | Cozy Cubs Australia',
+    description: 'Upload a photo, add a name and preview your custom doona cover before you order.',
     url: 'https://cozycubs.au/customize',
     siteName: 'Cozy Cubs Australia',
   },
@@ -28,7 +28,7 @@ export default function CustomizePage() {
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'Live 3D Studio',
+        name: 'Designer',
         item: 'https://cozycubs.au/customize',
       },
     ],

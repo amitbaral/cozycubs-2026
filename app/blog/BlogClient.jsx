@@ -42,7 +42,7 @@ export default function BlogClient() {
               Australian Bedding Guides & Inspiration
             </h1>
             <p style={{ fontSize: '1.08rem', color: '#6B7590', maxWidth: '640px', margin: '0 auto', lineHeight: 1.6 }}>
-              Expert guides on Australian bed sizing, organic cotton fabric care, and creative tips for designing custom quilt covers.
+              Expert guides on Australian bed sizing, doona cover fabric care, and creative tips for designing custom quilt covers.
             </p>
           </div>
 

@@ -20,34 +20,39 @@ export default function DoonaKingdomClient() {
 
   const COMPARISON_ROWS = [
     {
-      feature: 'Live 3D Bed Visualizer',
-      cozyCubs: '✅ Instant 3D Interactive Bed Engine',
-      doonaKingdom: '❌ Flat 2D Photo Preview Only',
+      feature: 'Personalise with Names, Photos & Artwork',
+      cozyCubs: '✅ Upload Any Image or Add Printed Names',
+      doonaKingdom: 'Varies — check their website',
     },
     {
-      feature: 'Print Ink Safety & Longevity',
-      cozyCubs: '✅ OEKO-TEX Eco Non-Toxic Reactive Inks',
-      doonaKingdom: '⚠️ Standard Sublimation Dyeing',
+      feature: 'Print Preview Before Ordering',
+      cozyCubs: '✅ Live Print Preview in Online Designer',
+      doonaKingdom: 'Varies — check their website',
     },
     {
-      feature: 'Australian Dispatch & Delivery',
-      cozyCubs: '✅ Made to Order, Tracked (3–3.5 Weeks)',
-      doonaKingdom: '✅ Made to Order, Tracked (3–3.5 Weeks)',
+      feature: 'Fabric Choice',
+      cozyCubs: '✅ Premium Polyester or 100% Cotton',
+      doonaKingdom: 'Varies — check their website',
     },
     {
-      feature: 'Personalized Name Embroidery',
-      cozyCubs: '✅ Unlimited Fonts & Custom Colors',
-      doonaKingdom: '⚠️ Limited Pre-Set Text Options',
+      feature: 'Australian Bed Sizes',
+      cozyCubs: '✅ 7 Sizes, Cot to Super King',
+      doonaKingdom: 'Varies — check their website',
     },
     {
-      feature: 'Australian Standard Sizing',
-      cozyCubs: '✅ Single to Super King (AU Matrix)',
-      doonaKingdom: '✅ Single to Super King',
+      feature: 'Made to Order & Delivery',
+      cozyCubs: '✅ Made to Order, Tracked (3–4 Weeks)',
+      doonaKingdom: 'Varies — check their website',
     },
     {
-      feature: 'Quality & Happiness Guarantee',
-      cozyCubs: '🛡️ 100% Free Reprint Guarantee',
-      doonaKingdom: '⚠️ Complex Overseas Return Process',
+      feature: 'Free Shipping',
+      cozyCubs: '✅ Free Tracked Shipping Over $120',
+      doonaKingdom: 'Varies — check their website',
+    },
+    {
+      feature: 'Faulty or Misprinted Items',
+      cozyCubs: '🛡️ Free Reprint (Report Within 30 Days)',
+      doonaKingdom: 'Varies — check their website',
     },
   ];
 
@@ -78,7 +83,7 @@ export default function DoonaKingdomClient() {
               Cozy Cubs vs Doona Kingdom
             </h1>
             <p style={{ fontSize: '1.1rem', color: '#6B7590', maxWidth: '680px', margin: '0 auto', lineHeight: 1.6 }}>
-              Comparing Australia’s top custom quilt cover studios on fabric quality, 3D visualization, print durability, and Australian delivery speed.
+              A side-by-side look at what Cozy Cubs offers for personalised doona covers: fabrics, print preview, sizes and delivery.
             </p>
           </div>
 
@@ -134,26 +139,13 @@ export default function DoonaKingdomClient() {
                 <Sparkles size={24} />
               </div>
               <h3 style={{ fontSize: '1.25rem', color: '#002169', fontWeight: 800, marginBottom: '10px' }}>
-                Instant 3D Bed Engine vs 2D Flat Images
+                See Your Design Before You Order
               </h3>
               <p style={{ color: '#6B7590', fontSize: '0.94rem', lineHeight: 1.6 }}>
-                Our customizer renders your uploaded artwork or photo on a realistic 3D bed mockup in real time. See exact pillowcase placement, backing color contrast, and name typography before ordering.
+                Our online designer shows a live print preview of your uploaded artwork, photo or printed name at real proportions, so you can check placement and colour before ordering.
               </p>
             </div>
 
-          </div>
-
-          {/* Customer Quote Review */}
-          <div className="glass-card" style={{ padding: '36px', borderRadius: '20px', background: '#F1E6F1', border: '1px solid #DDB8DE', marginBottom: '56px', textAlign: 'center' }}>
-            <div style={{ fontSize: '1.15rem', fontWeight: 700, color: '#6F3A73', marginBottom: '10px' }}>
-              "Wiped the floor with Doona Kingdom!"
-            </div>
-            <p style={{ color: '#6F3A73', fontSize: '0.98rem', maxWidth: '700px', margin: '0 auto 12px', lineHeight: 1.6 }}>
-              "I ordered a personalized name doona for my daughter. The live bed preview tool on Cozy Cubs showed EXACTLY how it would turn out. Softness of the organic cotton is incredible and shipped in 3 days!"
-            </p>
-            <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#6F3A73' }}>
-              — Sarah M., Surry Hills NSW (Verified Aussie Buyer)
-            </div>
           </div>
 
           {/* CTA Box */}
@@ -168,14 +160,14 @@ export default function DoonaKingdomClient() {
               Design Your Cozy Cubs Custom Bedding Now
             </h2>
             <p style={{ color: '#98A0B5', maxWidth: '600px', margin: '0 auto 28px', fontSize: '1.02rem' }}>
-              Test our instant 3D customizer and experience 100% GOTS organic cotton made to order.
+              Open our online designer and create a doona cover in Premium Polyester or 100% Cotton, made to order.
             </p>
             <a
               href="/customize"
               className="btn-accent"
               style={{ fontSize: '1.05rem', padding: '14px 32px', display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}
             >
-              Launch Live 3D Bed Studio <ArrowRight size={18} />
+              Open the Designer <ArrowRight size={18} />
             </a>
           </div>
 

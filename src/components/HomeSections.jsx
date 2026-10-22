@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Upload, Palette, Ruler, Truck, Check, Star } from 'lucide-react';
+import { ArrowRight, Upload, Palette, Ruler, Truck, Check } from 'lucide-react';
 import { BearCub } from './Brand';
 
 const ABOUT_IMAGE = '/images/custom-doona-kpop.webp';
@@ -23,28 +23,18 @@ export function AboutSplit({ scrollToCustomizer }) {
           <h2 className="section-title">Bedding That Feels Like It Was Made For Them</h2>
 
           <div className="stat-block">
-            <div className="stat-blob">
-              <strong>4.9</strong>
-              <span>Star rating</span>
-            </div>
             <p>Every set is printed to order, so the name, photo or artwork on it is exactly what you designed.</p>
           </div>
 
           <p>
             Choose Premium Polyester or 100% Cotton in every Australian bed size, from Cot to Super King.
-            Preview your design before you pay, and your made-to-order set will arrive within 3–3.5 weeks.
+            Preview your design before you pay, and allow 3–4 weeks for your made-to-order set to arrive.
           </p>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginTop: '34px', flexWrap: 'wrap' }}>
             <button onClick={scrollToCustomizer} className="btn-accent">
               Design Your Set <ArrowRight size={20} />
             </button>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ display: 'inline-flex', gap: '2px', color: 'var(--sun)' }}>
-                {[...Array(5)].map((_, i) => <Star key={i} size={18} fill="currentColor" />)}
-              </span>
-              <span style={{ fontWeight: 600 }}>1,400+ happy homes</span>
-            </div>
           </div>
         </div>
       </div>
@@ -56,7 +46,7 @@ const STEPS = [
   { icon: Upload, title: 'Upload Or Pick', text: 'Use a family photo, your child\u2019s drawing, or one of our designs.' },
   { icon: Palette, title: 'Personalise It', text: 'Add a name, choose a font, and pick a reverse backing colour.' },
   { icon: Ruler, title: 'Size & Fabric', text: 'Cot to Super King in Premium Polyester or 100% Cotton.' },
-  { icon: Truck, title: 'Made & Delivered', text: 'Made to order and delivered with tracking in 3\u20133.5 weeks.' }
+  { icon: Truck, title: 'Made & Delivered', text: 'Made to order and delivered with tracking in 3\u20134 weeks.' }
 ];
 
 export function HowItWorks({ scrollToCustomizer }) {
@@ -88,7 +78,7 @@ export function HowItWorks({ scrollToCustomizer }) {
   );
 }
 
-const MARQUEE_ITEMS = ['Organic Cotton', 'Australian Sizes', 'Custom Names', 'Kids Artwork', 'Family Photos', 'Made To Order'];
+const MARQUEE_ITEMS = ['100% Cotton', 'Australian Sizes', 'Custom Names', 'Kids Artwork', 'Family Photos', 'Made To Order'];
 
 export function Marquee() {
   const items = [...MARQUEE_ITEMS, ...MARQUEE_ITEMS];
@@ -114,7 +104,7 @@ export function QualityBand() {
           <span className="section-label">Our Promise <BearCub size={18} /></span>
           <h2 className="section-title">Quality You Can Feel, Night After Night</h2>
           <ul className="check-list" style={{ color: '#FFFFFF' }}>
-            {['GOTS certified organic cotton', 'Eco reactive inks that survive the wash', '30-day quality guarantee'].map((t) => (
+            {['Premium Polyester or 100% Cotton', 'Eco-friendly, non-toxic inks', 'Free reprint if anything arrives faulty'].map((t) => (
               <li key={t} style={{ color: '#FFFFFF' }}><Check size={20} style={{ color: 'var(--sun)' }} /> {t}</li>
             ))}
           </ul>
@@ -124,21 +114,17 @@ export function QualityBand() {
         <div style={{ position: 'relative', padding: '16px', color: 'rgba(255,255,255,0.4)' }}>
           <span className="blob-outline" style={{ inset: 0 }} />
           <div className="blob-frame" style={{ aspectRatio: '1 / 1' }}>
-            <img src={QUALITY_IMAGE} alt="Close-up of organic cotton custom bedding" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src={QUALITY_IMAGE} alt="Close-up of a custom printed doona cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
         </div>
 
         <div>
           <div className="counter">
-            <strong>1,400+</strong>
-            Custom sets delivered
-          </div>
-          <div className="counter">
-            <strong>3–3.5</strong>
+            <strong>3–4</strong>
             Weeks, made to order
           </div>
           <div className="counter">
-            <strong>5</strong>
+            <strong>7</strong>
             Australian bed sizes
           </div>
         </div>

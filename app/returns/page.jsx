@@ -1,8 +1,8 @@
 import ReturnsClient from './ReturnsClient';
 
 export const metadata = {
-  title: '30-Day Quality Guarantee & Return Policy | Cozy Cubs Australia',
-  description: 'Read Cozy Cubs Australia 30-day quality guarantee and return policy for custom handcrafted doona covers and organic bedding sets.',
+  title: 'Returns & Quality Guarantee',
+  description: 'Cozy Cubs returns policy: if your custom doona cover arrives faulty or misprinted, tell us within 30 days and we\u2019ll reprint it free. Change-of-mind returns aren\u2019t accepted on personalised items.',
   alternates: {
     canonical: 'https://cozycubs.au/returns',
   },

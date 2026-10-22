@@ -101,11 +101,11 @@ function Step({ number, title, value, isOpen, onToggle, children }) {
   );
 }
 
-export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGuide, selectedPatternProp, initialSizeId, initialFabricId }) {
+export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGuide, selectedPatternProp, initialSizeId, initialFabricId, initialPage = null }) {
   const [selectedPattern, setSelectedPattern] = useState(selectedPatternProp || DEFAULT_PATTERN);
   const [patternSearch, setPatternSearch] = useState('');
   const isSearching = patternSearch.trim().length > 0;
-  const { products, loading: patternsLoading, hasMore, loadMore } = useSquareProducts({ loadAll: isSearching });
+  const { products, loading: patternsLoading, hasMore, loadMore } = useSquareProducts({ loadAll: isSearching, initial: initialPage });
   const livePatterns = useMemo(() => (
     products.length
       ? products.map((p) => ({

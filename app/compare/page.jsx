@@ -1,14 +1,14 @@
 import CompareClient from './CompareClient';
 
 export const metadata = {
-  title: 'Cozy Cubs vs Pillowtalk vs KAS Australia vs Adairs | Quilt Cover Comparison',
-  description: 'Compare Cozy Cubs custom organic cotton doona covers against Pillowtalk, KAS Australia, and Adairs. Feature matrix, live 3D preview, fabric quality & Australian pricing.',
+  title: 'Cozy Cubs vs Pillowtalk, KAS & Adairs \u2013 Quilt Cover Comparison',
+  description: 'How Cozy Cubs personalised doona covers compare with Pillowtalk, KAS Australia and Adairs on customisation, sizes, fabrics and delivery.',
   alternates: {
     canonical: 'https://cozycubs.au/compare',
   },
   openGraph: {
     title: 'Cozy Cubs vs Pillowtalk, KAS & Adairs | Bedding Brand Comparison',
-    description: 'Compare custom GOTS organic cotton doona covers with live 3D preview against traditional Australian retail bedding brands.',
+    description: 'Personalised doona covers compared with traditional Australian bedding retailers.',
     url: 'https://cozycubs.au/compare',
     siteName: 'Cozy Cubs Australia',
   },
@@ -25,7 +25,7 @@ export default function ComparePage() {
       {
         '@type': 'ListItem',
         position: 1,
-        name: 'Cozy Cubs Australia (Custom 3D Bedding & Organic Cotton)',
+        name: 'Cozy Cubs Australia (Personalised Doona Covers)',
         url: 'https://cozycubs.au',
       },
       {

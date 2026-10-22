@@ -41,7 +41,7 @@ export default function AboutClient() {
               Crafting Personalized Dreams for Aussie Homes
             </h1>
             <p style={{ fontSize: '1.1rem', color: '#6B7590', maxWidth: '720px', margin: '0 auto', lineHeight: 1.6 }}>
-              At Cozy Cubs Australia, we believe every bedroom deserves a touch of personal magic. From transforming kids' treasured drawings into heirloom bedding to printing high-resolution family photos on GOTS-certified organic cotton.
+              At Cozy Cubs Australia, we believe every bedroom deserves a touch of personal magic. From transforming kids' treasured drawings into heirloom bedding to printing high-resolution family photos on Premium Polyester or 100% Cotton.
             </p>
           </div>
 
@@ -56,9 +56,9 @@ export default function AboutClient() {
               <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: '#F1E6F1', color: '#894B8D', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
                 <Leaf size={24} />
               </div>
-              <h3 style={{ fontSize: '1.2rem', color: '#002169', marginBottom: '8px' }}>100% Organic Percale Cotton</h3>
+              <h3 style={{ fontSize: '1.2rem', color: '#002169', marginBottom: '8px' }}>Premium Polyester or 100% Cotton</h3>
               <p style={{ color: '#6B7590', fontSize: '0.92rem', lineHeight: 1.6 }}>
-                We use 300TC GOTS-certified organic cotton percale that gets softer with every wash. Breathable, hypoallergenic, and perfect for Australian summers.
+                Choose the fabric that suits your home: easy-care Premium Polyester or soft, breathable 100% Cotton. Every design is available in both.
               </p>
             </div>
 
@@ -66,9 +66,9 @@ export default function AboutClient() {
               <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: '#DBEAFE', color: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
                 <Sparkles size={24} />
               </div>
-              <h3 style={{ fontSize: '1.2rem', color: '#002169', marginBottom: '8px' }}>Eco-Friendly Reactive Inks</h3>
+              <h3 style={{ fontSize: '1.2rem', color: '#002169', marginBottom: '8px' }}>Eco-friendly, non-toxic inks</h3>
               <p style={{ color: '#6B7590', fontSize: '0.92rem', lineHeight: 1.6 }}>
-                Our water-based non-toxic reactive dyes fuse deep into cotton fibers rather than sitting on top, ensuring ultra-vibrant colors that never bleed or fade.
+                Your design is printed with eco-friendly, non-toxic inks for bright, detailed colour that's made for everyday use and machine washing.
               </p>
             </div>
 
@@ -95,7 +95,7 @@ export default function AboutClient() {
               Ready to Create Your Custom Bedding Set?
             </h2>
             <p style={{ color: '#98A0B5', maxWidth: '560px', margin: '0 auto 24px', fontSize: '0.98rem' }}>
-              Preview your personalized design live on our interactive 3D bed mockup engine.
+              See a live print preview of your personalised design in our online designer before you order.
             </p>
             <button
               onClick={() => { window.location.href = '/customize'; }}

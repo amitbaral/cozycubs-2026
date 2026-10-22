@@ -5,11 +5,11 @@ import { Logo, SocialLinks } from './Brand';
 
 const SHOP_LINKS = [
   { href: '/customize', label: 'Bed Designer' },
-  { href: '/collections', label: 'Collections' },
-  { href: '/size-guide', label: 'Size Guide' },
-  { href: '/compare', label: 'Why Cozy Cubs' },
-  { href: '/blog', label: 'Journal' },
-  { href: '/about', label: 'About Us' }
+  { href: '/collections', label: 'All Designs' },
+  { href: '/collections/personalised-name-doona-covers', label: 'Name Doona Covers' },
+  { href: '/collections/custom-photo-doona-covers', label: 'Photo Doona Covers' },
+  { href: '/collections/sports-doona-covers', label: 'Sports Doona Covers' },
+  { href: '/size-guide', label: 'Size Guide' }
 ];
 
 const CARE_LINKS = [
@@ -17,7 +17,8 @@ const CARE_LINKS = [
   { href: '/faq', label: 'FAQs' },
   { href: '/shipping', label: 'Shipping' },
   { href: '/returns', label: 'Returns' },
-  { href: '/social-studio', label: 'Social Studio' }
+  { href: '/about', label: 'About Us' },
+  { href: '/blog', label: 'Journal' }
 ];
 
 function NewsletterForm() {

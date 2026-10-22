@@ -1,7 +1,7 @@
 import PrivacyClient from './PrivacyClient';
 
 export const metadata = {
-  title: 'Privacy & Data Policy | Cozy Cubs Australia',
+  title: 'Privacy Policy',
   description: 'Cozy Cubs Australia Privacy Policy: Learn how we protect your personal data, SSL Square payment encryption, and private custom photo uploads.',
   alternates: {
     canonical: 'https://cozycubs.au/privacy',

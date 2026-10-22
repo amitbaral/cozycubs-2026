@@ -9,7 +9,7 @@ import SizeFabricGuideModal from '../../src/components/SizeFabricGuideModal';
 import SquarePaymentModal from '../../src/components/SquarePaymentModal';
 import AnnouncementBar from '../../src/components/AnnouncementBar';
 
-export default function CollectionsClient() {
+export default function CollectionsClient({ initialPage = null }) {
   const [cartItems, setCartItems] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
@@ -37,18 +37,18 @@ export default function CollectionsClient() {
         <div style={{ background: 'linear-gradient(135deg, #002169 0%, #002169 100%)', color: '#FFFFFF', padding: '60px 24px', textAlign: 'center' }}>
           <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <span className="badge-au" style={{ background: 'rgba(137, 75, 141, 0.2)', color: '#DDB8DE', borderColor: '#894B8D', marginBottom: '14px' }}>
-              ⚡ LIVE SQUARE CATALOG & STUDIO
+              ⚡ 470+ DESIGNS
             </span>
             <h1 style={{ fontSize: 'clamp(2.2rem, 4vw, 3.2rem)', fontWeight: 800, marginBottom: '14px', letterSpacing: '-0.02em' }}>
               Trending Custom Bedding Collections
             </h1>
             <p style={{ color: '#98A0B5', fontSize: '1.05rem', lineHeight: 1.6 }}>
-              Explore 100+ curated Australian quilt cover patterns or upload your own high-resolution artwork and family photos. Handcrafted with 100% organic cotton and eco-friendly reactive inks by Cozy Cubs.
+              Explore 470+ doona cover designs or upload your own artwork and family photos. Printed with eco-friendly inks on Premium Polyester or 100% Cotton.
             </p>
           </div>
         </div>
 
-        <Catalog onCustomizePattern={handleCustomizeProduct} />
+        <Catalog onCustomizePattern={handleCustomizeProduct} initialPage={initialPage} />
       </main>
 
       <Footer

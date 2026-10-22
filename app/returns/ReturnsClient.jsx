@@ -33,7 +33,7 @@ export default function ReturnsClient() {
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '40px' }}>
             <span className="badge-au" style={{ background: '#F1E6F1', color: '#6F3A73', borderColor: '#894B8D', marginBottom: '12px' }}>
-              🛡️ 100% HAPPINESS & QUALITY GUARANTEE
+              🛡️ QUALITY GUARANTEE
             </span>
             <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 2.8rem)', fontWeight: 800, color: '#002169', marginBottom: '12px' }}>
               30-Day Quality Guarantee & Return Policy
@@ -58,7 +58,7 @@ export default function ReturnsClient() {
                 <RefreshCw size={22} color="#894B8D" /> Returns for Custom & Personalized Items
               </h3>
               <p style={{ color: '#445374', fontSize: '0.94rem', lineHeight: 1.6 }}>
-                Because each item is custom printed with your specific names, photos, or sizing choices, we cannot accept returns for change of mind or customer spelling errors. Please carefully review your live 3D preview and name spelling prior to checkout!
+                Because each item is custom printed with your specific names, photos, or sizing choices, we cannot accept returns for change of mind or customer spelling errors. Please carefully review your print preview and name spelling prior to checkout!
               </p>
             </div>
           </div>

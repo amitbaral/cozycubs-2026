@@ -59,16 +59,16 @@ export default function ArtworkClient() {
             <ol style={{ paddingLeft: '20px', marginBottom: '24px' }}>
               <li><strong>Natural Sunlight Photo:</strong> Place your child's drawing on a flat table near a window and photograph it straight from above using your smartphone camera.</li>
               <li><strong>Scan or High-Res Photo:</strong> Ensure good contrast and sharp focus so fine brushstrokes or crayon textures show up crisply in 300 DPI print clarity.</li>
-              <li><strong>Upload to 3D Customizer:</strong> Drag & drop your image file into our live 3D customizer, select your backing color, and pick Australian Single or King Single bed size.</li>
+              <li><strong>Upload to the designer:</strong> Drag & drop your image file into our online designer, check the print preview, and pick any Australian size from Cot to Super King.</li>
             </ol>
 
             <div style={{ background: 'linear-gradient(135deg, #002169 0%, #002169 100%)', color: '#FFFFFF', padding: '32px', borderRadius: '18px', textAlign: 'center', marginTop: '40px' }}>
               <h3 style={{ fontSize: '1.35rem', fontWeight: 800, marginBottom: '10px' }}>Try It Live with Your Child's Art</h3>
               <p style={{ color: '#98A0B5', fontSize: '0.95rem', marginBottom: '20px' }}>
-                Upload any artwork or family photo to see an instant 3D preview on a realistic bed mockup.
+                Upload any artwork or family photo to see an instant print preview at real proportions.
               </p>
               <a href="/customize" className="btn-accent" style={{ display: 'inline-flex', padding: '12px 24px', textDecoration: 'none' }}>
-                Launch 3D Studio <Sparkles size={16} />
+                Open the Designer <Sparkles size={16} />
               </a>
             </div>
 

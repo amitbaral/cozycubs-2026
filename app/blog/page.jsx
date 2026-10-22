@@ -2,14 +2,14 @@ import BlogClient from './BlogClient';
 import { BLOG_POSTS } from './posts';
 
 export const metadata = {
-  title: 'Australian Bedding Guides & Design Journal | Cozy Cubs Australia',
+  title: 'Bedding Guides & Journal',
   description: 'Read expert Australian bedding guides, size matrices, fabric care tips, and creative ideas for custom quilt covers by Cozy Cubs Australia.',
   alternates: {
     canonical: 'https://cozycubs.au/blog',
   },
   openGraph: {
     title: 'Australian Bedding Guides & Design Journal | Cozy Cubs Australia',
-    description: 'Expert guides on Australian bed sizing, organic cotton fabric care, and custom quilt cover design.',
+    description: 'Guides on Australian bed sizes, doona cover care and designing custom quilt covers.',
     url: 'https://cozycubs.au/blog',
     siteName: 'Cozy Cubs Australia',
   },
@@ -20,7 +20,7 @@ export default function BlogPage() {
     '@context': 'https://schema.org',
     '@type': 'Blog',
     name: 'Cozy Cubs Bedding & Design Journal',
-    description: 'Guides and insights on custom Australian bedding, organic cotton care, and nursery styling.',
+    description: 'Guides and insights on custom Australian bedding, doona cover care, and nursery styling.',
     url: 'https://cozycubs.au/blog',
     publisher: {
       '@type': 'Organization',

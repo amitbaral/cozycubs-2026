@@ -2,7 +2,7 @@ export default function manifest() {
   return {
     name: 'Cozy Cubs Australia | Custom Bedding Studio',
     short_name: 'Cozy Cubs',
-    description: 'Design custom organic cotton doona covers and bedding sets online in Australia.',
+    description: 'Design custom printed doona covers and bedding sets online in Australia.',
     start_url: '/',
     display: 'standalone',
     background_color: '#F7F4F7',

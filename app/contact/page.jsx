@@ -1,7 +1,7 @@
 import ContactClient from './ContactClient';
 
 export const metadata = {
-  title: 'Contact Customer Support | Cozy Cubs Australia',
+  title: 'Contact Us',
   description: 'Get in touch with Cozy Cubs Australia customer support. We help with custom quilt cover orders, photo uploads, custom bed sizes, and delivery tracking.',
   alternates: {
     canonical: 'https://cozycubs.au/contact',

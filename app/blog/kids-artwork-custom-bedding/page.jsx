@@ -1,8 +1,8 @@
 import ArtworkClient from './ArtworkClient';
 
 export const metadata = {
-  title: 'Transforming Kids Artwork & Drawings into Custom Bedding | Cozy Cubs Australia',
-  description: 'Turn your child’s drawings, paintings, or family photos into custom printed organic cotton doona covers with Cozy Cubs Australia.',
+  title: 'Turn Kids\u2019 Artwork & Drawings into Custom Bedding',
+  description: 'Turn your child\u2019s drawings, paintings or family photos into a custom printed doona cover set with Cozy Cubs Australia.',
   alternates: {
     canonical: 'https://cozycubs.au/blog/kids-artwork-custom-bedding',
   },
@@ -19,7 +19,7 @@ export default function ArtworkArticlePage() {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: 'Transforming Kids Artwork & Drawings into Custom Bedding',
-    description: 'How to capture, upload, and print your child’s drawings into heirloom organic cotton quilt covers.',
+    description: 'How to capture, upload, and print your child\u2019s drawings onto a keepsake quilt cover.',
     url: 'https://cozycubs.au/blog/kids-artwork-custom-bedding',
     datePublished: '2026-08-20',
     dateModified: '2026-08-20',

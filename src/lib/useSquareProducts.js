@@ -51,27 +51,37 @@ async function loadAllPages() {
   while (!store.done && !store.error) await loadNextPage();
 }
 
+function seedStore(initial) {
+  if (!initial?.products?.length || store.products.length || inFlight) return;
+  store.products = initial.products;
+  store.nextCursor = initial.nextCursor || null;
+  store.done = !initial.nextCursor;
+  emit();
+}
+
 const serverSnapshot = { ...store };
 
-/** Square catalog products, fetched one page at a time on demand. */
-export function useSquareProducts({ loadAll = false } = {}) {
+/** Square catalog products, fetched one page at a time on demand. `initial` is a server-rendered first page. */
+export function useSquareProducts({ loadAll = false, initial = null } = {}) {
   const state = useSyncExternalStore(subscribe, () => snapshot, () => serverSnapshot);
 
   useEffect(() => {
+    seedStore(initial);
     if (store.products.length === 0 && !store.done) loadNextPage();
-  }, []);
+  }, [initial]);
 
   useEffect(() => {
     if (loadAll) loadAllPages();
   }, [loadAll]);
 
   const loadMore = useCallback(() => loadNextPage(), []);
+  const usingInitial = state.products.length === 0 && Boolean(initial?.products?.length);
 
   return {
-    products: state.products,
+    products: usingInitial ? initial.products : state.products,
     loading: state.loading,
     error: state.error,
-    hasMore: !state.done,
+    hasMore: usingInitial ? Boolean(initial.nextCursor) : !state.done,
     loadMore
   };
 }

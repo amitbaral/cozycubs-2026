@@ -1,5 +1,15 @@
 export const BLOG_POSTS = [
   {
+    slug: 'personalised-christmas-gift-ideas',
+    title: 'Personalised Christmas Gift Ideas for Kids: Custom Doona Covers',
+    excerpt: 'Name, photo and kids\u2019 artwork doona covers make memorable Christmas gifts. Ideas for every age, plus when to order so it arrives in time.',
+    date: 'October 21, 2026',
+    author: 'Cozy Cubs Australia',
+    category: 'Gift Guides',
+    readTime: '4 min read',
+    image: '/images/hero-doona.webp',
+  },
+  {
     slug: 'australian-bedding-size-guide',
     title: 'Ultimate Australian Bedding Size Guide: Single to Super King',
     excerpt: 'Confused about Australian doona dimensions vs US/UK sizes? Learn exact measurements for Single, Double, Queen, King, and Super King quilt covers.',
@@ -11,8 +21,8 @@ export const BLOG_POSTS = [
   },
   {
     slug: 'organic-cotton-doona-care-guide',
-    title: 'How to Care for 100% Organic Cotton Doona Covers',
-    excerpt: 'Keep your custom organic cotton bedding soft, vibrant, and long-lasting with our expert wash care guide for Australian homes.',
+    title: 'How to Wash & Care for Cotton and Polyester Doona Covers',
+    excerpt: 'Keep your printed cotton or polyester doona cover soft, bright and long-lasting with our simple wash and care guide for Australian homes.',
     date: 'August 25, 2026',
     author: 'Fabric Care Specialists',
     category: 'Wash & Care',
@@ -22,7 +32,7 @@ export const BLOG_POSTS = [
   {
     slug: 'kids-artwork-custom-bedding',
     title: 'Transforming Kids Artwork & Drawings into Custom Bedding',
-    excerpt: 'Turn your child’s treasured drawings and family photos into heirloom-quality personalized quilt cover sets with live 3D preview.',
+    excerpt: 'Turn your child’s treasured drawings and family photos into heirloom-quality personalized quilt cover sets with a live print preview.',
     date: 'August 20, 2026',
     author: 'Cozy Cubs Design Team',
     category: 'Custom Design',

@@ -1,14 +1,14 @@
 import DoonaKingdomClient from './DoonaKingdomClient';
 
 export const metadata = {
-  title: 'Cozy Cubs vs Doona Kingdom | Custom Quilt Cover Comparison',
-  description: 'Detailed head-to-head comparison: Cozy Cubs vs Doona Kingdom. Compare 100% GOTS organic cotton vs synthetic microfibre, live 3D preview, price, and delivery.',
+  title: 'Cozy Cubs vs Doona Kingdom \u2013 Custom Quilt Cover Comparison',
+  description: 'Cozy Cubs vs Doona Kingdom: personalisation options, print preview, Australian sizes, fabrics and delivery times compared.',
   alternates: {
     canonical: 'https://cozycubs.au/compare/doona-kingdom',
   },
   openGraph: {
     title: 'Cozy Cubs vs Doona Kingdom | Custom Bedding Comparison',
-    description: 'Compare custom GOTS organic cotton doona covers with live 3D preview against Doona Kingdom.',
+    description: 'How Cozy Cubs personalised doona covers compare with Doona Kingdom.',
     url: 'https://cozycubs.au/compare/doona-kingdom',
     siteName: 'Cozy Cubs Australia',
   },
@@ -19,13 +19,13 @@ export default function DoonaKingdomComparePage() {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'Cozy Cubs vs Doona Kingdom Comparison',
-    description: 'Direct comparison of Cozy Cubs organic cotton custom doona covers vs Doona Kingdom.',
+    description: 'Direct comparison of Cozy Cubs personalised doona covers vs Doona Kingdom.',
     numberOfItems: 2,
     itemListElement: [
       {
         '@type': 'ListItem',
         position: 1,
-        name: 'Cozy Cubs Australia (3D Visualizer & 100% Organic Cotton)',
+        name: 'Cozy Cubs Australia (Personalised Doona Covers)',
         url: 'https://cozycubs.au',
       },
       {

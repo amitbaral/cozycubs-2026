@@ -88,7 +88,7 @@ export function orderCustomerEmail({ buyer, items, totals, orderId, receiptUrl }
   const body = `
 <p>Hi ${escapeHtml(buyer.name.split(' ')[0])},</p>
 <p>Thanks for your order! We've received your payment and your custom bedding is now in the queue to be made.
-Please allow <strong>3–3.5 weeks</strong> for delivery. We'll email your tracking number as soon as it ships.</p>
+Please allow <strong>3–4 weeks</strong> for delivery. We'll email your tracking number as soon as it ships.</p>
 <p style="font-size:13px;color:#6B7590">Order reference: <strong>${escapeHtml(orderId)}</strong></p>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0">${itemRows(items)}</table>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${totalsRows(totals)}</table>

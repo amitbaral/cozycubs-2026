@@ -1,7 +1,8 @@
 import DataDeletionClient from './DataDeletionClient';
 
 export const metadata = {
-  title: 'User Data Deletion Instructions | Cozy Cubs Australia',
+  title: 'Data Deletion Instructions',
+  robots: { index: false, follow: true },
   description: 'Instructions for requesting user data deletion and removing Meta / Facebook app integrations for Cozy Cubs Australia.',
   alternates: {
     canonical: 'https://cozycubs.au/data-deletion',
