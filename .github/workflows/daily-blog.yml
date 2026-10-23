@@ -25,7 +25,8 @@ jobs:
     steps:
       - name: Generate blog post
         env:
-          SITE_URL: ${{ vars.SITE_URL || 'https://cozycubs.au' }}
+          # Apex cozycubs.au 308-redirects to www, and curl won't resend the auth header across hosts.
+          SITE_URL: ${{ vars.SITE_URL || 'https://www.cozycubs.au' }}
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
           MODE: ${{ inputs.mode || 'normal' }}
         run: |
