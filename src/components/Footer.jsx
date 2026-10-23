@@ -18,7 +18,8 @@ const CARE_LINKS = [
   { href: '/shipping', label: 'Shipping' },
   { href: '/returns', label: 'Returns' },
   { href: '/about', label: 'About Us' },
-  { href: '/blog', label: 'Journal' }
+  { href: '/blog', label: 'Journal' },
+  { href: '/locations', label: 'Delivery Areas' }
 ];
 
 function NewsletterForm() {

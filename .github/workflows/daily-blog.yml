@@ -1,0 +1,52 @@
+name: Daily blog post
+
+on:
+  schedule:
+    # 20:00 UTC = 6am AEST / 7am AEDT
+    - cron: '0 20 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'normal = publish once per day, dryRun = preview only, force = publish even if already posted today'
+        type: choice
+        options: [normal, dryRun, force]
+        default: normal
+
+permissions: {}
+
+concurrency:
+  group: daily-blog
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Generate blog post
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://cozycubs.au' }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          MODE: ${{ inputs.mode || 'normal' }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::error::CRON_SECRET repository secret is not set"
+            exit 1
+          fi
+
+          query=""
+          [ "$MODE" = "dryRun" ] && query="?dryRun=1"
+          [ "$MODE" = "force" ] && query="?force=1"
+
+          status=$(curl -sS -o response.json -w '%{http_code}' --max-time 120 \
+            --retry 2 --retry-delay 30 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$SITE_URL/api/blog/generate$query")
+
+          echo "HTTP $status"
+          jq '{success, skipped, reason, url, error, title: (.post.title // null), slug: (.post.slug // null)}' response.json || cat response.json
+
+          if [ "$status" -ne 200 ]; then
+            echo "::error::Blog generation failed with HTTP $status"
+            exit 1
+          fi

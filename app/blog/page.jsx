@@ -1,5 +1,10 @@
 import BlogClient from './BlogClient';
 import { BLOG_POSTS } from './posts';
+import { getBlogIndex } from '../../src/lib/blogStore';
+
+export const revalidate = 3600;
+
+const formatDate = (iso) => new Date(iso).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Australia/Sydney' });
 
 export const metadata = {
   title: 'Bedding Guides & Journal',
@@ -15,7 +20,14 @@ export const metadata = {
   },
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const posts = [
+    ...(await getBlogIndex()),
+    ...BLOG_POSTS.map((p) => ({ ...p, date: new Date(p.date).toISOString() }))
+  ]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .map((p) => ({ ...p, isoDate: p.date, date: formatDate(p.date) }));
+
   const blogSchema = {
     '@context': 'https://schema.org',
     '@type': 'Blog',
@@ -27,15 +39,15 @@ export default function BlogPage() {
       name: 'Cozy Cubs Australia',
       logo: 'https://cozycubs.au/favicon.svg',
     },
-    blogPost: BLOG_POSTS.map((post) => ({
+    blogPost: posts.slice(0, 30).map((post) => ({
       '@type': 'BlogPosting',
       headline: post.title,
       description: post.excerpt,
       url: `https://cozycubs.au/blog/${post.slug}`,
-      datePublished: '2026-08-28',
+      datePublished: post.isoDate,
       author: {
         '@type': 'Organization',
-        name: post.author,
+        name: post.author || 'Cozy Cubs Australia',
       },
     })),
   };
@@ -69,7 +81,7 @@ export default function BlogPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <BlogClient />
+      <BlogClient posts={posts} />
     </>
   );
 }

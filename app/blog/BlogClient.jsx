@@ -7,11 +7,9 @@ import CartDrawer from '../../src/components/CartDrawer';
 import SizeFabricGuideModal from '../../src/components/SizeFabricGuideModal';
 import SquarePaymentModal from '../../src/components/SquarePaymentModal';
 import AnnouncementBar from '../../src/components/AnnouncementBar';
-import { BookOpen, Sparkles, ArrowRight, Calendar, User } from 'lucide-react';
+import { ArrowRight, Calendar } from 'lucide-react';
 
-import { BLOG_POSTS } from './posts';
-
-export default function BlogClient() {
+export default function BlogClient({ posts }) {
   const [cartItems, setCartItems] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
@@ -47,7 +45,7 @@ export default function BlogClient() {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px' }}>
-            {BLOG_POSTS.map((post) => (
+            {posts.map((post) => (
               <a
                 key={post.slug}
                 href={`/blog/${post.slug}`}

@@ -1,6 +1,8 @@
 import { getProductSummaries } from '../src/lib/catalog';
 import { productPath } from '../src/lib/productUrl';
 import { CATEGORIES } from '../src/data/categories';
+import { SUBURBS } from '../src/data/suburbs';
+import { getBlogIndex } from '../src/lib/blogStore';
 
 const SITE = 'https://cozycubs.au';
 
@@ -23,6 +25,7 @@ const STATIC_ROUTES = [
   ['/blog/personalised-christmas-gift-ideas', 'weekly', 0.8],
   ['/compare', 'monthly', 0.5],
   ['/compare/doona-kingdom', 'monthly', 0.5],
+  ['/locations', 'monthly', 0.6],
   ['/privacy', 'yearly', 0.2],
   ['/terms', 'yearly', 0.2]
 ];
@@ -55,5 +58,19 @@ export default async function sitemap() {
     priority: 0.85
   }));
 
-  return [...staticEntries, ...categoryEntries, ...productEntries];
+  const blogEntries = (await getBlogIndex()).map((p) => ({
+    url: `${SITE}/blog/${p.slug}`,
+    lastModified: new Date(p.date),
+    changeFrequency: 'monthly',
+    priority: 0.6,
+    images: p.image ? [p.image] : undefined
+  }));
+
+  const suburbEntries = SUBURBS.map((s) => ({
+    url: `${SITE}/locations/${s.slug}`,
+    changeFrequency: 'monthly',
+    priority: 0.5
+  }));
+
+  return [...staticEntries, ...categoryEntries, ...productEntries, ...blogEntries, ...suburbEntries];
 }
