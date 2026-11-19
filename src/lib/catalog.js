@@ -1,5 +1,6 @@
 import { unstable_cache } from 'next/cache';
 import { cleanProductName } from './productUrl';
+import { parseVariation } from './variations';
 
 const SQUARE_VERSION = '2025-01-23';
 const PAGE_SIZE = 100;
@@ -44,17 +45,32 @@ function formatItem(item, imageMap) {
       currency: p?.currency || 'AUD'
     };
   });
+  const cleanedName = cleanProductName(item.item_data?.name);
   const prices = variations.map((v) => v.priceAUD).filter((p) => p !== null);
+  const isBedding = variations.some((v) => Boolean(parseVariation(v.name))) || /doona|quilt|duvet|bedding|bed set/i.test(cleanedName);
+
+  const categoryIds = Array.from(
+    new Set(
+      [
+        item.item_data?.category_id,
+        item.item_data?.reporting_category?.id,
+        ...(item.item_data?.categories || []).map((c) => c.id)
+      ].filter(Boolean)
+    )
+  );
 
   return {
     id: item.id,
     name: cleanProductName(item.item_data?.name),
     description: item.item_data?.description || '',
-    categoryId: item.item_data?.category_id,
+    categoryId: categoryIds[0] || item.item_data?.category_id,
+    categoryIds,
+    isBedding,
     previewUrl: imageUrls[0] || null,
     imageUrls,
     minPriceAUD: prices.length ? Math.min(...prices) : null,
     maxPriceAUD: prices.length ? Math.max(...prices) : null,
+    createdAt: item.created_at,
     updatedAt: item.updated_at,
     variations
   };
@@ -93,9 +109,41 @@ export const getProduct = unstable_cache(
   { revalidate: REVALIDATE_SECONDS, tags: ['square-catalog'] }
 );
 
+/** Returns all non-bedding / trending / ready-made products across the catalog, newest first. */
+export const getNonBeddingProducts = unstable_cache(
+  async () => {
+    const items = [];
+    let cursor;
+    do {
+      const page = await fetchProductPage(cursor);
+      for (const p of page.products) {
+        if (!p.isBedding) items.push(p);
+      }
+      cursor = page.nextCursor;
+    } while (cursor);
+    return items.sort((a, b) => String(b.createdAt || b.updatedAt || '').localeCompare(String(a.createdAt || a.updatedAt || '')));
+  },
+  ['square-non-bedding-products-v2'],
+  { revalidate: REVALIDATE_SECONDS, tags: ['square-catalog'] }
+);
+
 export const getFirstProductPage = unstable_cache(
-  () => fetchProductPage(),
-  ['square-first-page'],
+  async () => {
+    const [firstPage, nonBedding] = await Promise.all([
+      fetchProductPage(),
+      getNonBeddingProducts().catch(() => [])
+    ]);
+    const nonBeddingIds = new Set(nonBedding.map((p) => p.id));
+    const merged = [
+      ...nonBedding,
+      ...firstPage.products.filter((p) => !nonBeddingIds.has(p.id))
+    ];
+    return {
+      products: merged,
+      nextCursor: firstPage.nextCursor
+    };
+  },
+  ['square-first-page-v3'],
   { revalidate: REVALIDATE_SECONDS, tags: ['square-catalog'] }
 );
 
@@ -106,11 +154,23 @@ export const getProductSummaries = unstable_cache(
     let cursor;
     do {
       const page = await fetchProductPage(cursor);
-      all.push(...page.products.map(({ id, name, updatedAt, previewUrl, minPriceAUD }) => ({ id, name, updatedAt, previewUrl, minPriceAUD })));
+      all.push(
+        ...page.products.map(({ id, name, updatedAt, previewUrl, minPriceAUD, isBedding, categoryIds, variations }) => ({
+          id,
+          name,
+          updatedAt,
+          previewUrl,
+          minPriceAUD,
+          isBedding,
+          categoryIds,
+          defaultVariationId: !isBedding && variations?.[0]?.id ? variations[0].id : undefined,
+          defaultVariationName: !isBedding && variations?.[0]?.name ? variations[0].name : undefined
+        }))
+      );
       cursor = page.nextCursor;
     } while (cursor);
     return all;
   },
-  ['square-product-summaries-v2'],
+  ['square-product-summaries-v3'],
   { revalidate: REVALIDATE_SECONDS, tags: ['square-catalog'] }
 );

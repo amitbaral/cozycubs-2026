@@ -3,7 +3,7 @@ import ProductClient from './ProductClient';
 import { getProduct, getProductSummaries } from '../../../src/lib/catalog';
 import { idFromProductParam, productPath } from '../../../src/lib/productUrl';
 import { primaryCategory, productsInCategory } from '../../../src/data/categories';
-import { parseVariation } from '../../../src/lib/variations';
+import { isBeddingProduct, parseVariation } from '../../../src/lib/variations';
 import { AU_BED_SIZES, FABRIC_OPTIONS } from '../../../src/data/sampleData';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } from '../../../src/lib/pricing';
 
@@ -14,14 +14,17 @@ function plainDescription(product) {
   const lines = (product.description || '')
     .split(/\r?\n/)
     .map((l) => l.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu, '').trim())
-    .filter(Boolean);
+    .filter((l) => l && !/^(specifications|company overview|place of origin|q:\s|a:\s)/i.test(l));
   if (lines[0]?.toLowerCase() === product.name.toLowerCase()) lines.shift();
   return lines.join(' ').replace(/\s{2,}/g, ' ').trim();
 }
 
 function metaDescription(product) {
   const text = plainDescription(product);
-  const fallback = `${product.name}: a custom printed doona cover set made to order in standard Australian bed sizes, in Premium Polyester or 100% Cotton.`;
+  const bedding = isBeddingProduct(product);
+  const fallback = bedding
+    ? `${product.name}: a custom printed doona cover set made to order in standard Australian bed sizes, in Premium Polyester or 100% Cotton.`
+    : `${product.name} — shop online at Cozy Cubs Australia with tracked nationwide delivery and free shipping over $120 AUD.`;
   const source = text.length > 60 ? text : fallback;
   if (source.length <= 158) return source;
   return `${source.slice(0, 155).replace(/\s+\S*$/, '')}…`;
@@ -122,7 +125,9 @@ export default async function ProductPage({ params }) {
     sku: product.id,
     url,
     brand: { '@type': 'Brand', name: 'Cozy Cubs' },
-    category: 'Home & Garden > Linens & Bedding > Bedding > Duvet Covers',
+    category: isBeddingProduct(product)
+      ? 'Home & Garden > Linens & Bedding > Bedding > Duvet Covers'
+      : 'Home & Garden',
     offers
   };
 

@@ -100,22 +100,30 @@ export default async function CategoryPage({ params }) {
                 <p key={i} style={{ marginBottom: '10px', fontSize: '1.02rem' }}>{p}</p>
               ))}
               <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '18px' }}>
-                <a href="/customize" className="btn-accent" style={{ textDecoration: 'none' }}>
-                  {category.designerLed ? 'Upload & design yours' : 'Open the designer'}
-                </a>
-                <a href="/size-guide" className="btn-outline" style={{ textDecoration: 'none' }}>Size guide</a>
+                {category.isReadyMadeCategory ? (
+                  <a href="/collections" className="btn-primary" style={{ textDecoration: 'none' }}>
+                    Browse All Products
+                  </a>
+                ) : (
+                  <>
+                    <a href="/customize" className="btn-accent" style={{ textDecoration: 'none' }}>
+                      {category.designerLed ? 'Upload & design yours' : 'Open Custom Bedding Studio'}
+                    </a>
+                    <a href="/size-guide" className="btn-outline" style={{ textDecoration: 'none' }}>Bedding size guide</a>
+                  </>
+                )}
               </div>
             </div>
 
             {products.length > 0 ? (
               <>
                 <p style={{ fontWeight: 600, marginBottom: '16px' }}>
-                  {products.length} {products.length === 1 ? 'design' : 'designs'}
+                  {products.length} {products.length === 1 ? 'item' : 'items'}
                 </p>
                 <ProductCardGrid products={products} />
               </>
             ) : (
-              !category.designerLed && <p>New designs are coming soon. <a href="/collections">Browse all designs</a>.</p>
+              !category.designerLed && <p>New products are arriving soon. <a href="/collections">Browse all collections</a>.</p>
             )}
 
             {category.faqs?.length > 0 && (

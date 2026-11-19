@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { fetchProductPage } from '../../../../src/lib/catalog';
+import { fetchProductPage, getFirstProductPage } from '../../../../src/lib/catalog';
 
 const CACHE_HEADERS = { 'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=86400' };
 
@@ -16,6 +16,14 @@ export async function GET(request) {
   }
 
   try {
+    if (!cursor && !fetchAll) {
+      const firstPage = await getFirstProductPage();
+      return NextResponse.json(
+        { success: true, totalCount: firstPage.products.length, nextCursor: firstPage.nextCursor || null, products: firstPage.products },
+        { headers: CACHE_HEADERS }
+      );
+    }
+
     const products = [];
     let nextCursor = cursor || undefined;
     do {

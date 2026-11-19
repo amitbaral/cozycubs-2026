@@ -2,22 +2,31 @@
 
 import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { ShoppingBag, Menu, X, Ruler, ArrowRight } from 'lucide-react';
+import { ShoppingBag, Menu, X, Ruler, Sparkles } from 'lucide-react';
 import { Logo } from './Brand';
+import { useCart } from '../lib/cartStore';
 
 const NAV_LINKS = [
-  { href: '/', label: 'Home' },
-  { href: '/customize', label: 'Designer' },
-  { href: '/collections', label: 'Collections' },
-  { href: '/about', label: 'About' },
-  { href: '/blog', label: 'Journal' },
-  { href: '/contact', label: 'Contact' }
+  { href: '/collections', label: 'Shop All' },
+  { href: '/collections?department=trending', label: 'Trending Finds', pill: 'Hot' },
+  { href: '/collections?department=home-living', label: 'Home & Decor' },
+  { href: '/collections?department=gifts', label: 'Gifts' },
+  { href: '/collections?department=bedding', label: 'Bedding' },
+  { href: '/customize', label: 'Custom Studio' },
+  { href: '/blog', label: 'Journal' }
 ];
 
-export default function Header({ cartCount, onOpenCart, onOpenSizeGuide, scrollToCustomizer }) {
+export default function Header({ cartCount: propCartCount, onOpenCart, onOpenSizeGuide, scrollToCustomizer }) {
   const pathname = usePathname();
+  const { cartCount: storeCartCount, openCart } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const effectiveCartCount = storeCartCount || propCartCount || 0;
+  const handleOpenCart = () => {
+    openCart();
+    onOpenCart?.();
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -26,7 +35,10 @@ export default function Header({ cartCount, onOpenCart, onOpenSizeGuide, scrollT
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const isActive = (href) => (href === '/' ? pathname === '/' : pathname?.startsWith(href));
+  const isActive = (href) => {
+    if (href.includes('?')) return false;
+    return href === '/' ? pathname === '/' : pathname?.startsWith(href);
+  };
 
   return (
     <header className={`site-header${scrolled ? ' is-scrolled' : ''}`}>
@@ -37,20 +49,21 @@ export default function Header({ cartCount, onOpenCart, onOpenSizeGuide, scrollT
           {NAV_LINKS.map((link) => (
             <a key={link.href} href={link.href} className={`nav-link${isActive(link.href) ? ' is-active' : ''}`}>
               {link.label}
+              {link.pill && <span className="nav-link__pill">{link.pill}</span>}
             </a>
           ))}
         </nav>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <button onClick={onOpenSizeGuide} className="icon-btn hidden-mobile" aria-label="Australian size guide">
-            <Ruler size={22} />
+          <button onClick={onOpenSizeGuide} className="icon-btn hidden-mobile" aria-label="Australian bedding size guide" title="Bedding Size Guide">
+            <Ruler size={20} />
           </button>
-          <button onClick={onOpenCart} className="icon-btn" aria-label={`Cart, ${cartCount} items`}>
-            <ShoppingBag size={23} />
-            <span className="icon-btn__count">{cartCount}</span>
+          <button onClick={handleOpenCart} className="icon-btn" aria-label={`Cart, ${effectiveCartCount} items`}>
+            <ShoppingBag size={22} />
+            <span className="icon-btn__count">{effectiveCartCount}</span>
           </button>
-          <button onClick={scrollToCustomizer} className="btn-accent hidden-tablet" style={{ marginLeft: '12px', padding: '16px 26px 13px' }}>
-            Design Yours <ArrowRight size={18} />
+          <button onClick={scrollToCustomizer} className="btn-accent hidden-tablet" style={{ marginLeft: '10px', padding: '12px 20px', fontSize: '0.88rem' }}>
+            <Sparkles size={16} /> Custom Bedding
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -66,19 +79,22 @@ export default function Header({ cartCount, onOpenCart, onOpenSizeGuide, scrollT
       {mobileMenuOpen && (
         <nav className="mobile-menu animate-fade-in" aria-label="Mobile">
           {NAV_LINKS.map((link) => (
-            <a key={link.href} href={link.href} className={`nav-link${isActive(link.href) ? ' is-active' : ''}`}>
-              {link.label}
+            <a key={link.href} href={link.href} className={`nav-link${isActive(link.href) ? ' is-active' : ''}`} onClick={() => setMobileMenuOpen(false)}>
+              <span>{link.label}</span>
+              {link.pill && <span className="nav-link__pill">{link.pill}</span>}
             </a>
           ))}
-          <button onClick={() => { onOpenSizeGuide(); setMobileMenuOpen(false); }} className="nav-link">
-            Size Guide
+          <a href="/about" className="nav-link" onClick={() => setMobileMenuOpen(false)}>About Us</a>
+          <a href="/contact" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Contact</a>
+          <button onClick={() => { onOpenSizeGuide?.(); setMobileMenuOpen(false); }} className="nav-link">
+            Australian Bedding Size Guide
           </button>
           <button
-            onClick={() => { scrollToCustomizer(); setMobileMenuOpen(false); }}
+            onClick={() => { scrollToCustomizer?.(); setMobileMenuOpen(false); }}
             className="btn-accent"
             style={{ marginTop: '18px' }}
           >
-            Design Yours <ArrowRight size={18} />
+            <Sparkles size={17} /> Custom Bedding Studio
           </button>
         </nav>
       )}

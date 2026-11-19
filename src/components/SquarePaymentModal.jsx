@@ -146,8 +146,8 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems = [], di
         sourceId: tokenResult.token,
         verificationToken: tokenResult.verificationToken,
         idempotencyKey: idempotencyKeyRef.current,
-        items: cartItems.map(({ variationId, patternName, size, fabric, backingColor, customText, font, textPlacement, artworkUrl }) => ({
-          variationId, patternName, size, fabric, backingColor, customText, font, textPlacement, artworkUrl
+        items: cartItems.map(({ variationId, variationName, patternName, size, fabric, backingColor, customText, font, textPlacement, artworkUrl }) => ({
+          variationId, variationName, patternName, size, fabric, backingColor, customText, font, textPlacement, artworkUrl
         })),
         customer,
         promoCode: totals.discountCode
@@ -293,7 +293,7 @@ export default function SquarePaymentModal({ isOpen, onClose, cartItems = [], di
 
               <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#002169' }}>Order Confirmed!</h2>
               <p style={{ color: '#445374', fontSize: '0.9rem', marginBottom: '20px' }}>
-                Thank you for your purchase! Your doona cover set is now queued for custom printing.
+                Thank you for your purchase! Your Cozy Cubs order has been received and is now being prepared.
                 {receipt.emailSent !== false && <> A confirmation email is on its way to {receipt.email}.</>}
               </p>
 

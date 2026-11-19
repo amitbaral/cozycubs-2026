@@ -34,14 +34,14 @@ export default function AboutClient() {
           
           {/* Banner */}
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-            <span className="badge-au" style={{ background: '#F1E6F1', color: '#6F3A73', borderColor: '#894B8D', marginBottom: '12px' }}>
-              🇦🇺 AUSTRALIA'S PREMIER BEDDING STUDIO
+            <span className="badge-au" style={{ marginBottom: '12px' }}>
+              🇦🇺 AUSTRALIAN LIFESTYLE &amp; CUSTOM STUDIO
             </span>
-            <h1 style={{ fontSize: 'clamp(2.2rem, 4vw, 3.2rem)', fontWeight: 800, color: '#002169', marginBottom: '16px' }}>
-              Crafting Personalized Dreams for Aussie Homes
+            <h1 style={{ fontSize: 'clamp(2.2rem, 4vw, 3.2rem)', fontWeight: 700, color: 'var(--navy)', marginBottom: '16px' }}>
+              Thoughtful Home Finds, Gifts &amp; Custom Bedding
             </h1>
-            <p style={{ fontSize: '1.1rem', color: '#6B7590', maxWidth: '720px', margin: '0 auto', lineHeight: 1.6 }}>
-              At Cozy Cubs Australia, we believe every bedroom deserves a touch of personal magic. From transforming kids' treasured drawings into heirloom bedding to printing high-resolution family photos on Premium Polyester or 100% Cotton.
+            <p style={{ fontSize: '1.08rem', color: 'var(--color-text-muted)', maxWidth: '720px', margin: '0 auto', lineHeight: 1.65 }}>
+              Based in Sydney, Cozy Cubs Australia brings together practical home &amp; kitchen storage, viral lifestyle finds, personalised gifts, and our signature custom-printed Australian doona cover sets.
             </p>
           </div>
 

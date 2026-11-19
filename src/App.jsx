@@ -7,39 +7,40 @@ import Hero from './components/Hero';
 import BedCustomizer from './components/BedCustomizer';
 import Catalog from './components/Catalog';
 import FaqSection from './components/FaqSection';
-import { AboutSplit, HowItWorks, Marquee, QualityBand } from './components/HomeSections';
+import { AboutSplit, DepartmentShowcase, FeaturedReadyMadeSection, HowItWorks, Marquee, QualityBand } from './components/HomeSections';
 import CartDrawer from './components/CartDrawer';
 import SizeFabricGuideModal from './components/SizeFabricGuideModal';
 import Footer from './components/Footer';
+import { useCart } from './lib/cartStore';
 
 export default function App({ initialPage = null }) {
-  const [cartItems, setCartItems] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const { cartItems, cartCount, cartTotal, isCartOpen, addItem, removeItem, clearCart, openCart, closeCart } = useCart();
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [selectedPattern, setSelectedPattern] = useState(null);
+  const [activeDepartment, setActiveDepartment] = useState('all');
 
   const customizerRef = useRef(null);
-
-  const cartCount = cartItems.length;
-  const cartTotal = cartItems.reduce((acc, item) => acc + item.price, 0);
+  const catalogRef = useRef(null);
 
   const handleAddToCart = (item) => {
-    setCartItems((prev) => [...prev, item]);
-    setIsCartOpen(true);
-  };
-
-  const handleRemoveFromCart = (itemId) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== itemId));
-  };
-
-  const handleClearCart = () => {
-    setCartItems([]);
+    addItem(item, { openDrawer: true });
   };
 
   const scrollToCustomizer = () => {
     if (customizerRef.current) {
       customizerRef.current.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const scrollToCatalog = () => {
+    if (catalogRef.current) {
+      catalogRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleSelectDepartment = (deptId) => {
+    setActiveDepartment(deptId);
+    scrollToCatalog();
   };
 
   const handleCustomizePattern = (pattern) => {
@@ -54,23 +55,49 @@ export default function App({ initialPage = null }) {
       <Header
         cartCount={cartCount}
         cartTotal={cartTotal}
-        onOpenCart={() => setIsCartOpen(true)}
+        onOpenCart={openCart}
         onOpenSizeGuide={() => setIsSizeGuideOpen(true)}
         scrollToCustomizer={scrollToCustomizer}
       />
 
       <Hero
         scrollToCustomizer={scrollToCustomizer}
+        scrollToCatalog={scrollToCatalog}
+        onSelectDepartment={handleSelectDepartment}
         onOpenSizeGuide={() => setIsSizeGuideOpen(true)}
       />
 
-      <AboutSplit scrollToCustomizer={scrollToCustomizer} />
+      <DepartmentShowcase
+        onSelectDepartment={handleSelectDepartment}
+        scrollToCustomizer={scrollToCustomizer}
+      />
 
-      <HowItWorks scrollToCustomizer={scrollToCustomizer} />
+      <FeaturedReadyMadeSection
+        products={initialPage?.products || []}
+        onAddToCart={handleAddToCart}
+        onSelectDepartment={handleSelectDepartment}
+      />
+
+      <div ref={catalogRef}>
+        <Catalog
+          onCustomizePattern={handleCustomizePattern}
+          onAddToCart={handleAddToCart}
+          initialPage={initialPage}
+          externalDepartment={activeDepartment}
+          onDepartmentChange={setActiveDepartment}
+        />
+      </div>
 
       <Marquee />
 
-      <section className="section" style={{ paddingBottom: '40px' }}>
+      <section id="customizer" className="section" style={{ paddingBottom: '40px' }}>
+        <div className="container" style={{ marginBottom: '28px' }}>
+          <span className="section-label">Custom Bedding Studio</span>
+          <h2 className="section-title">Design Your Own Australian Doona Cover Set</h2>
+          <p className="section-text" style={{ maxWidth: '640px' }}>
+            Upload a family photo or your child&apos;s drawing, or personalise one of our 470+ bedding designs in Cot to Super King.
+          </p>
+        </div>
         <BedCustomizer
           customizerRef={customizerRef}
           selectedPatternProp={selectedPattern}
@@ -80,9 +107,11 @@ export default function App({ initialPage = null }) {
         />
       </section>
 
-      <Catalog
-        onCustomizePattern={handleCustomizePattern}
-        initialPage={initialPage}
+      <HowItWorks scrollToCustomizer={scrollToCustomizer} />
+
+      <AboutSplit
+        scrollToCustomizer={scrollToCustomizer}
+        onSelectDepartment={handleSelectDepartment}
       />
 
       <QualityBand />
@@ -94,10 +123,10 @@ export default function App({ initialPage = null }) {
       {/* Sliding Cart Drawer */}
       <CartDrawer
         isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
+        onClose={closeCart}
         cartItems={cartItems}
-        onRemoveItem={handleRemoveFromCart}
-        onClearCart={handleClearCart}
+        onRemoveItem={removeItem}
+        onClearCart={clearCart}
       />
 
       {/* Australian Size & Fabric Specs Modal */}

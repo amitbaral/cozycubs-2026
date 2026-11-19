@@ -4,12 +4,13 @@ import React, { useState } from 'react';
 import { Logo, SocialLinks } from './Brand';
 
 const SHOP_LINKS = [
-  { href: '/customize', label: 'Bed Designer' },
-  { href: '/collections', label: 'All Designs' },
-  { href: '/collections/personalised-name-doona-covers', label: 'Name Doona Covers' },
-  { href: '/collections/custom-photo-doona-covers', label: 'Photo Doona Covers' },
-  { href: '/collections/sports-doona-covers', label: 'Sports Doona Covers' },
-  { href: '/size-guide', label: 'Size Guide' }
+  { href: '/collections', label: 'Shop All Products' },
+  { href: '/collections?department=trending', label: 'Trending & TikTok Finds' },
+  { href: '/collections?department=home-living', label: 'Home, Kitchen & Decor' },
+  { href: '/collections?department=gifts', label: 'Personalised Gifts' },
+  { href: '/collections?department=bedding', label: 'Bedding & Doona Sets' },
+  { href: '/customize', label: 'Custom Bedding Studio' },
+  { href: '/size-guide', label: 'Bedding Size Guide' }
 ];
 
 const CARE_LINKS = [
@@ -96,7 +97,7 @@ export default function Footer() {
             <Logo light />
           </div>
           <p style={{ marginBottom: '18px', maxWidth: '300px' }}>
-            Custom doona covers and bedding sets, designed by you and made to order.
+            Curated home &amp; kitchen essentials, trending finds, personalised gifts, and custom Australian bedding sets.
           </p>
           <p style={{ color: '#FFFFFF', fontWeight: 700, marginBottom: '6px' }}>
             <a href="tel:+61272395211">02 7239 5211</a>

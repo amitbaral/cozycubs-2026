@@ -84,17 +84,17 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, o
           {/* Header */}
           <div style={{
             padding: '20px 24px',
-            borderBottom: '1px solid #E6E1EA',
+            borderBottom: '1px solid var(--line)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            background: '#F7F4F7'
+            background: 'var(--lilac)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <ShoppingBag size={22} color="#894B8D" />
-              <h3 style={{ fontSize: '1.2rem', color: '#002169' }}>Your Custom Cart</h3>
+              <ShoppingBag size={22} color="var(--plum)" />
+              <h3 style={{ fontSize: '1.2rem', color: 'var(--navy)' }}>Your Cozy Cubs Cart</h3>
               <span style={{
-                background: '#894B8D',
+                background: 'var(--plum)',
                 color: '#FFFFFF',
                 fontSize: '0.75rem',
                 fontWeight: 800,
@@ -106,37 +106,37 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, o
             </div>
 
             <button onClick={onClose} style={{ cursor: 'pointer', padding: '4px', background: 'transparent', border: 'none' }}>
-              <X size={22} color="#6B7590" />
+              <X size={22} color="var(--color-text-muted)" />
             </button>
           </div>
 
           {/* Free Shipping Meter */}
-          <div style={{ padding: '14px 24px', background: '#F1E6F1', borderBottom: '1px solid #DDB8DE' }}>
-            <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#6F3A73', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div style={{ padding: '14px 24px', background: 'var(--plum-soft)', borderBottom: '1px solid var(--line)' }}>
+            <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--plum-dark)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Truck size={16} /> 
               {subtotal >= freeShippingThreshold 
                 ? '🎉 You unlocked FREE shipping across Australia!'
                 : `Add ${formatMoney(remainingForFreeShipping)} AUD more for FREE tracked shipping`}
             </div>
 
-            <div style={{ width: '100%', height: '7px', background: '#DDB8DE', borderRadius: '999px', overflow: 'hidden' }}>
-              <div style={{ width: `${progressPercent}%`, height: '100%', background: '#894B8D', transition: 'width 0.4s ease' }} />
+            <div style={{ width: '100%', height: '7px', background: 'rgba(184, 84, 59, 0.2)', borderRadius: '999px', overflow: 'hidden' }}>
+              <div style={{ width: `${progressPercent}%`, height: '100%', background: 'var(--plum)', transition: 'width 0.4s ease' }} />
             </div>
           </div>
 
           {/* Cart Item List */}
           <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
             {cartItems.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6B7590' }}>
-                <ShoppingBag size={48} color="#E6E1EA" style={{ margin: '0 auto 16px' }} />
-                <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#002169', marginBottom: '8px' }}>
+              <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--color-text-muted)' }}>
+                <ShoppingBag size={48} color="var(--line)" style={{ margin: '0 auto 16px' }} />
+                <div style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--navy)', marginBottom: '8px' }}>
                   Your Cart is Empty
                 </div>
                 <p style={{ fontSize: '0.9rem', marginBottom: '20px' }}>
-                  Create your custom doona cover set using our Live Bed Designer.
+                  Browse our trending finds, home essentials, or design a custom doona cover set.
                 </p>
                 <button onClick={onClose} className="btn-accent" style={{ fontSize: '0.9rem' }}>
-                  Start Customizing Now
+                  Continue Shopping
                 </button>
               </div>
             ) : (
@@ -149,41 +149,49 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, o
                       gap: '14px',
                       padding: '14px',
                       borderRadius: '14px',
-                      border: '1px solid #E6E1EA',
-                      background: '#F7F4F7'
+                      border: '1px solid var(--line)',
+                      background: 'var(--lilac)'
                     }}
                   >
                     <img
-                      src={item.patternImage}
+                      src={item.patternImage || '/images/hero-doona.webp'}
                       alt={item.patternName}
                       style={{ width: '74px', height: '74px', borderRadius: '10px', objectFit: 'cover' }}
                     />
 
                     <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#002169' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
+                        <div style={{ fontWeight: 800, fontSize: '0.92rem', color: 'var(--navy)', lineHeight: 1.3 }}>
                           {item.patternName}
                         </div>
-                        <button onClick={() => onRemoveItem(item.id)} style={{ color: '#EF4444', background: 'transparent', border: 'none', cursor: 'pointer' }}>
+                        <button onClick={() => onRemoveItem(item.id)} style={{ color: '#EF4444', background: 'transparent', border: 'none', cursor: 'pointer', flexShrink: 0 }} aria-label={`Remove ${item.patternName}`}>
                           <Trash2 size={16} />
                         </button>
                       </div>
 
-                      <div style={{ fontSize: '0.78rem', color: '#445374', marginTop: '2px' }}>
-                        🛏️ {item.size} ({item.dimensions}) • {item.fabric}
-                      </div>
+                      {item.size && item.fabric ? (
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text)', marginTop: '4px' }}>
+                          🛏️ {item.size}{item.dimensions ? ` (${item.dimensions})` : ''} • {item.fabric}
+                        </div>
+                      ) : item.variationName ? (
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text)', marginTop: '4px' }}>
+                          ✨ Option: {item.variationName}
+                        </div>
+                      ) : null}
 
                       {item.customText && (
-                        <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#894B8D', marginTop: '2px' }}>
+                        <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--plum)', marginTop: '2px' }}>
                           ✍️ Name: "{item.customText}" ({item.font})
                         </div>
                       )}
 
-                      <div style={{ fontSize: '0.75rem', color: '#6B7590', marginTop: '2px' }}>
-                        🎨 Backing: {item.backingColor}
-                      </div>
+                      {item.backingColor && (
+                        <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '2px' }}>
+                          🎨 Backing: {item.backingColor}
+                        </div>
+                      )}
 
-                      <div style={{ fontWeight: 800, color: '#002169', fontSize: '1rem', marginTop: '6px' }}>
+                      <div style={{ fontWeight: 800, color: 'var(--navy)', fontSize: '1rem', marginTop: '6px' }}>
                         ${item.price} AUD
                       </div>
                     </div>

@@ -56,13 +56,16 @@ export async function sendEmail({ to, subject, html, replyTo }) {
 
 function itemRows(items) {
   return items.map((item) => {
+    const specLine = item.size && item.fabric
+      ? `${escapeHtml(item.size)} · ${escapeHtml(item.fabric)}`
+      : item.variationName ? `Option: ${escapeHtml(item.variationName)}` : '';
     const details = [
-      `${escapeHtml(item.size)} · ${escapeHtml(item.fabric)}`,
+      specLine,
       item.backingColor && `Backing: ${escapeHtml(item.backingColor)}`,
       item.customText && `Name: “${escapeHtml(item.customText)}”${item.font ? ` (${escapeHtml(item.font)})` : ''}${item.textPlacement ? ` – ${escapeHtml(item.textPlacement)}` : ''}`
     ].filter(Boolean).join('<br>');
     return `<tr>
-<td style="padding:10px 0;border-bottom:1px solid #E6E1EA"><strong style="color:#002169">${escapeHtml(item.patternName)}</strong><br><span style="font-size:13px">${details}</span></td>
+<td style="padding:10px 0;border-bottom:1px solid #E6E1EA"><strong style="color:#002169">${escapeHtml(item.patternName)}</strong>${details ? `<br><span style="font-size:13px">${details}</span>` : ''}</td>
 <td style="padding:10px 0;border-bottom:1px solid #E6E1EA;text-align:right;vertical-align:top;white-space:nowrap">${money(item.price)}</td>
 </tr>`;
   }).join('');
@@ -87,8 +90,8 @@ function addressBlock(buyer) {
 export function orderCustomerEmail({ buyer, items, totals, orderId, receiptUrl }) {
   const body = `
 <p>Hi ${escapeHtml(buyer.name.split(' ')[0])},</p>
-<p>Thanks for your order! We've received your payment and your custom bedding is now in the queue to be made.
-Please allow <strong>3–4 weeks</strong> for delivery. We'll email your tracking number as soon as it ships.</p>
+<p>Thanks for your order! We've received your payment and your Cozy Cubs order is being prepared.
+For made-to-order custom bedding, please allow <strong>3–4 weeks</strong> for delivery. We'll email your tracking number as soon as your order ships.</p>
 <p style="font-size:13px;color:#6B7590">Order reference: <strong>${escapeHtml(orderId)}</strong></p>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0">${itemRows(items)}</table>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${totalsRows(totals)}</table>

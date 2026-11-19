@@ -34,11 +34,11 @@ export function Logo({ light = false }) {
   return (
     <a href="/" className={`logo${light ? ' logo--light' : ''}`} aria-label="Cozy Cubs Australia home">
       <span className="logo__mark">
-        <BearCub size={28} strokeWidth={1.8} />
+        <BearCub size={26} strokeWidth={1.8} />
       </span>
       <span>
         <span className="logo__name">Cozy Cubs</span>
-        <span className="logo__tag">Custom Bedding Studio</span>
+        <span className="logo__tag">Home, Gifts &amp; Custom Studio</span>
       </span>
     </a>
   );

@@ -117,23 +117,23 @@ export const FONTS_LIST = [
 
 export const FAQS = [
   {
-    q: 'How does the online designer work?',
-    a: 'Upload any photo, drawing or design from your phone or computer, or start from one of our designs. Add a printed name in your choice of font, pick your bed size (Cot to Super King) and fabric, and the live print preview shows your doona cover design flat, at real proportions, before you buy.'
+    q: 'What types of products does Cozy Cubs Australia sell?',
+    a: 'We offer two ranges: ready-made lifestyle & home products (including viral TikTok gadgets, kitchen storage sets, and pillowcase packs) that you can add straight to your cart, and our signature custom-printed Australian doona cover sets that you can personalise in our online designer.'
+  },
+  {
+    q: 'Which products can be customised in the online designer?',
+    a: 'Only our custom bedding and doona cover sets are customised in the online Bed Designer (where you can upload a photo or child’s drawing, add a printed name, and choose your bed size and fabric). All other home, storage, and trending products are ready-made.'
   },
   {
     q: 'What are Australian standard doona cover sizes?',
-    a: 'We make every set in standard Australian sizes: Cot (100x120 cm), Single (140x210 cm), King Single (160x210 cm), Double (180x210 cm), Queen (210x210 cm), King (240x220 cm) and Super King (260x230 cm). Cot, Single and King Single sets include 1 matching pillowcase; Double and larger include 2.'
+    a: 'We make every bedding set in standard Australian sizes: Cot (100x120 cm), Single (140x210 cm), King Single (160x210 cm), Double (180x210 cm), Queen (210x210 cm), King (240x220 cm) and Super King (260x230 cm). Cot, Single and King Single sets include 1 matching pillowcase; Double and larger include 2.'
   },
   {
     q: 'How long does delivery take within Australia?',
-    a: 'Because each set is made to order, please allow 3–4 weeks from order to delivery. That includes printing, sewing and tracked shipping to anywhere in Australia, and you\u2019ll get a tracking number as soon as it\u2019s dispatched.'
+    a: 'All orders are shipped with tracking across Australia, and orders over $120 AUD receive free shipping. For made-to-order custom bedding sets, please allow 3–4 weeks from order to delivery (including printing, sewing, and tracked shipping).'
   },
   {
     q: 'Are the custom printed quilt covers washable?',
     a: 'Yes. Your design is printed with eco-friendly, non-toxic inks that are machine washable. Wash on a gentle cycle below 40°C, turn the cover inside out, and line dry out of direct sun to keep colours bright.'
-  },
-  {
-    q: 'What image quality or photo resolution should I upload?',
-    a: 'For best results, upload photos taken with a modern smartphone or camera (at least 2MB or 2000x2000 pixels). Our live editor features a built-in Quality Indicator that warns you if your photo is too low resolution.'
   }
 ];

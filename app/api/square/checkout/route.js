@@ -76,14 +76,18 @@ export async function POST(request) {
     const variations = new Map(objects.filter((o) => o.type === 'ITEM_VARIATION' && !o.isDeleted).map((o) => [o.id, o]));
     for (const item of orderItems) {
       const data = variations.get(item.variationId)?.itemVariationData;
-      const parsed = parseVariation(data?.name);
       const cents = data?.priceMoney?.amount;
-      if (!parsed || cents == null || data.priceMoney.currency !== 'AUD') {
+      if (!data || cents == null || data.priceMoney.currency !== 'AUD') {
         return jsonError('One of the items in your cart is no longer available.');
       }
       item.price = Number(cents) / 100;
-      item.size = AU_BED_SIZES.find((s) => s.id === parsed.sizeId).name;
-      item.fabric = FABRIC_OPTIONS.find((f) => f.id === parsed.fabricId).name;
+      const parsed = parseVariation(data.name);
+      if (parsed) {
+        item.size = AU_BED_SIZES.find((s) => s.id === parsed.sizeId).name;
+        item.fabric = FABRIC_OPTIONS.find((f) => f.id === parsed.fabricId).name;
+      } else {
+        item.variationName = clean(data.name || 'Standard Option', 80);
+      }
     }
   } catch (err) {
     console.error('Square catalog lookup failed:', err instanceof SquareError ? JSON.stringify(err.errors) : err);
@@ -153,7 +157,8 @@ export async function POST(request) {
           catalogObjectId: item.variationId,
           quantity: '1',
           note: [
-            `Design: ${item.patternName}`,
+            `Item: ${item.patternName}`,
+            item.size && item.fabric ? `${item.size} · ${item.fabric}` : item.variationName && `Option: ${item.variationName}`,
             item.backingColor && `Backing: ${item.backingColor}`,
             item.customText && `Name: "${item.customText}"${item.font ? ` (${item.font})` : ''}${item.textPlacement ? ` [${item.textPlacement}]` : ''}`,
             item.artworkUrl && `Artwork: ${item.artworkUrl}`

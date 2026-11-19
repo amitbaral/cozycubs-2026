@@ -1,6 +1,55 @@
-// Theme landing pages. Products are matched by name, so a design can appear in more than one theme.
+// Theme & department landing pages. Products are matched by category or name.
+import { isBeddingProduct, matchesDepartment } from '../lib/variations';
 
 export const CATEGORIES = [
+  {
+    slug: 'trending-tiktok-finds',
+    name: 'Trending & TikTok Finds',
+    title: 'Trending & TikTok Viral Finds Australia',
+    description: 'Shop viral TikTok gadgets, smart wearables and trending lifestyle essentials in Australia. Delivered with tracked shipping nationwide.',
+    isReadyMadeCategory: true,
+    departmentId: 'trending',
+    intro: [
+      'Discover our curated edit of viral gadgets, smart tech wearables, and clever everyday problem-solvers.',
+      'Every item in our Trending Finds collection is priced in AUD and shipped with tracking across Australia.'
+    ],
+    match: /smart|glasses|camera|ai\b|storage|container|kitchen|gadget|viral|wearable/i,
+    faqs: [
+      ['Are trending finds ready-made?', 'Yes. Unlike our custom bedding sets, our Trending & TikTok Finds are ready-made products that you can add straight to your cart without customisation.'],
+      ['Do you ship Australia-wide?', 'Yes, we ship to every state and territory in Australia with tracked delivery, and orders over $120 AUD qualify for free shipping.']
+    ]
+  },
+  {
+    slug: 'home-decor-storage',
+    name: 'Home, Kitchen & Decor',
+    title: 'Home, Kitchen Storage & Room Decor Australia',
+    description: 'Shop airtight kitchen storage container sets, pillowcases, and practical room decor for Australian homes.',
+    isReadyMadeCategory: true,
+    departmentId: 'home-living',
+    intro: [
+      'Upgrade your kitchen, pantry, and living spaces with practical storage solutions, pillowcase sets, and everyday home essentials.',
+      'Shop individual home & living items or pair them with our custom Australian bedding sets.'
+    ],
+    match: /storage|container|kitchen|box|organi[sz]er|pillowcase|pillow case|towel|rug|decor/i,
+    faqs: [
+      ['Can I order home & kitchen items alongside custom bedding?', 'Yes! You can combine any ready-made home or trending items with custom bedding in the same cart and checkout together.']
+    ]
+  },
+  {
+    slug: 'personalised-gifts-pillowcases',
+    name: 'Personalised Gifts & Pillowcases',
+    title: 'Personalised Gifts, Pillowcases & Custom Keepsakes Australia',
+    description: 'Thoughtful personalised gifts for kids, families and pet lovers: custom pillowcases, photo doona covers, and kids’ artwork keepsakes.',
+    departmentId: 'gifts',
+    intro: [
+      'Looking for a gift they won\u2019t forget? Explore our custom pillowcase sets, family photo bedding, and kids\u2019 artwork keepsakes.',
+      'Choose ready-to-order pillowcase sets or open the online designer to create a custom printed bedding gift.'
+    ],
+    match: /pillowcase|pillow case|photo|artwork|drawing|gift|christmas|xmas/i,
+    faqs: [
+      ['What makes the best personalised gift?', 'Our custom photo and kids\u2019 artwork doona cover sets, as well as our Premium Polyester and 100% Cotton pillowcase packs, are our most popular gifts for birthdays, Christmas, and new bedrooms.']
+    ]
+  },
   {
     slug: 'personalised-name-doona-covers',
     name: 'Personalised Name Doona Covers',
@@ -195,12 +244,22 @@ export const CATEGORIES = [
 export const getCategory = (slug) => CATEGORIES.find((c) => c.slug === slug) || null;
 
 export function productsInCategory(products, category) {
+  if (!category) return [];
+  if (category.departmentId) {
+    const byDept = products.filter((p) => matchesDepartment(p, category.departmentId));
+    if (byDept.length > 0) return byDept;
+  }
   return products.filter((p) => category.match.test(p.name || ''));
 }
 
 /** Best-fit theme for a product, used for "more like this" links. Skips designer-led themes. */
 export function primaryCategory(product) {
-  return CATEGORIES.find((c) => !c.designerLed && c.slug !== 'personalised-name-doona-covers' && c.match.test(product.name || ''))
+  if (product && !isBeddingProduct(product)) {
+    return CATEGORIES.find((c) => c.slug === 'home-decor-storage' && c.match.test(product.name || ''))
+      || CATEGORIES.find((c) => c.slug === 'trending-tiktok-finds')
+      || null;
+  }
+  return CATEGORIES.find((c) => !c.designerLed && !c.isReadyMadeCategory && c.slug !== 'personalised-name-doona-covers' && c.match.test(product.name || ''))
     || CATEGORIES.find((c) => c.match.test(product.name || ''))
     || null;
 }

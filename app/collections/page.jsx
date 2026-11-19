@@ -5,14 +5,14 @@ import { productPath } from '../../src/lib/productUrl';
 export const revalidate = 1800;
 
 export const metadata = {
-  title: 'Doona Cover Designs & Quilt Cover Collections',
-  description: 'Browse 470+ doona cover and quilt cover designs: sports, animals, kids\u2019 themes and more. Personalise any design in Cot to Super King, Premium Polyester or 100% Cotton.',
+  title: 'Shop All Collections – Trending Finds, Home & Decor, Gifts & Custom Bedding',
+  description: 'Explore Cozy Cubs Australia: trending TikTok finds, kitchen & home storage, personalised gifts, and 470+ custom Australian doona cover designs.',
   alternates: {
     canonical: 'https://cozycubs.au/collections',
   },
   openGraph: {
-    title: 'Doona Cover Designs & Collections | Cozy Cubs Australia',
-    description: 'Hundreds of personalisable doona cover designs in standard Australian bed sizes.',
+    title: 'Shop All Collections | Cozy Cubs Australia',
+    description: 'Trending finds, home & kitchen essentials, personalised gifts, and custom Australian bedding sets.',
     url: 'https://cozycubs.au/collections',
     siteName: 'Cozy Cubs Australia',
   },

@@ -8,10 +8,10 @@ import CartDrawer from '../../src/components/CartDrawer';
 import SizeFabricGuideModal from '../../src/components/SizeFabricGuideModal';
 import SquarePaymentModal from '../../src/components/SquarePaymentModal';
 import AnnouncementBar from '../../src/components/AnnouncementBar';
+import { useCart } from '../../src/lib/cartStore';
 
 export default function CustomizeClient() {
-  const [cartItems, setCartItems] = useState([]);
-  const [cartOpen, setCartOpen] = useState(false);
+  const { cartItems, cartCount, cartTotal, isCartOpen, addItem, removeItem, clearCart, openCart, closeCart } = useCart();
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [presetPattern, setPresetPattern] = useState(null);
@@ -45,21 +45,17 @@ export default function CustomizeClient() {
     };
   }, []);
 
-  const cartCount = cartItems.length;
-  const cartTotal = cartItems.reduce((sum, item) => sum + item.price, 0);
-
   const handleAddToCart = (customItem) => {
-    setCartItems((prev) => [...prev, customItem]);
-    setCartOpen(true);
+    addItem(customItem, { openDrawer: true });
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#F7F4F7' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--lilac)' }}>
       <AnnouncementBar />
       <Header
         cartCount={cartCount}
         cartTotal={cartTotal}
-        onOpenCart={() => setCartOpen(true)}
+        onOpenCart={openCart}
         onOpenSizeGuide={() => setSizeGuideOpen(true)}
         scrollToCustomizer={() => { window.location.href = '/customize'; }}
       />
@@ -67,14 +63,14 @@ export default function CustomizeClient() {
       <main style={{ flex: 1, padding: '40px 16px' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-            <span className="badge-au" style={{ background: '#F1E6F1', color: '#6F3A73', borderColor: '#894B8D', marginBottom: '10px' }}>
-              🎨 ONLINE DOONA COVER DESIGNER
+            <span className="badge-au" style={{ marginBottom: '10px' }}>
+              🎨 CUSTOM BEDDING STUDIO
             </span>
-            <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', fontWeight: 800, color: '#002169' }}>
-              Design Your Custom Doona Cover & Bedding Set
+            <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', fontWeight: 700, color: 'var(--navy)' }}>
+              Design Your Custom Doona Cover &amp; Bedding Set
             </h1>
-            <p style={{ color: '#6B7590', maxWidth: '640px', margin: '8px auto 0' }}>
-              Upload your child's drawings, family photos, or choose from our Cozy Cubs catalog. Pick custom typography, backing colors, Australian bed sizes, and Premium Polyester or 100% Cotton.
+            <p style={{ color: 'var(--color-text-muted)', maxWidth: '640px', margin: '8px auto 0' }}>
+              Upload your child&apos;s drawings, family photos, or choose from our 470+ bedding designs. Pick custom typography, backing colours, Australian bed sizes, and Premium Polyester or 100% Cotton.
             </p>
           </div>
 
@@ -94,13 +90,13 @@ export default function CustomizeClient() {
       />
 
       <CartDrawer
-        isOpen={cartOpen}
-        onClose={() => setCartOpen(false)}
+        isOpen={isCartOpen}
+        onClose={closeCart}
         cartItems={cartItems}
-        onClearCart={() => setCartItems([])}
-        onRemoveItem={(id) => setCartItems(prev => prev.filter(item => item.id !== id))}
+        onClearCart={clearCart}
+        onRemoveItem={removeItem}
         onCheckout={() => {
-          setCartOpen(false);
+          closeCart();
           setPaymentModalOpen(true);
         }}
       />

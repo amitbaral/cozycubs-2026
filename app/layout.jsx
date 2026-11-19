@@ -1,9 +1,9 @@
 import './globals.css';
-import { Baloo_Bhaina_2, Plus_Jakarta_Sans } from 'next/font/google';
+import { Fraunces, Plus_Jakarta_Sans } from 'next/font/google';
 
-const headingFont = Baloo_Bhaina_2({
+const headingFont = Fraunces({
   subsets: ['latin'],
-  weight: ['500', '600', '700', '800'],
+  weight: ['600', '700', '800'],
   variable: '--font-heading',
   display: 'swap',
 });
@@ -18,18 +18,19 @@ const bodyFont = Plus_Jakarta_Sans({
 export const metadata = {
   metadataBase: new URL('https://cozycubs.au'),
   title: {
-    default: 'Cozy Cubs Australia | Custom Bedding & Doona Cover Studio',
+    default: 'Cozy Cubs Australia | Home & Living, Trending Finds, Gifts & Custom Bedding',
     template: '%s | Cozy Cubs Australia',
   },
-  description: 'Design a custom doona cover set online with names, photos or kids\u2019 artwork. Standard Australian bed sizes in Premium Polyester or 100% Cotton, made to order and delivered Australia-wide.',
+  description: 'Shop Australian home & kitchen essentials, trending TikTok finds, personalised gifts, and custom made-to-order doona cover sets. Delivered Australia-wide.',
   keywords: [
+    'Cozy Cubs Australia',
+    'home and living Australia',
+    'trending gifts Australia',
+    'personalised gifts Australia',
     'custom doona cover',
     'personalised doona cover Australia',
     'custom quilt cover Australia',
-    'photo doona cover',
-    'kids name doona cover',
-    'personalised kids bedding Australia',
-    'Cozy Cubs Australia'
+    'home storage and decor Australia'
   ],
   authors: [{ name: 'Cozy Cubs Australia', url: 'https://cozycubs.au' }],
   creator: 'Cozy Cubs Australia',
@@ -46,8 +47,8 @@ export const metadata = {
     },
   },
   openGraph: {
-    title: 'Cozy Cubs Australia | Custom Doona Covers & Personalised Bedding',
-    description: 'Personalise a doona cover set with names, photos or kids\u2019 artwork. Standard Australian bed sizes, made to order.',
+    title: 'Cozy Cubs Australia | Home & Living, Trending Finds, Gifts & Custom Bedding',
+    description: 'Shop curated home & kitchen essentials, viral trending finds, personalised gifts, and custom Australian doona cover sets.',
     url: 'https://cozycubs.au',
     siteName: 'Cozy Cubs Australia',
     locale: 'en_AU',
@@ -57,14 +58,14 @@ export const metadata = {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Cozy Cubs Australia Custom Bedding Studio',
+        alt: 'Cozy Cubs Australia Home, Gifts & Custom Bedding Store',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Cozy Cubs Australia | Custom Doona Covers & Personalised Bedding',
-    description: 'Design a custom doona cover set online in standard Australian bed sizes.',
+    title: 'Cozy Cubs Australia | Home, Trending Finds, Gifts & Custom Bedding',
+    description: 'Shop curated home & kitchen essentials, viral trending finds, personalised gifts, and custom Australian bedding.',
     images: ['/og-image.jpg'],
   },
   icons: {
@@ -80,7 +81,7 @@ export default function RootLayout({ children }) {
     name: 'Cozy Cubs Australia',
     url: 'https://cozycubs.au',
     logo: 'https://cozycubs.au/favicon.svg',
-    description: 'Personalised doona cover sets and custom bedding, made to order in standard Australian bed sizes.',
+    description: 'Australian online store for home & living essentials, trending finds, personalised gifts, and custom made-to-order doona cover sets.',
     telephone: '+61 2 7239 5211',
     email: 'info@cozycubs.au',
     address: {

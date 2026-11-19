@@ -5,7 +5,7 @@ import { upload } from '@vercel/blob/client';
 import { Upload, ShoppingBag, Search, RotateCcw, Move, Check, AlertTriangle, ChevronDown, RefreshCw } from 'lucide-react';
 import { BearCub } from './Brand';
 import { AU_BED_SIZES, FABRIC_OPTIONS, BACKING_COLORS, FONTS_LIST } from '../data/sampleData';
-import { getVariationOptions, CUSTOM_PHOTO_ITEM_ID } from '../lib/variations';
+import { getVariationOptions, CUSTOM_PHOTO_ITEM_ID, isBeddingProduct } from '../lib/variations';
 import { useSquareProducts, useInfiniteScroll } from '../lib/useSquareProducts';
 
 const DEFAULT_PATTERN = {
@@ -106,16 +106,17 @@ export default function BedCustomizer({ onAddToCart, customizerRef, onOpenSizeGu
   const [patternSearch, setPatternSearch] = useState('');
   const isSearching = patternSearch.trim().length > 0;
   const { products, loading: patternsLoading, hasMore, loadMore } = useSquareProducts({ loadAll: isSearching, initial: initialPage });
-  const livePatterns = useMemo(() => (
-    products.length
-      ? products.map((p) => ({
+  const livePatterns = useMemo(() => {
+    const beddingOnly = products.filter((p) => isBeddingProduct(p));
+    return beddingOnly.length
+      ? beddingOnly.map((p) => ({
         id: p.id,
         name: p.name,
         previewUrl: p.previewUrl || DEFAULT_PATTERN.previewUrl,
         variations: p.variations || []
       }))
-      : [DEFAULT_PATTERN]
-  ), [products]);
+      : [DEFAULT_PATTERN];
+  }, [products]);
   const patternGridRef = useRef(null);
   const patternSentinelRef = useRef(null);
 

@@ -32,24 +32,24 @@ export default function ReturnsClient() {
       <main style={{ flex: 1, padding: '48px 24px' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-            <span className="badge-au" style={{ background: '#F1E6F1', color: '#6F3A73', borderColor: '#894B8D', marginBottom: '12px' }}>
+            <span className="badge-au" style={{ marginBottom: '12px' }}>
               🛡️ QUALITY GUARANTEE
             </span>
-            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 2.8rem)', fontWeight: 800, color: '#002169', marginBottom: '12px' }}>
-              30-Day Quality Guarantee & Return Policy
+            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 2.8rem)', fontWeight: 700, color: 'var(--navy)', marginBottom: '12px' }}>
+              30-Day Quality Guarantee &amp; Return Policy
             </h1>
-            <p style={{ color: '#6B7590', fontSize: '1.05rem' }}>
-              We stand behind every custom quilt cover set we create for Australian homes at Cozy Cubs Australia.
+            <p style={{ color: 'var(--color-text-muted)', fontSize: '1.05rem' }}>
+              We stand behind every home product, trending find, and custom quilt cover set we deliver across Australia.
             </p>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div className="glass-card" style={{ padding: '28px', borderRadius: '16px' }}>
-              <h3 style={{ fontSize: '1.2rem', color: '#002169', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <ShieldCheck size={22} color="#16A34A" /> Print Quality & Craftsmanship Guarantee
+              <h3 style={{ fontSize: '1.2rem', color: 'var(--navy)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <ShieldCheck size={22} color="#16A34A" /> Faulty or Damaged Items Guarantee
               </h3>
-              <p style={{ color: '#445374', fontSize: '0.94rem', lineHeight: 1.6 }}>
-                If your order arrives with any manufacturing defect, print misplacement, zipper fault, or damaged fabric, notify us within 30 days of receiving your item and we will immediately reprint and ship a brand new set free of charge.
+              <p style={{ color: 'var(--text)', fontSize: '0.94rem', lineHeight: 1.6 }}>
+                If any item arrives faulty, damaged in transit, or with a manufacturing defect, notify us within 30 days of receiving your order and we will arrange a free replacement or refund.
               </p>
             </div>
 
