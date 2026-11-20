@@ -12,7 +12,7 @@ const NAV_LINKS = [
   { href: '/collections?department=home-living', label: 'Home & Decor' },
   { href: '/collections?department=gifts', label: 'Gifts' },
   { href: '/collections?department=bedding', label: 'Bedding' },
-  { href: '/customize', label: 'Custom Studio' },
+  { href: '/customize', label: 'Custom Studio', mobileOnly: true },
   { href: '/blog', label: 'Journal' }
 ];
 
@@ -46,8 +46,8 @@ export default function Header({ cartCount: propCartCount, onOpenCart, onOpenSiz
         <Logo />
 
         <nav className="site-nav hidden-tablet" aria-label="Main">
-          {NAV_LINKS.map((link) => (
-            <a key={link.href} href={link.href} className={`nav-link${isActive(link.href) ? ' is-active' : ''}`}>
+          {NAV_LINKS.filter((link) => !link.mobileOnly).map((link) => (
+            <a key={link.href} href={link.href} className={`nav-link nav-link--desktop${isActive(link.href) ? ' is-active' : ''}`}>
               {link.label}
               {link.pill && <span className="nav-link__pill">{link.pill}</span>}
             </a>
@@ -62,8 +62,8 @@ export default function Header({ cartCount: propCartCount, onOpenCart, onOpenSiz
             <ShoppingBag size={22} />
             <span className="icon-btn__count">{effectiveCartCount}</span>
           </button>
-          <button onClick={scrollToCustomizer} className="btn-accent hidden-tablet" style={{ marginLeft: '10px', padding: '12px 20px', fontSize: '0.88rem' }}>
-            <Sparkles size={16} /> Custom Bedding
+          <button onClick={scrollToCustomizer} className="btn-accent header-cta hidden-tablet" aria-label="Custom Bedding Studio">
+            <Sparkles size={16} /> <span className="header-cta__label">Custom Bedding</span>
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

@@ -61,7 +61,7 @@ export default function CustomizeClient() {
       />
 
       <main style={{ flex: 1, padding: '40px 16px' }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '32px' }}>
             <span className="badge-au" style={{ marginBottom: '10px' }}>
               🎨 CUSTOM BEDDING STUDIO

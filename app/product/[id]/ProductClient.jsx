@@ -155,7 +155,7 @@ export default function ProductClient({ id, initialProduct = null, related = [],
       />
 
       <main style={{ flex: 1, padding: '28px 24px 56px' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
           {product && (
             <nav aria-label="Breadcrumb" style={{ fontSize: '0.85rem', marginBottom: '20px', color: 'var(--color-text-muted)' }}>
               <a href="/" style={{ color: 'inherit' }}>Home</a>

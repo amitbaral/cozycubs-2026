@@ -114,9 +114,9 @@ img {
 /* Layout helpers */
 .container {
   width: 100%;
-  max-width: 1240px;
+  max-width: 1480px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 clamp(20px, 3vw, 48px);
 }
 
 /* clip (not hidden) so sticky children still work */
@@ -357,8 +357,35 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
 }
 .nav-link:hover, .nav-link.is-active { color: var(--plum); }
+.nav-link--desktop::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--plum);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition-normal);
+}
+.nav-link--desktop:hover::after, .nav-link--desktop.is-active::after { transform: scaleX(1); }
+.site-header .logo { flex-shrink: 0; }
+.site-header .logo__tag { white-space: nowrap; }
+.header-cta { margin-left: 10px; padding: 12px 20px; font-size: 0.88rem; }
+.site-nav { flex: 1; justify-content: center; }
+@media (max-width: 1279px) {
+  .site-header .logo__tag { display: none; }
+  .header-cta { padding: 11px 16px; }
+}
+@media (max-width: 1139px) {
+  .header-cta { width: 44px; height: 44px; padding: 0; gap: 0; }
+  .header-cta__label { display: none; }
+}
 .nav-link__pill {
   font-size: 0.68rem;
   font-weight: 800;
