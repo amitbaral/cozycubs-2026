@@ -37,7 +37,7 @@ export default async function BlogPage() {
     publisher: {
       '@type': 'Organization',
       name: 'Cozy Cubs Australia',
-      logo: 'https://cozycubs.au/favicon.svg',
+      logo: 'https://cozycubs.au/logo.png',
     },
     blogPost: posts.slice(0, 30).map((post) => ({
       '@type': 'BlogPosting',

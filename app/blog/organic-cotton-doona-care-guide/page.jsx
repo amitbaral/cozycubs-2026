@@ -32,7 +32,7 @@ export default function CareArticlePage() {
       name: 'Cozy Cubs Australia',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://cozycubs.au/favicon.svg',
+        url: 'https://cozycubs.au/logo.png',
       },
     },
   };

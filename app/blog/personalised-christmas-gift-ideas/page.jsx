@@ -57,7 +57,7 @@ export default function ChristmasGiftGuidePage() {
     datePublished: '2026-10-21',
     dateModified: '2026-10-21',
     author: { '@type': 'Organization', name: 'Cozy Cubs Australia' },
-    publisher: { '@type': 'Organization', name: 'Cozy Cubs Australia', logo: { '@type': 'ImageObject', url: `${SITE}/favicon.svg` } }
+    publisher: { '@type': 'Organization', name: 'Cozy Cubs Australia', logo: { '@type': 'ImageObject', url: `${SITE}/logo.png` } }
   };
 
   const breadcrumbSchema = {

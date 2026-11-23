@@ -33,13 +33,8 @@ export function BearCub({ size = 24, strokeWidth = 2, className, style, ...rest 
 export function Logo({ light = false }) {
   return (
     <a href="/" className={`logo${light ? ' logo--light' : ''}`} aria-label="Cozy Cubs Australia home">
-      <span className="logo__mark">
-        <BearCub size={26} strokeWidth={1.8} />
-      </span>
-      <span>
-        <span className="logo__name">Cozy Cubs</span>
-        <span className="logo__tag">Home, Gifts &amp; Custom Studio</span>
-      </span>
+      <img className="logo__img" src="/logo.webp" alt="Cozy Cubs" width="360" height="246" />
+      <span className="logo__tag">Home, Gifts &amp;<br />Custom Studio</span>
     </a>
   );
 }

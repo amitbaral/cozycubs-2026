@@ -80,7 +80,7 @@ export default function RootLayout({ children }) {
     '@type': 'OnlineStore',
     name: 'Cozy Cubs Australia',
     url: 'https://cozycubs.au',
-    logo: 'https://cozycubs.au/favicon.svg',
+    logo: 'https://cozycubs.au/logo.png',
     description: 'Australian online store for home & living essentials, trending finds, personalised gifts, and custom made-to-order doona cover sets.',
     telephone: '+61 2 7239 5211',
     email: 'info@cozycubs.au',

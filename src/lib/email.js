@@ -25,7 +25,7 @@ function layout(title, body) {
   return `<!doctype html><html><body style="margin:0;background:#F7F4F7;font-family:Arial,Helvetica,sans-serif;color:#445374">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:24px 12px"><tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:16px;overflow:hidden">
-<tr><td style="background:#002169;padding:22px 28px;color:#FFFFFF;font-size:22px;font-weight:bold">Cozy Cubs Australia</td></tr>
+<tr><td align="center" style="background:#FFFFFF;padding:22px 28px 8px;border-bottom:4px solid #A5DBE2"><img src="https://cozycubs.au/logo.png" width="160" height="109" alt="Cozy Cubs Australia" style="display:block;border:0;height:auto"></td></tr>
 <tr><td style="padding:28px">
 <h1 style="margin:0 0 16px;font-size:22px;color:#002169">${escapeHtml(title)}</h1>
 ${body}

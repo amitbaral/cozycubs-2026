@@ -52,7 +52,7 @@ export default async function GeneratedBlogPostPage({ params }) {
       datePublished: post.datePublished,
       dateModified: post.datePublished,
       author: { '@type': 'Organization', name: post.author },
-      publisher: { '@type': 'Organization', name: 'Cozy Cubs Australia', logo: { '@type': 'ImageObject', url: `${SITE}/favicon.svg` } },
+      publisher: { '@type': 'Organization', name: 'Cozy Cubs Australia', logo: { '@type': 'ImageObject', url: `${SITE}/logo.png` } },
       mainEntityOfPage: url
     },
     {

@@ -399,25 +399,7 @@ img {
 
 /* Logo */
 .logo { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
-.logo__mark {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  background: var(--plum);
-  color: #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(184, 84, 59, 0.25);
-}
-.logo__name {
-  font-family: var(--heading);
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--navy);
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
+.logo__img { display: block; height: 66px; width: auto; }
 .logo__tag {
   display: block;
   font-family: var(--body);
@@ -426,11 +408,10 @@ img {
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--color-text-muted);
-  margin-top: 3px;
+  line-height: 1.4;
 }
-.logo--light .logo__name { color: #FFFFFF; }
 .logo--light .logo__tag { color: rgba(255, 255, 255, 0.72); }
-.logo--light .logo__mark { background: #FFFFFF; color: var(--navy); }
+.logo--light .logo__img { height: 84px; background: #FFFFFF; border-radius: 16px; padding: 8px 12px; box-sizing: content-box; }
 
 /* Marquee strip */
 .marquee {
