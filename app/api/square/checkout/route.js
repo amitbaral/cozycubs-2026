@@ -4,7 +4,7 @@ import { calculateTotals, getDiscountLabel, normalizePromoCode } from '../../../
 import { parseVariation } from '../../../../src/lib/variations';
 import { AU_BED_SIZES, FABRIC_OPTIONS } from '../../../../src/data/sampleData';
 import { getSquareClient, getLocationId, findOrCreateCustomer, findDiscountByCode } from '../../../../src/lib/square';
-import { sendEmail, orderCustomerEmail, orderBusinessEmail, BUSINESS_EMAIL } from '../../../../src/lib/email';
+import { sendEmail, orderCustomerEmail, orderBusinessEmail, orderProductionEmail, BUSINESS_EMAIL, PRODUCTION_EMAIL } from '../../../../src/lib/email';
 import { clean, jsonError, readJson, EMAIL_PATTERN } from '../../../../src/lib/forms';
 
 const MAX_ITEMS = 20;
@@ -82,6 +82,7 @@ export async function POST(request) {
       }
       item.price = Number(cents) / 100;
       const parsed = parseVariation(data.name);
+      item.isDoona = Boolean(parsed) || /doona|quilt|duvet/i.test(item.patternName);
       if (parsed) {
         item.size = AU_BED_SIZES.find((s) => s.id === parsed.sizeId).name;
         item.fabric = FABRIC_OPTIONS.find((f) => f.id === parsed.fabricId).name;
@@ -213,7 +214,8 @@ export async function POST(request) {
     });
 
     const emailData = { buyer, items: orderItems, totals, orderId: order.id, paymentId: payment.id, receiptUrl: payment.receiptUrl };
-    const [customerMail, businessMail] = await Promise.all([
+    const doonaItems = orderItems.filter((i) => i.isDoona);
+    const [customerMail, businessMail, productionMail] = await Promise.all([
       sendEmail({
         to: buyer.email,
         subject: 'Your Cozy Cubs order is confirmed',
@@ -225,10 +227,18 @@ export async function POST(request) {
         subject: `New order: ${buyer.name} – $${totals.total.toFixed(2)}`,
         html: orderBusinessEmail(emailData),
         replyTo: buyer.email
-      })
+      }),
+      doonaItems.length > 0
+        ? sendEmail({
+          to: PRODUCTION_EMAIL,
+          subject: `Doona cover order ${order.id} – ${doonaItems.length} item${doonaItems.length === 1 ? '' : 's'}`,
+          html: orderProductionEmail({ buyer, items: doonaItems, orderId: order.id }),
+          replyTo: BUSINESS_EMAIL
+        })
+        : { ok: true, skipped: true }
     ]);
-    if (!customerMail.ok || !businessMail.ok) {
-      console.error('Order emails incomplete', { orderId: order.id, customerMail, businessMail });
+    if (!customerMail.ok || !businessMail.ok || !productionMail.ok) {
+      console.error('Order emails incomplete', { orderId: order.id, customerMail, businessMail, productionMail });
     }
 
     return NextResponse.json({

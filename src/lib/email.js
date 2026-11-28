@@ -2,6 +2,8 @@ import { Resend } from 'resend';
 
 const FROM = process.env.EMAIL_FROM || 'Cozy Cubs Australia <info@cozycubs.au>';
 export const BUSINESS_EMAIL = process.env.BUSINESS_EMAIL || 'info@cozycubs.au';
+// Receives a production sheet (no prices) for orders containing doona cover sets.
+export const PRODUCTION_EMAIL = process.env.PRODUCTION_EMAIL || '85794983@qq.com';
 
 let resend;
 function getResend() {
@@ -54,7 +56,7 @@ export async function sendEmail({ to, subject, html, replyTo }) {
   }
 }
 
-function itemRows(items) {
+function itemRows(items, { showPrice = true } = {}) {
   return items.map((item) => {
     const specLine = item.size && item.fabric
       ? `${escapeHtml(item.size)} · ${escapeHtml(item.fabric)}`
@@ -62,11 +64,12 @@ function itemRows(items) {
     const details = [
       specLine,
       item.backingColor && `Backing: ${escapeHtml(item.backingColor)}`,
-      item.customText && `Name: “${escapeHtml(item.customText)}”${item.font ? ` (${escapeHtml(item.font)})` : ''}${item.textPlacement ? ` – ${escapeHtml(item.textPlacement)}` : ''}`
+      item.customText && `Name: “${escapeHtml(item.customText)}”${item.font ? ` (${escapeHtml(item.font)})` : ''}${item.textPlacement ? ` – ${escapeHtml(item.textPlacement)}` : ''}`,
+      !showPrice && item.artworkUrl && `Artwork: <a href="${escapeHtml(item.artworkUrl)}">download print file</a>`
     ].filter(Boolean).join('<br>');
     return `<tr>
 <td style="padding:10px 0;border-bottom:1px solid #E6E1EA"><strong style="color:#002169">${escapeHtml(item.patternName)}</strong>${details ? `<br><span style="font-size:13px">${details}</span>` : ''}</td>
-<td style="padding:10px 0;border-bottom:1px solid #E6E1EA;text-align:right;vertical-align:top;white-space:nowrap">${money(item.price)}</td>
+${showPrice ? `<td style="padding:10px 0;border-bottom:1px solid #E6E1EA;text-align:right;vertical-align:top;white-space:nowrap">${money(item.price)}</td>` : ''}
 </tr>`;
   }).join('');
 }
@@ -117,6 +120,17 @@ export function orderBusinessEmail({ buyer, items, totals, orderId, paymentId })
 ${artwork ? `<h2 style="font-size:16px;color:#002169;margin:20px 0 6px">Print files</h2><ul>${artwork}</ul>` : ''}
 <p>Manage this order in Square Dashboard → Orders.</p>`;
   return layout('New order received', body);
+}
+
+export function orderProductionEmail({ buyer, items, orderId }) {
+  const body = `
+<p><strong>New doona cover order</strong> – ${items.length} item${items.length === 1 ? '' : 's'} to produce.</p>
+<p style="font-size:13px">Order reference: <strong>${escapeHtml(orderId)}</strong></p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0">${itemRows(items, { showPrice: false })}</table>
+<h2 style="font-size:16px;color:#002169;margin:20px 0 6px">Ship to</h2>
+<p style="margin:0">${addressBlock(buyer)}<br>${escapeHtml(buyer.email)}${buyer.phone ? `<br>${escapeHtml(buyer.phone)}` : ''}</p>
+<p>Please reply to this email with any questions or tracking details.</p>`;
+  return layout('Production order', body);
 }
 
 export function simpleEmail(title, paragraphs) {
